@@ -1,0 +1,117 @@
+1.keytool用法
+
+	keytool -genkey -alias archermind.keystore -keyalg RSA -validity 20000 -keystore archermind.keystore
+
+2.android create project
+
+  Creates a new Android project.
+	Options:
+	  -n --name    : Project name.
+	  -t --target  : Target ID of the new project. [required]//目标平台版本
+	  -p --path    : The new project's directory. [required]//project目录
+	  -k --package : Android package name for the application. [required]
+	  -a --activity: Name of the default Activity that is created. [required]
+
+	android create project -n TestApp -p ./TestApp -k com.android.testapp -a MainActivity -t 8
+
+
+
+3.ant	命令
+	在ant.properties文件中添加
+	key.store=archermind.keystore
+	key.alias=archermind.keystore
+	key.store.password=archermind
+	key.alias.password=archermind
+	在project根目录下执行ant relaese
+	既可以在project/bin/***-release.apk
+
+	help:
+	     [echo] Android Ant Build. Available targets:
+	     [echo]    help:      Displays this help.
+	     [echo]    clean:     Removes output files created by other targets.
+	     [echo]               The 'all' target can be used to clean dependencies
+	     [echo]               (tested projects and libraries)at the same time
+	     [echo]               using: 'ant all clean'
+	     [echo]    debug:     Builds the application and signs it with a debug key.
+	     [echo]               The 'nodeps' target can be used to only build the
+	     [echo]               current project and ignore the libraries using:
+	     [echo]               'ant nodeps debug'
+	     [echo]    release:   Builds the application. The generated apk file must be
+	     [echo]               signed before it is published.
+	     [echo]               The 'nodeps' target can be used to only build the
+	     [echo]               current project and ignore the libraries using:
+	     [echo]               'ant nodeps release'
+	     [echo]    instrument:Builds an instrumented package and signs it with a
+	     [echo]               debug key.
+	     [echo]    test:      Runs the tests. Project must be a test project and
+	     [echo]               must have been built. Typical usage would be:
+	     [echo]                   ant [emma] debug install test
+	     [echo]    emma:      Transiently enables code coverage for subsequent
+	     [echo]               targets.
+	     [echo]    install:   Installs the newly build package. Must either be used
+	     [echo]               in conjunction with a build target (debug/release/
+	     [echo]               instrument) or with the proper suffix indicating
+	     [echo]               which package to install (see below).
+	     [echo]               If the application was previously installed, the
+	     [echo]               application is reinstalled if the signature matches.
+	     [echo]    installd:  Installs (only) the debug package.
+	     [echo]    installr:  Installs (only) the release package.
+	     [echo]    installi:  Installs (only) the instrumented package.
+	     [echo]    installt:  Installs (only) the test and tested packages (unless
+	     [echo]               nodeps is used as well.
+	     [echo]    uninstall: Uninstalls the application from a running emulator or
+	     [echo]               device. Also uninstall tested package if applicable
+	     [echo]               unless 'nodeps' is used as well.
+
+
+jdk	jarsigner
+	用法：jarsigner [选项] jar 文件别名
+       jarsigner -verify [选项] jar 文件
+
+	[-keystore <url>]           密钥库位置
+
+	[-storepass <口令>]         用于密钥库完整性的口令
+
+	[-storetype <类型>]         密钥库类型
+
+	[-keypass <口令>]           专用密钥的口令（如果不同）
+
+	[-sigfile <文件>]           .SF/.DSA 文件的名称
+
+	[-signedjar <文件>]         已签名的 JAR 文件的名称
+
+	[-digestalg <算法>]    摘要算法的名称
+
+	[-sigalg <算法>]       签名算法的名称
+
+	[-verify]                   验证已签名的 JAR 文件
+
+	[-verbose]                  签名/验证时输出详细信息
+
+	[-certs]                    输出详细信息和验证时显示证书
+
+	[-tsa <url>]                时间戳机构的位置
+
+	[-tsacert <别名>]           时间戳机构的公共密钥证书
+
+	[-altsigner <类>]           替代的签名机制的类名
+
+	[-altsignerpath <路径列表>] 替代的签名机制的位置
+
+	[-internalsf]               在签名块内包含 .SF 文件
+
+	[-sectionsonly]             不计算整个清单的散列
+
+	[-protected]                密钥库已保护验证路径
+
+	[-providerName <名称>]      提供者名称
+
+	[-providerClass <类>        加密服务提供者的名称
+	[-providerArg <参数>]] ... 主类文件和构造函数参数
+	
+
+	（1）验证签名是否成功
+	jarsigner -verify ./bin/TestApp-release.apk 
+	jar 已验证。
+
+

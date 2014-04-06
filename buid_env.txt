@@ -1,0 +1,53 @@
+http://blog.csdn.net/gexueyuan/article/details/7772387
+http://source.android.com/source/initializing.html
+
+2. chmod +x jdk-6u45-linux-x64.bin
+3. ./jdk-6u45-linux-x64.bin
+4. vi ~/.bashrc
+添加  
+export JAVA_HOME=~/jdk1.6.0_45
+export PATH=${JAVA_HOME}/bin:~/bin/:${PATH}
+. ~/.bashrc
+5.
+sudo apt-get install git gnupg flex bison gperf build-essential \
+  zip curl libc6-dev libncurses5-dev:i386 x11proto-core-dev \
+  libx11-dev:i386 libreadline6-dev:i386 libgl1-mesa-glx:i386 \
+  libgl1-mesa-dev g++-multilib mingw32 tofrodos \
+  python-markdown libxml2-utils xsltproc zlib1g-dev:i386
+6.
+sudo vi etc/udev/rules.d/51-android.rules
+
+SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="4e12", MODE="0600"
+
+sudo apt-get install gcc-4.4
+sudo apt-get install g++-4.4
+sudo apt-get install g++-4.4-multilib
+sudo ln -s /usr/bin/gcc-4.4 /usr/bin/gcc
+sudo ln -s /usr/bin/g++-4.4 /usr/bin/g++
+sudo update-alternatives --install /usr/bin/cc cc /usr/bin/gcc 100
+sudo apt-get install uboot-mkimage
+
+7.
+vim
+ 变量名 	缩写 	含义
+(no)autoindent 	ai 	自动缩进，即为新行自动添加与当前行同等的缩进。
+(no)cindent 	ci 	类似C语言程序的缩进
+(no)smartindent 	si 	基于autoindent的一些改进 
+
+ 变量名 	缩写 	含义
+tabstop=X 	ts 	编辑时一个TAB字符占多少个空格的位置。
+shiftwidth=X 	sw 	使用每层缩进的空格数。
+(no)expandtab 	(no)et 	是否将输入的TAB自动展开成空格。开启后要输入TAB，需要Ctrl-V<TAB>
+softtabstop=X 	sts 	方便在开启了et后使用退格（backspace）键，每次退格将删除X个空格
+(no)smarttab 	(no)sta 	开启时，在行首按TAB将加入sw个空格，否则加入ts个空格。 
+
+vi ~/.vimrc
+set ts=4
+set expandtab
+set autoindent
+
+
+
+
+tar zcvf - mirror/ | ssh git@192.168.1.150 "cd /gitserver/git/; tar zxvf -"
+

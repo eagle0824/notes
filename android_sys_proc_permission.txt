@@ -1,0 +1,53 @@
+Android应用程序如何访问/sys和/proc等目录下的系统文件
+
+Android下应用程序不能直接获得root权限，因此如果需要修改/sys或/proc等目录下的文件时，有以下两种方法可以选择：
+
+1.通过service或虚拟设备的方法将使得应用程序获得root权限
+2.对/sys或/proc目录下的文件修改访问权限，使得它们能够被程序访问
+
+对于方法1，可以参看我后续会写到的一篇文章《如何使Android应用程序获得root权限》，也可以在网上搜索别的相关文章。
+
+这里讲讲方法2。
+
+为了理解方法2，首先要知道Android上的权限机制。Android会为每个安装在系统上的包（apk）配一个唯一的linux userID，名称为"app_"加一个数字，比如app_43。这样该应用程序的文件只对该用户可见，也就是说，应用程序只能访问相同uid和gid的文件。
+另外，也可以通过AndroidManifest.xml修改应用程序的uid。如果将android:sharedUserId项的值改为其它apk的java package name，则该应用程序和所指定的应用程序拥有相同的uid，可以访问对方的文件。
+通过android:sharedUserId还可以将应用程序提升为system权限。
+
+有了上面的知识，这里有三种方法来修改我们所要访问的文件：
+1.将文件改为777权限
+2.将文件改为apk的uid和gid
+3.将文件修改为system的uid，同时将apk也提升为system权限
+
+这三种方法都需要修改所要访问系统文件的权限。要更改权限，在init.rc文件中添加相应的命令即可。下述命令就将/dev/cpuctl/tasks修改为system的uid和gid，并且将其权限更改为777。
+chown system system /dev/cpuctl/tasks
+chmod 0777 /dev/cpuctl/tasks
+
+修改init.rc该文件需要修改ramdisk.img，具体修改方法可以网上搜索，也可以参看这篇文章最后的附录。或者在源代码中直接修改init.rc文件然后编译即可。
+
+下面依次分析一下上面提到的三种修改访问文件的方法。第一种方法是最简单的，不过安全性不好，仅仅可以作为实验使用，不推荐；第二种方法将系统文件文件的uid修改后，拓展性不好，并且我不能确定每次分配给apk的uid是否相同。我这里试了几次，重新安装后 apk的uid都是相同的，不过没有找到相关文章，所以不敢用。最后我这里采用第三种方法实现。
+
+首先修改init.rc
+chown system system /sys/bus/usb/devices/testfile
+
+这样每次启动后，系统都会执行init.rc文件将testfile的uid修改为system，这样uid同问system的程序就能够访问该文件了。
+
+其次将apk提升为system权限
+
+将apk提升为system权限需要目标系统中的签名文件对apk进行签名，因此这种方法仅适用于某个rom，不能用于所有rom。
+具体的提升办法网上有很多，这里不再多说，可以参考这两篇文章：
+http://blog.csdn.net/liujian885/archive/2010/03/22/5404834.aspx
+http://labs.chinamobile.com/mblog/532767_73183
+
+至此，我们的目标就达成了。
+
+附 修改ramdisk.img的方法
+
+在网上找到了一些修改ramdisk.img的方法，都有点问题，我这里写一下自己的流程。由于ramdisk.img是首先用cpio打包，再用gzip压缩后的文件，因此在解压和压缩时都需要经历这两个步骤。
+
+1）mv ramdisk.img ramdisk.img.gz
+2）gunzip ramdisk.img.gz  #gunzip解压得到ramdisk.gz
+3）cpio –iI ramdisk.gz  #用cpio解压上一步得到的文件
+4）修改init.rc
+5）find. | cpio –o –H newc | gzip -9 > ramdisk.gz   #cpio打包后，gzip再压缩
+6）mv ramdisk.gz ramdisk.img
+

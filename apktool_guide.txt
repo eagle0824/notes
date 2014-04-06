@@ -1,0 +1,117 @@
+APKTool是GOOGLE提供的APK编译工具，需要JAVA运行环境，推荐使用JDK1.6或者JDK1.7。
+
+如果你想对APK文件进行修改，那么就不可避免的要使用到APKTool。论坛里有很多关于ROM美化的帖子都需要自己动手修改APK文件，比如修改framework-res.apk、systemUI.apk等等。
+
+相信各位有不少人看了后都想亲自来修改一番，但是结果却是遇到了各式各样的错误却无法进行改正，甚至都不知道自己错在哪里。
+
+一．APKTOOL使用环境配置
+
+1.安装JAVA并设置环境变量。
+
+下载安装都很简单，关键是安装完后还需要亲自设置环境变量以方便其他程序能够条用JAVA。
+
+以WIN7为例，在桌面上右键点击计算机——>属性——>高级系统设置——>环境变量——>在下边的系统变量里新建一个变量，变量名为JAVA_HOME，值为JAVA的安装路径，比如我的是H:\ProgramFiles\Java\jdk1.6.0_26
+
+二．APKTool的安装
+
+1.其实这个谈不上安装，不过如果你愿意的话可以把下载到的APKTOOL中的三个文件（aapt.exe、apktool.bat、apktool.jar）解压缩到你的Windows安装目录下，以方便使用Dos命令.
+
+2.可能有些人下载的APKTOOL里有个安装的bat文件，并且有另外两个方便使用的bat文件，在这里我不推荐大家使用这些bat文件，虽然使用起来很方便（其实我并不觉得方便），但是如果出现错误不方便查看。
+
+三．APKTool的使用
+
+1.decode
+
+该命令用于进行反编译apk文件，一般用法为
+
+apktool d <file.apk> <dir>
+
+<file.apk>代表了要反编译的apk文件的路径，最好写绝对路径，比如C:\MusicPlayer.apk
+
+<dir>代表了反编译后的文件的存储位置，比如C:\MusicPlayer
+
+如果你给定的<dir>已经存在，那么输入完该命令后会提示你，并且无法执行，需要你重新修改命令加入-f指令
+
+apktool d –f <file.apk> <dir>
+
+这样就会强行覆盖已经存在的文件
+
+2.build
+
+该命令用于编译修改好的文件，一般用法为
+
+apktool b <dir>
+
+这里的<dir>就是刚才你反编译时输入的<dir>（如C:\MusicPlayer）,输入这行命令后，如果一切正常，你会发现C:\MusicPlayer内多了2个文件夹build和dist，其中分别存储着编译过程中逐个编译的文件以及最终打包的apk文件。
+
+3.install-framework
+
+该命令用于为APKTool安装特定的framework-res.apk文件，以方便进行反编译一些与ROM相互依赖的APK文件。具体情况请看常见问题
+
+
+
+
+四．常见问题
+
+1.关于安装和管理framework文件
+
+以下大部分其实是翻译自http://code.google.com/p/android-apktool/wiki/FrameworkFiles
+
+一般来说，你在使用apktool进行反编译前不需要做其他的事情，然而由于有的厂商，如HTC，三星等，他们定制了framework文件并且在他们的系统应用中使用了这些文件，这时，为了能正常的反编译这些apk文件，你就必须从你的设备中拷贝出framework文件并且安装到apktool中。
+
+举一个例子，比如你想反编译HTCHero这款手机中的HtcContacts.apk，当你尝试反编译的时候，你会得到以下错误信息。
+
+
+
+
+$ apktool d HtcContacts.apk 
+
+I: Loading resource table...
+
+I: Decoding resources...
+
+I: Loading resource table from file: /home/brutall/apktool/framework/1.apk
+
+W: Could not decode attr value, using undecoded value instead: ns=android, name=drawable, value=0x02020542
+
+...
+
+W: Could not decode attr value, using undecoded value instead: ns=android, name=icon, value=0x02020520
+
+Can't find framework resources for package of id: 2. You must install proper framework files, see project website for more info.
+复制代码
+
+
+这就是在通知你必须先安装HTC定制的framework文件，事实上在修改一些三星的系统应用时也是如此。
+
+以三星的设备来举例，你需要复制两个framework文件来进行安装，framework-res.apk和tzframework-res.apk，一般来说，这两个文件在手机中的位置应该是system\framework\
+
+使用以下代码进行安装
+
+apktool if C:\framework-res.apk
+
+apktool if C:\tzframework-res.apk
+
+这里假设2个文件都放在C盘根目录
+
+
+
+2.直接用build编译后在dist中找到的apk文件无法使用
+
+其实这个问题我也不是特别理解，目前知道的就是，APK文件虽然本质是个zip文件，但是事实上zip包中的文件是按照两种方式压缩的，即XML文件进行deflate压缩，其他文件不进行压缩（使用store存储），而直接编译得到的APK文件对任何的文件都进行了deflate压缩，因此你会发现编译得到的文件比原文件小好多。
+
+同样的，当你使用build文件夹中的文件替换原apk文件中的资源时，请务必确认是使用store存储还是deflate压缩
+
+3.其他错误
+
+其实在编译过程中会遇到很多其他的问题，大多数是由于删除、修改、添加了资源后，没有对应的修改res\values\public.xml文件而造成的，这里我给大家说下修改的原则：
+
+第一，public.xml文件中的资源不能重复定义。
+
+第二，public.xml文件中的任意两个资源的ID不能一样
+
+第三，public.xml文件中定义的资源必须能找到该文件（如果你删除了一些文件，必须要对应的删除public.xml中的该行）
+
+第四，public.xml文件中尽可能全面（如果你添加了某资源，最好确保在public.xml中也添加）
+
+第五，public.xml文件中的资源的ID尽可能连续（当你为添加的文件添加声明时，赋予的ID尽可能是连续的）

@@ -1,0 +1,232 @@
+Android Debug Bridge version 1.0.31
+
+ -d                            - directs command to the only connected USB device
+                                 returns an error if more than one USB device is present.
+ -e                            - directs command to the only running emulator.
+                                 returns an error if more than one emulator is running.
+ -s <specific device>          - directs command to the device or emulator with the given
+                                 serial number or qualifier. Overrides ANDROID_SERIAL
+                                 environment variable.
+ -p <product name or path>     - simple product name like 'sooner', or
+                                 a relative/absolute path to a product
+                                 out directory like 'out/target/product/sooner'.
+                                 If -p is not specified, the ANDROID_PRODUCT_OUT
+                                 environment variable is used, which must
+                                 be an absolute path.
+ devices [-l]                  - list all connected devices
+                                 ('-l' will also list device qualifiers)
+ connect <host>[:<port>]       - connect to a device via TCP/IP
+                                 Port 5555 is used by default if no port number is specified.
+ disconnect [<host>[:<port>]]  - disconnect from a TCP/IP device.
+                                 Port 5555 is used by default if no port number is specified.
+                                 Using this command with no additional arguments
+                                 will disconnect from all connected TCP/IP devices.
+
+device commands:
+  adb push <local> <remote>    - copy file/dir to device
+  adb pull <remote> [<local>]  - copy file/dir from device
+  adb sync [ <directory> ]     - copy host->device only if changed
+                                 (-l means list but don't copy)
+                                 (see 'adb help all')
+  adb shell                    - run remote shell interactively
+  adb shell <command>          - run remote shell command
+  adb emu <command>            - run emulator console command
+  adb logcat [ <filter-spec> ] - View device log
+  adb forward <local> <remote> - forward socket connections
+                                 forward specs are one of: 
+                                   tcp:<port>
+                                   localabstract:<unix domain socket name>
+                                   localreserved:<unix domain socket name>
+                                   localfilesystem:<unix domain socket name>
+                                   dev:<character device name>
+                                   jdwp:<process pid> (remote only)
+  adb jdwp                     - list PIDs of processes hosting a JDWP transport
+  adb install [-l] [-r] [-s] [--algo <algorithm name> --key <hex-encoded key> --iv <hex-encoded iv>] <file>
+                               - push this package file to the device and install it
+                                 ('-l' means forward-lock the app)
+                                 ('-r' means reinstall the app, keeping its data)
+                                 ('-s' means install on SD card instead of internal storage)
+                                 ('--algo', '--key', and '--iv' mean the file is encrypted already)
+  adb uninstall [-k] <package> - remove this app package from the device
+                                 ('-k' means keep the data and cache directories)
+  adb bugreport                - return all information from the device
+                                 that should be included in a bug report.
+
+  adb backup [-f <file>] [-apk|-noapk] [-shared|-noshared] [-all] [-system|-nosystem] [<packages...>]
+                               - write an archive of the device's data to <file>.
+                                 If no -f option is supplied then the data is written
+                                 to "backup.ab" in the current directory.
+                                 (-apk|-noapk enable/disable backup of the .apks themselves
+                                    in the archive; the default is noapk.)
+                                 (-shared|-noshared enable/disable backup of the device's
+                                    shared storage / SD card contents; the default is noshared.)
+                                 (-all means to back up all installed applications)
+                                 (-system|-nosystem toggles whether -all automatically includes
+                                    system applications; the default is to include system apps)
+                                 (<packages...> is the list of applications to be backed up.  If
+                                    the -all or -shared flags are passed, then the package
+                                    list is optional.  Applications explicitly given on the
+                                    command line will be included even if -nosystem would
+                                    ordinarily cause them to be omitted.)
+
+  adb restore <file>           - restore device contents from the <file> backup archive
+
+  adb help                     - show this help message
+  adb version                  - show version num
+
+scripting:
+  adb wait-for-device          - block until device is online
+  adb start-server             - ensure that there is a server running
+  adb kill-server              - kill the server if it is running
+  adb get-state                - prints: offline | bootloader | device
+  adb get-serialno             - prints: <serial-number>
+  adb get-devpath              - prints: <device-path>
+  adb status-window            - continuously print device status for a specified device
+  adb remount                  - remounts the /system partition on the device read-write
+  adb reboot [bootloader|recovery] - reboots the device, optionally into the bootloader or recovery program
+  adb reboot-bootloader        - reboots the device into the bootloader
+  adb root                     - restarts the adbd daemon with root permissions
+  adb usb                      - restarts the adbd daemon listening on USB
+  adb tcpip <port>             - restarts the adbd daemon listening on TCP on the specified port
+networking:
+  adb ppp <tty> [parameters]   - Run PPP over USB.
+ Note: you should not automatically start a PPP connection.
+ <tty> refers to the tty for PPP stream. Eg. dev:/dev/omap_csmi_tty1
+ [parameters] - Eg. defaultroute debug dump local notty usepeerdns
+
+adb sync notes: adb sync [ <directory> ]
+  <localdir> can be interpreted in several ways:
+
+  - If <directory> is not specified, both /system and /data partitions will be updated.
+
+  - If it is "system" or "data", only the corresponding partition
+    is updated.
+
+environmental variables:
+  ADB_TRACE                    - Print debug information. A comma separated list of the following values
+                                 1 or all, adb, sockets, packets, rwx, usb, sync, sysdeps, transport, jdwp
+  ANDROID_SERIAL               - The serial number to connect to. -s takes priority over this if given.
+  ANDROID_LOG_TAGS             - When used with the logcat option, only these debug tags are printed.
+
+
+
+
+adb logcat
+
+unknown option -- hUnrecognized Option
+Usage: logcat [options] [filterspecs]
+options include:
+  -s              Set default filter to silent.
+                  Like specifying filterspec '*:s'
+  -f <filename>   Log to file. Default to stdout
+  -r [<kbytes>]   Rotate log every kbytes. (16 if unspecified). Requires -f
+  -n <count>      Sets max number of rotated logs to <count>, default 4
+  -v <format>     Sets the log print format, where <format> is one of:
+
+                  brief process tag thread raw time threadtime long
+
+  -c              clear (flush) the entire log and exit
+  -d              dump the log and then exit (don't block)
+  -t <count>      print only the most recent <count> lines (implies -d)
+  -g              get the size of the log's ring buffer and exit
+  -b <buffer>     request alternate ring buffer
+                  ('main' (default), 'radio', 'events')
+	Android日志系统为日志消息保持了多个循环缓冲区，而且不是所有的消息都被发送到默认缓冲区，要想查看这些附加的缓冲区，可以使用-b 选项，以下是可以指定的缓冲区：
+	radio — 查看包含在无线/电话相关的缓冲区消息
+	events — 查看事件相关的消息
+	main — 查看主缓冲区 (默认缓冲区)
+  -B              output the log in binary
+filterspecs are a series of 
+  <tag>[:priority]
+
+where <tag> is a log component tag (or * for all) and priority is:
+  V    Verbose
+  D    Debug
+  I    Info
+  W    Warn
+  E    Error
+  F    Fatal
+  S    Silent (supress all output)
+
+'*' means '*:d' and <tag> by itself means <tag>:v
+
+If not specified on the commandline, filterspec is set from ANDROID_LOG_TAGS.
+If no filterspec is found, filter defaults to '*:I'
+
+If not specified with -v, format is set from ANDROID_PRINTF_LOG
+or defaults to "brief"
+
+
+显示时间绰	adb logcat -v threadtime
+或者 adb logcat -v time
+
+清除log	adb logcat -c
+
+log输出到文件 	adb logcat -f filename
+或者 adb logcat | tee filename
+
+过滤器表达式的格式是tag:priority ... ，其中tag是标记， priority是最小的优先级， 该标记标识的所有大于等于指定优先级的消息被写入日志。也可以在一个过滤器表达式中提供多个这样的过滤，它们之间用空格隔开
+过滤log	adb logcat *:W		表达是显示所有优先级大于等于“warning”的日志：
+		adb logcat ActivityManager:I MyApp:D *:S	仅输出标记为“ActivityManager”并且优先级大于等于“Info”和标记为“MyApp”并且优先级大于等于“Debug”的日志
+
+		adb logcat ActivityManager:D *:E	打印标签为ActivityManager且优先级大于Debug,和其他优先级大于Error的log
+		adb logcat -s ActivityManager 等价与 adb logcat -s ActivityManager:D *:S
+
+
+
+
+android adb启动失败问题 adb server is out of date. killing... ADB server didn't ACK * failed to start daemon *
+
+今天打开Eclipse，真机连接之前，是要启动adb的，突然发现就失败了。
+
+错误如下--》
+
+    adb server is out of date.  killing...  
+    ADB server didn't ACK  
+    * failed to start daemon *
+
+第一猜想，就是adb的端口号被占用了。
+
+随机--
+
+一.查看是否是豌豆荚或者手机助手占用了端口号，但是发现没有。
+
+二.没办法，只好借助命令行查询了
+
+具体如下--》
+
+　　1.输入命令adb nodaemon server
+
+　　
+
+　　很显然，我们的adb端口号是5037，但是绑定失败，肯定是别的进程占用他的端口号了，此时我们需要做的就是找到那个进程病kill it。
+
+　　2.输入命令netstat -ano | findstr "5037" 
+
+　　
+
+　　喔，看到127.0.0.1:5037我们就高兴了，原来5037这个端口号还真是被占用了，当然，我们会发现，是被PID为9056的进程所占用的，接下来我们就是消灭这个进程的时候了。
+
+　　3.打开”任务管理器“，接下来一步步点击 进程-->查看-->选择列   看到PID(进程标识符)把它前面的对号勾上。点击“确定”按钮返回“任务管理器”主界面
+
+　　4.此时我们根据PID区查找之前的9056进程，点击右键然后“结束进程”就ok了，再启动adb你会看到
+
+　　
+
+　　此时就ok了。
+
+　　
+
+　　其实还可以用命令直接去kill占用adb端口号的进程，但是我自身的机子发现根本找不到那个命令，所以还是觉得以直观的任务管理器的方式写出来，大家更简单易懂，就算出现了这种情况也可以不用记那么多命令直接解决！
+
+
+
+
+
+
+
+
+
+获取系统porp变量以及值
+adb shell getprop
+
