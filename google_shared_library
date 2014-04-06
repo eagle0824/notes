@@ -1,0 +1,63 @@
+安装基于google map包的apk安装失败
+手机上装应用的时候出现：
+Installation error: INSTALL_FAILED_MISSING_SHARED_LIBRARY
+用如下命令查看apk信息,发现uses-library:'com.google.android.maps'
+aapt dump badging net.aljazeera.english.apk 
+package: name='net.aljazeera.english' versionCode='4' versionName='2.0.0'
+application-label:'Al Jazeera'
+application-icon-120:'res/drawable-ldpi/icon.png'
+application-icon-160:'res/drawable-mdpi/icon.png'
+application-icon-240:'res/drawable-hdpi/icon.png'
+application: label='Al Jazeera' icon='res/drawable-mdpi/icon.png'
+uses-library:'com.google.android.maps'
+launchable-activity: name='com.service2media.m2active.client.android.M2ActiveClient'  label='Al Jazeera' icon=''
+sdkVersion:'4'
+uses-permission:'android.permission.INTERNET'
+uses-permission:'android.permission.ACCESS_NETWORK_STATE'
+uses-permission:'android.permission.ACCESS_WIFI_STATE'
+uses-permission:'android.permission.ACCESS_FINE_LOCATION'
+uses-feature:'android.hardware.location'
+uses-implied-feature:'android.hardware.location','requested a location access permission'
+uses-feature:'android.hardware.location.gps'
+uses-implied-feature:'android.hardware.location.gps','requested android.permission.ACCESS_FINE_LOCATION permission'
+uses-feature:'android.hardware.wifi'
+uses-implied-feature:'android.hardware.wifi','requested android.permission.ACCESS_WIFI_STATE, android.permission.CHANGE_WIFI_STATE, or android.permission.CHANGE_WIFI_MULTICAST_STATE permission'
+uses-feature:'android.hardware.touchscreen'
+uses-implied-feature:'android.hardware.touchscreen','assumed you require a touch screen unless explicitly made optional'
+main
+supports-screens: 'small' 'normal' 'large'
+supports-any-density: 'true'
+locales: '--_--'
+densities: '120' '160' '240'
+
+说明缺少library:'com.google.android.maps'
+解决方案
+(1)从模拟器或集成google gms 的真机中获取以下两个文件
+	com.google.android.maps.jar
+	com.google.android.maps.xml
+命令:
+	adb pull /system/framework/com.google.android.maps.jar ./
+	adb pull /system/etc/permissions/com.google.android.maps.xml ./
+(2)把下面两个文件放在对应系统目录下:
+com.google.android.maps.jar ==> system/framework/
+com.google.android.maps.xml ==> system/etc/permissions/
+
+命令:
+	adb push ./com.google.android.maps.jar /system/framework/
+       adb push ./com.google.android.maps.xml /system/etc/permissions/
+
+(3)修改文件权限
+命令：
+	chmod 755 /system/framework/com.google.android.maps.jar
+	chmod 755 /system/etc/permissions/com.google.android.maps.xml
+
+system/etc/permissions/下com.google.android.maps.xml内容如下
+
+<permissions>
+    <library name="com.google.android.maps"
+            file="/system/framework/com.google.android.maps.jar" />
+</permissions>
+(4)关机重启，OK。
+
+
+ 

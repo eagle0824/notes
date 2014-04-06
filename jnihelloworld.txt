@@ -1,0 +1,115 @@
+jni HelloWorld实例
+
+1.编写一个HelloWorld.java
+class HelloWorld{
+
+	public native void print();
+
+	public static void main(String args[]){
+		new HelloWorld().print();	
+	}
+
+	static{
+		System.out.println(System.getProperty("java.library.path"));
+		System.loadLibrary("HelloWorld");
+	}
+}
+2.编译javac HelloWorld.java
+
+3.生成头文件javah -jni HelloWorld
+
+4.编写HelloWord.c文件
+#include<jni.h>
+#include<stdio.h>
+#include"HelloWorld.h"
+
+JNIEXPORT void JNICALL Java_HelloWorld_print
+  (JNIEnv *env, jobject obj){
+  	printf("HelloWorld!\n");
+	return;
+  };
+int main(){
+	return 0;
+}
+
+5.编译C程序
+gcc -shared HelloWorld.c -I/home/archermind/jdk1.6.0_22/include -I/home/archermind/jdk1.6.0_22/include/linux -o libHelloWorld.so
+
+7.执行java HelloWorld
+死都会报下面的错(如果用IDE就不会有问题)
+Exception in thread "main" java.lang.UnsatisfiedLinkError: displayHelloWorld
+        at HelloWorld.displayHelloWorld(Native Method)
+        at HelloWorld.main(HelloWorld.java:9)
+使用dll export view查看生成的HelloWorld.dll文件发现生成的方法名为Java_HelloWorld_displayHelloWorld@8       
+使用下面的语句搞定,通过-Djava.library.path=.把当前路径中的so库添加到library路径中
+java -Djava.library.path=. HelloWorld
+
+附常见问题
+1.
+archermind@rdjdz11025:~/jnitest$ gcc HelloWorld.c -o libHelloWorld.so
+
+HelloWorld.c:1:16: error: jni.h: No such file or directory
+In file included from HelloWorld.c:3:
+HelloWorld.h:15: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘void’
+HelloWorld.c:5: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘void’
+
+原因:没找到jni.h添加-I/home/archermind/jdk1.6.0_22/include -I/home/archermind/jdk1.6.0_22/include/linux到编译路径中来
+可以用以下命令gcc HelloWorld.c -I/home/archermind/jdk1.6.0_22/include -I/home/archermind/jdk1.6.0_22/include/linux -o libHelloWorld.so
+
+2.
+archermind@rdjdz11025:~/jnitest$ gcc HelloWorld.c -I/home/archermind/jdk1.6.0_22/include -I/home/archermind/jdk1.6.0_22/include/linux -o libHelloWorld.so
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 0 has invalid symbol index 12
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 1 has invalid symbol index 13
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 2 has invalid symbol index 2
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 3 has invalid symbol index 2
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 4 has invalid symbol index 12
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 5 has invalid symbol index 14
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 6 has invalid symbol index 14
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 7 has invalid symbol index 14
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 8 has invalid symbol index 2
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 9 has invalid symbol index 2
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 10 has invalid symbol index 13
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 11 has invalid symbol index 14
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 12 has invalid symbol index 14
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 13 has invalid symbol index 14
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 14 has invalid symbol index 14
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 15 has invalid symbol index 14
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 16 has invalid symbol index 14
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 17 has invalid symbol index 14
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 18 has invalid symbol index 14
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 19 has invalid symbol index 14
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 20 has invalid symbol index 14
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 21 has invalid symbol index 14
+/usr/bin/ld: /usr/lib/debug/usr/lib/crt1.o(.debug_info): relocation 22 has invalid symbol index 22
+/usr/lib/gcc/i486-linux-gnu/4.4.3/../../../../lib/crt1.o: In function `_start':
+(.text+0x18): undefined reference to `main'
+collect2: ld returned 1 exit status
+
+原因:这就是因为我们没有编写main函数而产生的错误,可以用以下命令编译修复
+gcc -shared HelloWorld.c -I/home/archermind/jdk1.6.0_22/include -I/home/archermind/jdk1.6.0_22/include/linux -o libHelloWorld.so
+
+若仍使用原命令编译,则需要在HelloWorld.c添加main函数
+int main(){
+	return 0;
+}
+
+3
+archermind@rdjdz11025:~/jnitest$ java -Djava.library.path=. HelloWorld
+.
+Exception in thread "main" java.lang.UnsatisfiedLinkError: /home/archermind/jnitest/libHelloWorld.so: /home/archermind/jnitest/libHelloWorld.so: cannot dynamically load executable
+	at java.lang.ClassLoader$NativeLibrary.load(Native Method)
+	at java.lang.ClassLoader.loadLibrary0(ClassLoader.java:1803)
+	at java.lang.ClassLoader.loadLibrary(ClassLoader.java:1728)
+	at java.lang.Runtime.loadLibrary0(Runtime.java:823)
+	at java.lang.System.loadLibrary(System.java:1028)
+	at HelloWorld.<clinit>(HelloWorld.java:11)
+Could not find the main class: HelloWorld.  Program will exit.
+原因:出现此问题是因为在出现第2个问题的时候,通过添加main函数解决,而没有在编译的时候添加-shared选项,用以下命令编译时即可解决
+gcc -shared HelloWorld.c -I/home/archermind/jdk1.6.0_22/include -I/home/archermind/jdk1.6.0_22/include/linux -o libHelloWorld.so
+
+
+
+3
+F:\studyInfo\jni>gcc -IC:\Java\jdk1.5.0_09\include -IC:\Java\jdk1.5.0_09\include\win32 -O3 -Wall -c -fmessage-length=0 -oHelloWorld.o HelloWorld.c
+HelloWorld.c:14:2: warning: no newline at end of file
+原因:在最后面加个回车

@@ -1,0 +1,289 @@
+（1）“冒泡法” 
+
+冒泡法大家都较熟悉。其原理为从a[0]开始，依次将其和后面的元素比较,若a[0]>a[i]，则交换它们，一直比较到a[n]。同理对a[1],a[2],...a[n-1]处理，即完成排序。下面列出其代码：
+
+void bubble(int *a,int n) /*定义两个参数：数组首地址与数组大小*/ 
+
+{ 
+
+int i,j,temp; 
+
+for(i=0;i<n-1;i++) 
+
+for(j=i+1;j<n;j++) /*注意循环的上下限*/ 
+
+if(a[i]>a[j]) { 
+
+temp=a[i]; 
+
+a[i]=a[j]; 
+
+a[j]=temp; 
+
+} 
+
+} 
+
+冒泡法原理简单，但其缺点是交换次数多，效率低。 
+
+下面介绍一种源自冒泡法但更有效率的方法“选择法”。 
+
+（2）“选择法” 
+
+选择法循环过程与冒泡法一致，它还定义了记号k=i,然后依次把a[k]同后面元素比较，若a[k]>a[j],则使k=j.最后看看k=i是否还成立，不成立则交换a[k],a[i],这样就比冒泡法省下许多无用的交换，提高了效率。
+
+void choise(int *a,int n) 
+
+{ 
+
+int i,j,k,temp; 
+
+for(i=0;i<n-1;i++) { 
+
+k=i; /*给记号赋值*/ 
+
+for(j=i+1;j<n;j++) 
+
+if(a[k]>a[j]) k=j; /*是k总是指向最小元素*/ 
+
+if(i!=k) { /*当k!=i是才交换，否则a[i]即为最小*/ 
+
+temp=a[i]; 
+
+a[i]=a[k]; 
+
+a[k]=temp; 
+
+} 
+
+} 
+
+} 
+
+选择法比冒泡法效率更高，但说到高效率，非“快速法”莫属，现在就让我们来了解它。 
+
+（3）“快速法” 
+
+快速法定义了三个参数，（数组首地址*a,要排序数组起始元素下标i,要排序数组结束元素下标j). 它首先选一个数组元素（一般为a[(i+j)/2],即中间元素）作为参照，把比它小的元素放到它的左边，比它大的放在右边。然后运用递归，在将它左，右两个子数组排序，最后完成整个数组的排序。下面分析其代码：
+
+void quick(int *a,int i,int j) 
+
+{ 
+
+int m,n,temp; 
+
+int k; 
+
+m=i; 
+
+n=j; 
+
+k=a[(i+j)/2]; /*选取的参照*/ 
+
+do { 
+
+while(a[m]<k&&m<j) m++; /* 从左到右找比k大的元素*/ 
+
+while(a[n]>k&&n>i) n--; /* 从右到左找比k小的元素*/ 
+
+if(m<=n) { /*若找到且满足条件，则交换*/ 
+
+temp=a[m]; 
+
+a[m]=a[n]; 
+
+a[n]=temp; 
+
+m++; 
+
+n--; 
+
+} 
+
+}while(m<=n); 
+
+if(m<j) quick(a,m,j); /*运用递归*/ 
+
+if(n>i) quick(a,i,n); 
+
+} 
+
+（4）“插入法” 
+
+插入法是一种比较直观的排序方法。它首先把数组头两个元素排好序，再依次把后面的元素插入适当的位置。把数组元素插完也就完成了排序。
+
+void insert(int *a,int n) 
+
+{ 
+
+int i,j,temp; 
+
+for(i=1;i<n;i++) { 
+
+temp=a[i]; /*temp为要插入的元素*/ 
+
+j=i-1; 
+
+while(j>=0&&temp<a[j]) { /*从a[i-1]开始找比a[i]小的数，同时把数组元素向后移*/ 
+
+a[j+1]=a[j]; 
+
+j--; 
+
+} 
+
+a[j+1]=temp; /*插入*/ 
+
+} 
+
+} 
+
+（5）“shell法” 
+
+shell法是一个叫 shell 的美国人与1969年发明的。它首先把相距k(k>=1)的那几个元素排好序，再缩小k值（一般取其一半），再排序，直到k=1时完成排序。下面让我们来分析其代码：
+
+void shell(int *a,int n) 
+
+{ 
+
+int i,j,k,x; 
+
+k=n/2; /*间距值*/ 
+
+while(k>=1) { 
+
+for(i=k;i<n;i++) { 
+
+x=a[i]; 
+
+j=i-k; 
+
+while(j>=0&&x<a[j]) { 
+
+a[j+k]=a[j]; 
+
+j-=k; 
+
+} 
+
+a[j+k]=x; 
+
+} 
+
+k/=2; /*缩小间距值*/ 
+
+} 
+
+} 
+
+上面我们已经对几种排序法作了介绍，现在让我们写个主函数检验一下。 
+
+#include<stdio.h> 
+
+/*别偷懒，下面的"..."代表函数体，自己加上去哦！*/ 
+
+void bubble(int *a,int n) 
+
+{ 
+
+... 
+
+} 
+
+void choise(int *a,int n) 
+
+{ 
+
+... 
+
+} 
+
+void quick(int *a,int i,int j) 
+
+{ 
+
+... 
+
+} 
+
+void insert(int *a,int n) 
+
+{ 
+
+... 
+
+} 
+
+void shell(int *a,int n) 
+
+{ 
+
+... 
+
+} 
+
+/*为了打印方便，我们写一个print吧。*/[code]
+
+void print(int *a,int n) 
+
+{ 
+
+int i; 
+
+for(i=0;i<n;i++) 
+
+printf("%5d",a[i]); 
+
+printf("\n"); 
+
+} 
+
+main() 
+
+{ /*为了公平，我们给每个函数定义一个相同数组*/ 
+
+int a1[]={13,0,5,8,1,7,21,50,9,2}; 
+
+int a2[]={13,0,5,8,1,7,21,50,9,2}; 
+
+int a3[]={13,0,5,8,1,7,21,50,9,2}; 
+
+int a4[]={13,0,5,8,1,7,21,50,9,2}; 
+
+int a5[]={13,0,5,8,1,7,21,50,9,2}; 
+
+printf("the original list:"); 
+
+print(a1,10); 
+
+printf("according to bubble:"); 
+
+bubble(a1,10); 
+
+print(a1,10); 
+
+printf("according to choise:"); 
+
+choise(a2,10); 
+
+print(a2,10); 
+
+printf("according to quick:"); 
+
+quick(a3,0,9); 
+
+print(a3,10); 
+
+printf("according to insert:"); 
+
+insert(a4,10); 
+
+print(a4,10); 
+
+printf("according to shell:"); 
+
+shell(a5,10); 
+
+print(a5,10); 
+
+}

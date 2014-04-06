@@ -1,0 +1,50 @@
+1.shell 特殊符号
+	$n        $1 the first parameter,$2 the second...
+	$#        The number of command-line parameters.
+	$0        The name of current program.
+	$?        Last command or function's return value.
+	$$        The program's PID.
+	$!        Last program's PID.
+	$@        Save all the parameters."1""2""3"
+	$*	  all parameters "1 2 3"
+
+2.shell 数组
+	1)定义 ARRAY_NAME=(value0 value2 value3 value4...)
+		或者
+		ARRAY_NAME=(
+		value0
+		value2
+		value3
+		value4
+		...
+		)
+	   	数组的下标默认从0开始
+	   	ARRAY_NAME[0]=value0
+		...
+		ARRAY_NAME[n]=valuen
+	2)获取数组所有元素
+		$(ARRAY_NAME[*])
+	3)获取数组长度
+		length=${#ARRAY_NAME[*]}
+		或
+		length=${#ARRAY_NAME[@]}
+	4)获取数组单个元素的长度
+		length=${#ARRAY_NAME[n]}
+	5)清空单个元素
+		ARRAY_NAME[n]=
+	6)将整个数组清空
+		unset ARRAY_NAME
+		或
+		ARRAY_NAME=
+
+3.字符串截取
+	1)第一种方法：
+	${varible##*string}从左向右截取最后一个string后的字符串 
+	${varible#*string}从左向右截取第一个string后的字符串
+	${varible%%string*}从右向左截取最后一个string后的字符串
+	${varible%string*}从右向左截取第一个string后的字符串 “*”只是一个通配符可以不要
+	2)第二种方法：
+	${varible:n1:n2}:截取变量varible从n1到n2之间的字符串。
+
+
+

@@ -1,0 +1,405 @@
+git@10.11.100.101:iCar2/code/frameworks/base.git
+
+android IMF相关知识
+
+1.inputMethodService几个重要回掉函数(用来处理InputMethodManager)
+
+    * onInitializeInterface()  for user-interface initialization, in particular to deal with configuration changes while the service is running.
+    * onBindInput() to find out about switching to a new client.
+    * onStartInput(EditorInfo, boolean) to deal with an input session starting with the client.
+    * onCreateInputView(), onCreateCandidatesView(), and onCreateExtractTextView() for non-demand generation of the UI.
+    * onStartInputView(EditorInfo, boolean) to deal with input starting within the input area of the IME. 
+
+
+
+2.布局：
+	
+	（1）soft input view:创建onCreateInputView()。
+	控制其是否显示，默认情况总是显示，有键盘则不显示。
+	onEvaluateInputViewShown()  to return true or false based on whether it should be shown in the current environment.
+	If any of your state has changed that may impact this, call updateInputViewShown()  to have it re-evaluated. 
+	（2）Candidates View：创建onCreateCandidatesView()
+	设置是否显示：setCandidatesViewShown(boolean)
+	（3）fullscreen mode
+	 you control whether the IME is running in fullscreen mode by implementing onEvaluateFullscreenMode()  to return true or false based on whether it should be fullscreen in the current environment. 
+	If any of your state has changed that may impact this, call updateFullscreenMode()  to have it re-evaluated. 
+	默认横屏时显示为fullscreen mode
+	（4）onCreateExtractTextView（）顶部显示输入框（仅在全屏模式下会调用）isFullscreenMode()判断当前是否为全屏模式
+	
+3.Generation text
+	通过获取应用的InputConnection接口，方法为getCurrentInputConnection()
+	EditorInfo定义了输入法支持的对象类型，通过getCurrentInoutEditorInfo()来获取。
+	用户在不同的客户端切换时，会调用onFinishInput()和onStartInput(EditorInfo, boolean)方法，我们可以用这两个方法，reset或initialize输入状态
+
+
+4.InputMessageManager
+	InputMethodManager im = Context.getSystemService(Context.INPUT_METHOD_SERVICE)
+	input method framework (IMF)架构:
+	(1)InputMethodManager	通过InputMethodManager imm = Context.getSystemService(Context.INPUT_METHOD_SERVICE);
+	(2)input method(IME)		service继承于InputMethodService	通过getCurrentInputConnection()获取应用的InputConnection接口
+	(3)client applications	客户端，实现InputMethod接口位于（frameworks/base/core/java/android/view/inputmethod/InputMethod.java）textview or view必须实现 public InputConnection onCreateInputConnection(EditorInfo outAttrs) 如所示返回值为InputConnection 用于输入法与文本客户端之间的字符传输
+
+
+5.各种客户端与输入法的交互（imm is InputmethodManager）
+	(1)View
+	OnFoucusChanged()	失去焦点调用 imm.focusOut()	得到焦点调用 imm.focusIn()
+	OnWindowFocusChanged	失去焦点调用 imm.focusOut()	得到焦点调用 imm.focusIn()
+	(2)TextView
+	setInputType()	改变输入法类型，调用 imm.restartInput()
+	onEditorAction()	收到输入完成事件，隐藏输入法界面，调用 imm.hideSoftInputFromWindow()
+	onDraw()
+	输入框内容改变，更新输入法内容	imm.updateExtractedText
+	输入框文本被选择，更新输入法的选择信息	imm.updateSelection
+	输入框的光标位置改变，更新输入法的光标位置	imm.updateCursor
+	imm.isWatchingCursor()
+	onKeyUp()
+	收到KEYCODE_DPAD_CENTER按键事件，显示输入法界面imm.showSoftInput,这个事件鼠标左键点击，都是输入框获取焦点
+	收到KEYEVENT.KEYCODE_ENTER按键事件，状态是输入完成，关闭输入法界面，imm.hideSoftInputFromWinow()
+	onTouchEvent()	触屏事件，输入框获取焦点，显示输入法界面，imm.showSoftInput()
+	isInputMethodTarget()	调用imm.isActive()用来判断此控件是否启用输入法
+	onTextContextMenuItem()	如果用户选择了“切换输入法”（ID_SWITCH_INPUT_METHOD）显示输入法菜单，imm.showInputMethodPicker()
+	setKeyListener()	每次调用都要重新启动输入法imm.restartInput()
+	setText()		输入框内容改变，重启输入法，imm.restartInput()
+
+
+6	输入法设置流程
+	TextView  --> onCreateContextMenu()-->InputMethodManager.showInputMethodPicker()
+	-->InputMetodManagerService.showInputMethodPickerFromClient(IInputMethodClient.stub)
+	-->InputMetodManagerService.showInputMethodMenu()
+
+7	输入法启动流程
+	ZygoteInit.java通过main函数调用startSystemServer(),启动SystemServer.java,调用其main函数,
+	main函数中调用native函数init1()完成虚拟机初始化,init1()中并调用init2(),启动各种系统service包括
+	InputMethodManagerService.java(实现IInputMethodManager.aidl)
+
+8 	inputmethod 框架梳理	
+	/frameworks/base/services/java/InputMethodManagerService.java
+
+	这是整个系统当中，一切与输入法有关的地方的总控制中心。它通过管理下面三个模块来实现系统的输入法框架。
+
+	1、/frameworks/base/services/java/WindowManagerService
+
+	负责显示输入法，接收用户事件。
+
+	2、/frameworks/base/core/java/android.inputmethodservice /InputMethodService
+
+	输入法内部逻辑，键盘布局，选词等，最终把选出的字符通过commitText提交出来。要做一个像搜狗输入法这样的东西的话，主要就是在这里做文章。
+
+	3、InputManager
+
+	由UI控件（View,TextView,EditText等）调用，用来操作输入法。比如，打开，关闭，切换输入法等。
+
+	 
+
+	 
+
+	下面说一下InputMethodManagerService这个控制中心是怎么样与三个模块交互的。
+
+	 
+
+	1、与WindowManagerSerivce的交互。
+
+	首先，InputMethodManagerService在初始化时，会调用 IWindowManager.Stub.asInterface(ServiceManager.getService(Context.WINDOW_SERVICE))， 得到IWindowManager这个代理，然后通过IWindowManager与WindowManagerService交互。比如下面这些操作：
+
+	调用mIWindowManager.addWindowToken(mCurToken, WindowManager.LayoutParams.TYPE_INPUT_METHOD)，让WindowManagerService显示输入法界面。
+
+	调用mIWindowManager.removeWindowToken(mCurToken)让输入法界面关闭。
+
+	调用mIWindowManager.inputMethodClientHasFocus(client)判断输入法是否聚焦。
+
+	 
+
+	2、与InputMethodService的交互。
+
+	InputMethodManagerService在内部维护着一个ArrayList<InputMethodInfo> mMethodList。这个列表会在服务启动时通过PackageManager查询当前系统中的输入法程序来得到。与之对应的，每一个输入法程序的 AndroidManifest.xml中都会有一个Service，而每个Service中都会有标记来告诉系统，自己是个输入法程序。下面这个是我从系统自带的例子Samples/SoftKeyboard/AndroidManifest.xml中的取出来的：
+
+	<manifest xmlns:android="http://schemas.android.com/apk/res/android" 
+
+		package="com.example.android.softkeyboard">
+
+	    <application android:label="@string/ime_name">
+
+		<service android:name="SoftKeyboard"
+
+		        android:permission="android.permission.BIND_INPUT_METHOD">
+
+		    <intent-filter>
+
+		        <action android:name="android.view.InputMethod" />
+
+		    </intent-filter>
+
+		    <meta-data android:name="android.view.im" android:resource="@xml/method" />
+
+		</service>
+
+	    </application>
+
+	</manifest>
+
+	另外，InputMethodManagerService内部还有一个PackageReceiver，当系统中有程序的安装、删除、重启等事件发生时，会更新mMethodList。InputMethodManagerService打开，关闭，切换输入法时，其实就是在操作 mMethodList中某个InputMethodInfo。把InputMethodInfo中的代表某个输入法的 InputMethodService启动或者销毁，就实现了输入法的打开和关闭。
+
+	 
+
+	3、与InputMethodManager的交互
+
+	InputMethodManager中会包含一个IInputMethodManager，这个东西就是 InputMethodManagerService的代理，打开关闭输入法这些操作就是由InputMethodManager中的某些方法调用 IInputMethodManager中相应的方法来实现的。比如：
+
+	mService.getInputMethodList()获取输入法列表。
+
+	mService.updateStatusIcon(imeToken, packageName, iconId)更新输入法图标，即屏幕上方状态栏中的输入法图标。
+
+	mService.finishInput(mClient)隐藏当前输入法。这所以不说关闭输入法，是因为输入法服务启动起来以后，只有在系统关闭或者切换输入法时才会关闭。
+
+	mService.showSoftInput(mClient, flags, resultReceiver)打开当前输入法。
+
+	...
+
+	 
+
+	 
+
+	分别介绍完三大模块之后，再介绍两个东西，输入法的实现和怎么样调用输入法。
+
+	 
+
+	1、以系统的SoftKeyboard为例，实现一个输入法至少需要 Keyboard,KeyboardView,CandidateView,SoftKeyboard这四个东西。
+
+	CandidateView负责显示软键盘上面的那个候选区域。
+
+	Keyboard负责解析并保存键盘布局，并提供选词算法，供程序运行当中使用。其中键盘布局是以XML文件存放在资源当中的。比如我们在汉字输入法下，按下b、a两个字母。Keyboard就负责把这两个字母变成爸、把、巴等显示在CandidateView上。
+
+	KeyboardView负责显示，就是我们看到的按键。
+
+	上面这两人东西合起来，组成了InputView，就是我们看到的软键盘。
+
+	SoftKeyboard继承了InputMethodService，启动一个输入法，其实就是启动一个InputMethodService，当SoftKeyboard输入法被使用时，启动就会启动SoftKeyboard这个Service。InputMethodService中管理着一个继承自Dialog的SoftInputWindow，而SoftInputWindow里面就包括了InputView和CandidateView 这两个东西。
+
+	 
+
+	2、怎么样调用输入法呢？
+
+	说起这个东西，很自然地想起EditText来，我们团队跟踪过这个Widget，EditText本身很简单，主要的代码在TextView和 View当中。这两个Widget本身又很复杂，杂在一起说不清楚。这里我就把我们团队以前做过的一个小例子拿进来做参考，说明一下如何从一个View上调用输入法和如何接收输入法传过来的字符串。
+
+	小例子的起源来自于我们要做一个浏览器，需要在SurfaceView来在Canvas上面绘制自己需要的东西，开启自己的主控制循环线程，事件处理等。比如我要在SurfaceView上绘制输入浏览器中的按钮、文本、图片、输入框等，当然这些和ImageView,TextView没有关系，都是用自己的UI引擎来做的。最后所有问题都解决了，却在输入框上卡壳了。因为要实现输入，得调用EditText，否则就必须自己去和EditText一样连接输入法。以前找过相关资料，看网上也有人碰到过这个问题，但都没有答案。最后，还是团队中一个很牛的娃给解决了。代码很简单，不出二十行，但没资料，View的源码又太庞大，费的劲却是只有我们团队的人才能体会得到的。。。这里佩服张老二同学一下，没有他的努力，就没有下面这二十多行很重要很重要的源码的诞生。
+
+	首先，定义一个继承自BaseInputConnection的类。
+
+	public class MyBaseInputConnection extends BaseInputConnection{
+
+	public MyBaseInputConnection(View targetView, boolean fullEditor) {
+
+	super(targetView, fullEditor);
+
+	}
+
+	public static String tx="";
+
+	@Override
+
+	public boolean commitText(CharSequence text, int newCursorPosition) {//输入法程序就是通过调用这个方法把最终结果输出来的。
+
+	tx = text.toString();
+
+	return true;
+
+	}
+
+	}
+
+	BaseInputConnection相当于一个InputMethodService和View之间的一个通道。每当 InputMethodService产生一个结果时，都会调用BaseInputConnection的commitText方法，把结果传递出来。
+
+	public class MyView extends SurfaceView ...{
+
+	InputMethodManager input = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);//得到 InputMethodManager。
+
+	ResultReceiver receiver = new ResultReceiver(new Handler() {//定义事件处理器。
+
+	public void handleMessage(Message msg) {
+
+	 
+
+	}
+
+	});
+
+	... ...
+
+	input.showSoftInput(this, 0, mRR);//在你想呼出输入法的时候，调用这一句。
+
+	... ...
+
+	@Override
+
+	public InputConnection onCreateInputConnection(EditorInfo outAttrs) {//这个方法继承自View。把自定义的BaseInputConnection通道传递给InputMethodService。
+
+	return new MyBaseInputConnection(this, false);
+
+	}
+
+	}
+
+	低级界面上面，自己调用输入法并接收输入法的输出结果，就是这样的。
+
+	下面我想提一下和这个话题相关的另外一件事，就是前面解决过的一个Bug：
+
+	http://blog.csdn.net/a345017062/archive/2011/01/04/6116305.aspx
+
+	通过这个问题，可以看出WebView上面的输入法是如何实现的。简单来说，WebView就是一个ViewGroup，它里面有两层，上层是一个 EditText，下层是浏览器页面。当浏览器的输入框被用户点中，需要显示输入法时，就把上层EditText的位置移到浏览器的输入框的位置，高速好 EditText的大小和样式后，让EditText和浏览器页面融为一体，效果就很好了。
+
+	通常来说，这个方式应该比自己调用输入法要好些。可以少做很多事。不过，如果产品经理是个很有想像力的人的话，你就不能满足他设计出来的有可能极端变态却非常炫的输入效果了。
+
+	
+		
+
+
+	
+
+	android inputmethod 框架梳理
+
+	1)InputMethodManagerService(frameworks/base/services/java/com/android/server/InputMethodManagerService.java)
+	输入法的管理类 实现IInputMethodManager.aidl(./frameworks/base/core/java/com/android/internal/view/IInputMethodManager.aidl)
+	
+	android系统启动时,ServerThread.java中会启动此service,
+	管理所有输入法,提供一个HashMap,保存所有输入法的相关信息
+	应用AndroidManifest.xml文件中,含有
+
+	<service android:name=".PinyinIME"
+                android:label="@string/ime_name"
+                    android:permission="android.permission.BIND_INPUT_METHOD">
+                <intent-filter>
+                    <action android:name="android.view.InputMethod" />
+                </intent-filter>
+                <meta-data android:name="android.view.im" android:resource="@xml/method" />
+            </service>
+
+	提供打开,关闭选择输入法dialog
+
+	2)InputMethodManager(./frameworks/base/core/java/android/view/inputmethod/InputMethodManager.java)
+	与textview等交互的类可以通过InputMethodManager mImm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);获得其实例
+	控制输入法的显示,隐藏
+	其含有一个IInputMethodManager 实例,可以调用InputMethodManagerService相关方法
+
+
+	3)InputMethodService (./frameworks/base/core/java/android/inputmethodservice/InputMethodService.java)
+	每一输入法,都应该实现此service,
+	而InputMethodManagerService,正是通过调用InputMethodService中方法对单个输入进行控制
+
+	
+android 开机输入法启动流程分析
+	1.开机 SystemServer run()方法中初始化InputMethodManagerService
+		代码如下:
+		try {
+			Slog.i(TAG, "Input Method Service");
+			imm = new InputMethodManagerService(context, statusBar);
+			ServiceManager.addService(Context.INPUT_METHOD_SERVICE, imm);
+		catch (Throwable e) {
+			Slog.e(TAG, "Failure starting Input Manager Service", e);
+		}
+	2.并执行InputMethodManagerService.systemReady();
+		public void systemReady() {
+			synchronized (mMethodMap) {
+			if (!mSystemReady) {
+				mSystemReady = true;
+				try {
+					startInputInnerLocked();
+				} catch (RuntimeException e) {
+					Slog.w(TAG, "Unexpected exception", e);
+				}
+			}
+			}
+		}
+		刚开机时,mCurMethodId = null 
+		InputBindResult startInputInnerLocked() {
+			if (mCurMethodId == null) {
+			    return mNoBinding;
+			}
+
+			if (!mSystemReady) {
+			    // If the system is not yet ready, we shouldn't be running third
+			    // party code.
+			    return new InputBindResult(null, mCurMethodId, mCurSeq);
+			}
+
+	    }
+
+	3.输入法具体调用
+		view的onFocusChanged()方法中,会调用InputMethodManager的一下两个方法
+		focusIn(View view)--> scheduleCheckFocusLocked(view) -->View 在Handler中的CHECK_FOCUS中调用
+			InputMethodManager中的checkFocus()方法-->startInputInner()-->完成与EditText的绑定,链接初始化.并
+			调用InputMethodManagerService的startInput()
+			executeOrSendMessage(mCurMethod, mCaller.obtainMessageOO(
+			MSG_CREATE_SESSION, mCurMethod,
+			new MethodCallback(mCurMethod)));
+			
+			调用 MethodCallback().onSessionCreated();
+			执行 executeOrSendMessage(mCurClient.client, mCaller.obtainMessageOO(MSG_BIND_METHOD, mCurClient.client, res));
+			bind输入法
+			执行InputMethodManager 中的IInputMethodClient.Stub mClient onBindMethod();
+			再次执行startInputInner()
+
+
+
+
+		focusOut(View view)
+			RootView onWindowFoucsChanged()会调用InputMethodManager的onWindowFocus()方法-->checkFocus()
+			-->startInputInner()
+
+
+
+	(1)View
+	OnFoucusChanged()	失去焦点调用 imm.focusOut()	得到焦点调用 imm.focusIn()
+	OnWindowFocusChanged	失去焦点调用 imm.focusOut()	得到焦点调用 imm.focusIn()
+	(2)TextView
+	setInputType()	改变输入法类型，调用 imm.restartInput()
+	onEditorAction()	收到输入完成事件，隐藏输入法界面，调用 imm.hideSoftInputFromWindow()
+	onDraw()
+	输入框内容改变，更新输入法内容	imm.updateExtractedText
+	输入框文本被选择，更新输入法的选择信息	imm.updateSelection
+	输入框的光标位置改变，更新输入法的光标位置	imm.updateCursor
+	imm.isWatchingCursor()
+	onKeyUp()
+	收到KEYCODE_DPAD_CENTER按键事件，显示输入法界面imm.showSoftInput,这个事件鼠标左键点击，都是输入框获取焦点
+	收到KEYEVENT.KEYCODE_ENTER按键事件，状态是输入完成，关闭输入法界面，imm.hideSoftInputFromWinow()
+	onTouchEvent()	触屏事件，输入框获取焦点，显示输入法界面，imm.showSoftInput()
+	isInputMethodTarget()	调用imm.isActive()用来判断此控件是否启用输入法
+	onTextContextMenuItem()	如果用户选择了“切换输入法”（ID_SWITCH_INPUT_METHOD）显示输入法菜单，imm.showInputMethodPicker()
+	setKeyListener()	每次调用都要重新启动输入法imm.restartInput()
+	setText()		输入框内容改变，重启输入法，imm.restartInput()
+
+
+
+	3.在startInputInnerLocked() 方法中实现bind InputmethodService
+		而InputMethodService extends AbstractInputMethodService;
+		在其onbind方法中,返回一个IInputMethodWrapper extends IInputMethod.Stub
+		@Override
+		final public IBinder onBind(Intent intent) {
+		if (mInputMethod == null) {
+		mInputMethod = onCreateInputMethodInterface();
+		}
+		return new IInputMethodWrapper(this, mInputMethod);
+		}
+	4.bind 成功后,在onServiceConnection中返回一个IInputMethod类型的IInputMethodWrapper对象,即mCurMethod
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			executeOrSendMessage(mCurMethod, mCaller.obtainMessageOO(
+			MSG_ATTACH_TOKEN, mCurMethod, mCurToken));
+		}
+		并在handleMessage中执行
+		case MSG_ATTACH_TOKEN:
+		args = (HandlerCaller.SomeArgs)msg.obj;
+		try {
+			if (DEBUG) Slog.v(TAG, "Sending attach of token: " + args.arg2);
+				((IInputMethod)args.arg1).attachToken((IBinder)args.arg2);
+			} catch (RemoteException e) {
+		}
+		return true;
+		实现IInputMethodWrapper 中mInputMethod attachToken方法;
+		此mInputMethod实例对应的为,InputMethodServcie中的InputMethodImpl
+	5.在onBind方法执行的时候会,传递this,作为IInputMethodWrapper的参数,从而生成InputMethodService实例,
+		执行InputMethodService 的OnCreate()方法,完成输入法客户端service的初始化!
+		此时输入法服务已经开启!输入法的开机启动流程已经完成
+	
+
+
+
+	

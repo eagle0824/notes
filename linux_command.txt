@@ -1,0 +1,297 @@
+命令行窗口操作命令
+	ctrl + b	后移动一个字符
+	ctrl + f	前移动一个字符
+	DEL		删除左边字符
+	ctrl + d	删除光标当前字符
+	ctrl + a	光标移动到行首
+	ctrl + e	光标移动到行尾
+	ctrl + l	清屏
+	ctrl + w	剪切一个单词
+	ctrl + k	剪切光标当前位置到最后、
+	ctrl + y	将之前剪切的命令，复制到当前光标位置
+
+
+	
+
+
+
+1	eog filename	查看图片filename
+
+2	nautilus path		可视化查看文件夹命令
+
+3	mount 命令 
+		mount [-t type] [-o options] device dir
+		mount -o remount,ro newdir	//重新挂载更改权限,只读权限
+	-t通常不用置顶,命令会自动匹配
+		光盘				iso9660
+		dos fat16			msdos
+		windows fat32			vfat
+		windows ntfs			ntfs
+		windows 文件网络共享		smbfs
+		unix(linux)文件网络共享	nfs
+	-o 描述挂载方式(默认为rw)
+		loop:	把一个文件当成硬盘分区挂载在系统上
+		ro:	只读方式挂载
+		rw:	读写方式挂载
+		iocharset	指定访问文件所用的字符集(uft8中文)
+	挂载u盘
+		sudo fdisk -l /dev/sd*	//查看u盘.路径 若路径为/dev/sda1
+		sudo mount /dev/sda1 /mnt/media	//将/dev/sda1挂载到/mnt/media
+		sudo mount -t vfat -o iocharset=utf8 /dev/sdc1 /mnt/media	// -t 表示磁盘格式为fats -o表示iocharset=utf8显示中文
+		sudo umount /mnt/media			//卸载/dev/sda1
+		
+	umount	执行时,发现device is busy
+		lsof(list open file) 列出打开的所有文件目录和共享库
+		lsof /mnt/media
+		kill -9 pid
+		再执行umount命令即可
+
+
+	lsof | grep pid	查询pid进程打开的文件
+	lsof /path		显示打开path文件，所有进程！
+
+
+4	ubuntu切换用户
+	sudo su		切换root用户
+	su archermind		切换到"archemrind"用户
+
+5	scp document.txt archermind@10.11.26.89:/home/archermind/	本地文件拷贝到(用户名为archermind)10.11.26.89上/home/archermind下,
+	scp archermind@archermind@10.11.26.89:/home/archermind/a.txt ./
+
+6	查看linux 内核版本等信息
+	umane -a
+	94:71:AC:17:8A:06
+
+7	unbuntu下截图工具
+	命令scrot -s /home/work/a.png
+
+8	du -b filename/foldername 查看文件大小byte	-h G/B/易读模式
+	du -s filename/foldername 查看文件/文件夹大小
+	df -h查看 所有系统文件及磁盘信息
+	df -h --max-depth=1 filepath/folderpath
+
+
+	du -sh * | sort -nr 
+
+9	ps
+
+	kill -9 pid
+	/system/bin/rild
+
+10	文件类型	ls -l
+	d	文件夹
+	l	链接文件	(软链接	ln -s sourcefile	linkedfile;硬链接	ln -d sourcefile	linkedfile;区别,删除源文件后,软链接无效,硬链接,直接成为源文件副本)
+	-	文件
+	s	sock文件(见/dev)
+	b	block文件(见/dev)
+	c	字符文件
+	
+	ls -sh	易读形式显示文件大小	-s  size	-h 易读格式显示文件大小 
+
+11	touch 文件名 创建文件/修改文件各种时间
+	touch * 修改当前目录下文件修改时间
+
+12	chattr	设置文件属性	chattr +i filename (文件filename,不能删除)
+	lsattr	查看文件属性	
+
+13	解压命令
+	tar -xzvf httpd-2.0.48.tar.gz	z表示.tar.gz文件
+	tar -xjvf httpd-2.0.52.tar.bz2   j表示.tar.bz2文件
+	其中bz2格式的压缩比例要高于gz
+
+	管道边压缩边传输：
+	本地：
+	    tar czvf - src_path | tar xzvf - -C dest_path
+	局域网：
+	    tar czvf - src_path | ssh username@192.168.1.x tar xzvf - -C dest_path
+
+14	curl	从服务器获取文件
+	curl http://android.git.kernel.org/repo > repo
+
+15	source filename 等价于 . filename
+	在当前bash下,读取并执行filename中的命令
+
+16	sudo apt-get install name	安装
+	sudo apt-get remove name	卸载
+
+17	下面是使用linux 自带的dd命令测试硬盘的读写速度。
+   
+    time有计时作用，dd用于复制，从if读出，写到of.if=/dev/zero不产生IO,因此可以用来测试纯写速度。同理of=/dev/null不产生IO,可以用来测试纯读速度。bs是每次读或写的大小，即一个块的大小，count是读写块的数量。
+   
+    测/data目录所在磁盘的纯写速度：
+   
+    [root@nagios ~]# time dd if=/dev/zero of=/var/test bs=8k count=1000000
+   
+    1000000+0 records in
+   
+    1000000+0 records out
+   
+    8192000000 bytes （8.2 GB） copied, 52.5749 seconds, 156 MB/s
+   
+    real    0m55.841s
+   
+    user    0m0.507s
+   
+    sys     0m15.706s
+   
+    ##红色部分是因为使用了time命令才显示的，因此需要time命令来计算复制的时间。
+   
+    测/data目录所在磁盘的纯读速度：
+   
+    [root@nagios ~]# time dd if=/var/test of=/dev/null bs=8k
+   
+    1000000+0 records in
+   
+    1000000+0 records out
+   
+    8192000000 bytes （8.2 GB） copied, 49.0088 seconds, 167 MB/s
+   
+    real    0m49.025s
+   
+    user    0m0.559s
+   
+    sys     0m6.383s
+   
+    测读写速度：
+   
+    [root@nagios ~]# time dd if=/var/test of=/tmp/test bs=64k
+   
+    125000+0 records in
+   
+    125000+0 records out
+   
+    8192000000 bytes （8.2 GB） copied, 129.239 seconds, 63.4 MB/s
+   
+    real    2m9.251s
+   
+    user    0m0.114s
+   
+    sys     0m21.494s
+   
+    看来这个测试结果还不错，嘿嘿
+   
+    备注：理论上测试复制量越大测试结果越准确。
+   
+    正常测试的时候可能不止测试一边，可能会需要很多遍求取平均值，这个测试结果在普通的重定向是没有效果的 之后 google 了一下 用下面的方式重定向到一个文件
+   
+    dd if=/dev/zero of=/var/test bs=8k count=1000000  2》 info
+   
+    这样测试的结果就到info文件里面了
+
+
+
+18 	cat /proc/kmsg
+	察看内核log
+
+
+19	快速匹配之前输入的命令	
+	ctrl + R
+	提示之前输入过的命令，输入开始字符匹配
+	
+	输入	history
+	执行	！number
+	同样功能
+
+20	zic -d directory filename	（用于timezone文件解析）
+	此命令将timezone file，解析并按照location创建目录
+	Zic reads text from the file(s) named on the command line and creates the time conversion information files specified in this input. If a filename is -, the standard input is read.
+
+21	grep -v string
+	查看不包含“string”的内容
+
+22	locale 获取本地设置相关信息
+	locale -a	获取系统支持的本地化设置
+	LC_ALL=C	C是unix系统原始locale，sort时添加LC_ALL=C，是屏蔽本地化设置，按照byte排序，速度比较快
+23	命令行窗口输入制表符	ctrl-v ctrl-i
+
+	
+
+24 whereis 
+	查询命名
+	for example		whereis ssh
+				whereis bash
+	which ssh
+
+25	重定向符号>
+	>> 追加
+	ls > file	执行ls命令，结果不是输出到屏幕，二十写入文件file
+	ls -l >> file	将结果追加到file文件
+
+	cmd > file 把 stdout 重定向到 file 文件中；
+
+	cmd >> file 把 stdout 重定向到 file 文件中(追加)；
+
+	cmd 1> fiel 把 stdout 重定向到 file 文件中；
+
+	cmd > file 2>&1 把 stdout 和 stderr 一起重定向到 file 文件中；
+
+	cmd 2> file 把 stderr 重定向到 file 文件中；
+
+	cmd 2>> file 把 stderr 重定向到 file 文件中(追加)；
+
+	cmd >> file 2>&1 把 stderr 和 stderr 一起重定向到 file 文件中(追加)；
+
+	cmd < file >file2 cmd 命令以 file 文件作为 stdin，以 file2 文件作为 stdout；
+
+	cat <>file 以读写的方式打开 file；
+
+	cmd < file cmd 命令以 file 文件作为 stdin；
+
+	cmd << delimiter Here document，从 stdin 中读入，直至遇到 delimiter 分界符。
+
+
+
+	cat food 2>&1 >filecat: can't open food
+	cat food >file 2>&1
+	Bourne或Korn shell经常提出的问题是，为什么只有第二个命令才能把标准输出(stdout)和标准错误(stderr)重定向到文件file中？
+	在第一个命令中，shell里首先是2>&1，意味着标准错误重定向到与标准输出同样的地方。这无任何效果，因为两部分都重定向到屏幕上(省缺)。然后>file重定向标准输出到file，但标准错误仍然定向到终端。
+	在第二个命令中，shell里首先是>file，意味着标准输出重定向到file。然后 2>&1将标准错误重定向到与标准输出同样的地方，既file。这也是我们想要的。
+
+26	cd -          #回到上次所在目录，这个技巧我原来还真是不知道，感觉还是比较有用，省略了很多输入。
+
+	cd !$          #把上个命令的最后参数作为输入。cd -     再执行cd ！$相当于再次执行cd -
+
+	cd           #回到主目录
+
+	cd ~         #同样也是回到主目录，一般用于进入主目录的下级目录
+
+
+27	export 
+		export [-fn] [name[=value] ...] or export -p
+		创建环境变量或者方法[-f]
+		export或者export -p显示所有变量定义
+		export设置的环境变量，保存在内存中，用户推出当前shell后就丢失，要想每次开机自动load可以保存在/etc/profile（全局用户） 或者/home/.bashrc（当前用户）文件中
+	unset	
+		unset [-f] [-v] [name ...]
+		撤销环境变量或方法[-f]
+
+28	* dirs:显示目录栈
+
+	* pushd:将目录压入目录栈
+
+	* popd:将目录弹出目录栈
+
+29	od comand
+	od - dump files in octal and other formats
+	od [option] filename
+	od -a filename	以字符查看文件
+	od -b filename	以16进制数查看文件
+
+
+30	修改用户密码
+	（1）普通用户
+	passwd 用户名	
+		输入之前用户密码，输入两次新密码
+	（2）root用户
+	passwd
+
+31	alias 设置别名
+	alias ls=‘ls -l’
+	则执行ls 相当于执行ls -l
+
+32 	tee	从标准输入读取数据，并将数据写入标准输出和文件
+	adb logcat | tee file
+	
+33 	cut 截取字符串（man cut）
+	echo hello | cut -c 2-4 输出（ello）
+

@@ -1,0 +1,199 @@
+在联系人数据库contact2.db中添加蓝牙电话联系人信息表
+
+1.修改	framework/base/core/provider/ContactsContract.java
+	添加表对象.为简单话,仅涉及联系人姓名,电话,邮箱三个字段(联系人信息比较复杂,这里只是为大家提供参考方法,具体实现,还需大家自己思考)
+	添加以下代码
+  public final static class BtContacts implements BtContactColumns {
+        /**
+         * This utility class cannot be instantiated
+         */
+        private BtContacts() {}
+
+        /**
+         * The content:// style URI for this table, which requests a directory
+         * of data rows matching the selection criteria.
+         */
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(AUTHORITY_URI, "bt_contacts");
+
+        /**
+         * The MIME type of the results from {@link #CONTENT_URI}.
+         */
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/bt_contacts";
+
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/bt_contacts";
+
+    }
+    protected interface BtContactColumns extends BaseColumns{
+
+        public static final String CONTACT_ID = "contact_id";
+
+        public static final String NAME = "name";
+
+        public static final String PHONE = "homephone";
+
+        public static final String EMAIL = "homeemail";
+
+        public static final String UPDATETIME = "updatetime";
+
+    }
+
+2.	修改ContentProvider
+	build/package/providers/ContactsProvider/ContactsDatabaseHelper.java
+	(1)在Tables添加要添加的表名
+  	public static final String BTCONTACTS = "bt_contacts";
+	(2)在onCreate方法中添加建表语句
+	        db.execSQL("CREATE TABLE " + Tables.BTCONTACTS + " (" +
+                BtContacts._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                BtContacts.NAME + " TEXT," +
+                BtContacts.PHONE + " TEXT," +
+                BtContacts.EMAIL + " TEXT," +
+                BtContacts.UPDATETIME + " TEXT" +
+       		 ");");
+	(3)在onUpgrade建立删除表语句
+	db.execSQL("DROP TABLE IF EXISTS " + Tables.BTCONTACTS + ";");
+	至此,数据库表的创建已经完成(注意测试的时候,第一次要手动删除数据库,不然数据库不会创建,我们添加的创建表语句也不会执行)
+
+3	provider 中添加对表的增删改查操作
+	build/package/providers/ContactsProvider/ContactsProvider2.java
+	ContactsProvider2.java继承于ContactsProvider.java(主要抽象出对表的批处理,插入,删除,修改等)；
+	主要还是自己创建provider时候的一些操作
+	(1)添加,数据表和单条记录标示
+    		private static final int BT_CONTACTS = 18001;
+    		private static final int BT_CONTACTS_ID = 18002;
+
+	(2)在static,Urimatcher中添加uri匹配
+	 matcher.addURI(ContactsContract.AUTHORITY, "bt_contacts", BT_CONTACTS);
+        matcher.addURI(ContactsContract.AUTHORITY, "bt_contacts/#", BT_CONTACTS_ID);
+
+	(3)在getType(Uri uri) 中添加uri匹配
+	     case BT_CONTACTS:
+                return BtContacts.CONTENT_TYPE;
+            case BT_CONTACTS_ID:
+                return  BtContacts.CONTENT_ITEM_TYPE;
+
+	(4)添加数据库表字段集合
+	    private static final HashMap<String, String> sBtContactsProjectionMap;
+		在static{}中添加
+	 sBtContactsProjectionMap = new HashMap<String, String>();
+        sBtContactsProjectionMap.put(BtContacts._ID, BtContacts._ID);
+        sBtContactsProjectionMap.put(BtContacts.NAME, BtContacts.NAME);
+        sBtContactsProjectionMap.put(BtContacts.HOMEPHONE, BtContacts.PHONE);
+        sBtContactsProjectionMap.put(BtContacts.WORKEMAIL, BtContacts.EMAIL);
+        sBtContactsProjectionMap.put(BtContacts.UPDATETIME, BtContacts.UPDATETIME);
+
+	(5)剩下的就是添加对新添uri的数据的增删改查(主要添加case语句,可以仿照现有case语句改写)
+	a.插入	在insertInTransaction(Uri uri, ContentValues values)添加case语句
+		 case BT_CONTACTS:{
+	                id = insertBtContacts(values);
+	                break;
+	            }
+	根据其他case语句的方法,添加方法insertBtContacts(ContentValues values)
+	    private long insertBtContacts(ContentValues values){
+       	 mValues.clear();
+       	 mValues.putAll(values);
+       	 mValues.putNull(BtContacts._ID);
+
+       	 long btContactsId = mDb.insert(Tables.BTCONTACTS, BtContacts._ID, mValues);
+
+       	 return btContactsId;
+   	   }
+	b.查询	在query(Uri uri, String[] projection, String selection, String[] selectionArgs,String sortOrder)添加case语句
+		case BT_CONTACTS:{
+                qb.setTables(Tables.BTCONTACTS);
+                qb.setProjectionMap(sBtContactsProjectionMap);
+                break;
+            	}
+            case BT_CONTACTS_ID:{
+                long btContactId = Long.parseLong(uri.getPathSegments().get(1));
+                qb.setTables(Tables.BTCONTACTS);
+                qb.setProjectionMap(sBtContactsProjectionMap);
+                selectionArgs = insertSelectionArg(selectionArgs, String.valueOf(btContactId));//调用原来内置方法
+                if(selection == null || selection.length()==0){
+                    qb.appendWhere(BtContacts._ID + "=?");
+                }else{
+                    qb.appendWhere(" AND " + BtContacts._ID + "=?");
+                }
+                break; 
+            }
+	c.修改 	updateInTransaction(Uri uri, ContentValues values, String selection,String[] selectionArgs)添加case语句
+		 case BT_CONTACTS:{
+                count = updateBtContactsOptins(values, selection, selectionArgs);
+                break;
+            }
+
+            case BT_CONTACTS_ID: {
+                count = updateBtContactOptions(ContentUris.parseId(uri), values);
+                break;
+            }
+
+		添加修改单条记录updateBtContactOptions,和多条记录updateBtContactsOptins的方法
+
+		private int updateBtContactsOptins(ContentValues values, String selection,String[] selectionArgs) {
+
+        	int count = 0;
+       	 Cursor cursor = mDb.query(Tables.BTCONTACTS,
+              	 new String[] { BtContacts._ID }, selection,
+             		 selectionArgs, null, null, null);
+        	try {
+            		while (cursor.moveToNext()) {
+       	         	long contactId = cursor.getLong(0);
+       	         	updateBtContactOptions(contactId, values);
+       	         	count++;
+        	    	}
+        	} finally {
+       	     	cursor.close();
+        	}
+
+        	return count;
+    	}
+
+
+   	 private int updateBtContactOptions(long contactId, ContentValues values) {
+
+        	mValues.clear();
+        	mValues.putAll(values);
+        	// Nothing to update - just return
+        	if (mValues.size() == 0) {
+           		return 0;
+        	}
+
+        	mSelectionArgs1[0] = String.valueOf(contactId);
+
+        	int rslt = mDb.update(Tables.BTCONTACTS, mValues, BtContacts._ID + "=?", mSelectionArgs1);
+
+        	return rslt;
+    	}
+
+	d.删除操作
+	在deleteInTransaction(Uri uri, String selection, String[] selectionArgs)添加case语句
+	    case BT_CONTACTS:{
+                int numDeletes = 0;
+                Cursor c = mDb.query(Tables.BTCONTACTS,
+                        new String[]{BtContacts._ID},
+                        selection, selectionArgs, null, null, null);
+                try {
+                    while (c.moveToNext()) {
+                        final long btContactId = c.getLong(0);
+                        numDeletes += deleteBtContact(btContactId);
+                    }
+                } finally {
+                    c.close();
+                }
+                return numDeletes;
+            }
+
+            case BT_CONTACTS_ID:{
+                final long btContactId = ContentUris.parseId(uri);
+                return deleteBtContact(btContactId);
+            }
+
+	添加删除单条记录的方法 deleteBtContact(btContactId)
+	public int deleteBtContact(long btContactId) {
+
+       	int count = mDb.delete(Tables.BTCONTACTS, BtContacts._ID + "=" + btContactId, null);
+       	return count;
+    	}
+	至此,添加表操作已经完成,你可以随便操作自己添加的表.
+	
+	
+

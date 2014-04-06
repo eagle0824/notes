@@ -1,0 +1,826 @@
+	ubuntu安装vim
+	sudo apt-get install vim
+	
+	安装vim中文帮助文档vimcdoc-1.8.0.tar.gz
+	./vimcdoc.sh -i
+
+	vim中文帮助,
+	:help @cn	打开中文帮助
+	:help usr_toc	打开帮助文档
+
+	vim tutor 
+		: vimtutor
+
+
+	//vim光标移动
+
+								k(^)
+	vim光标移动				h(<)				l(>)
+								j(v)
+	0		移动到当前行开始
+	$		移动到当前行结束
+	fx		当前行向右,查找x
+	Fx		当前行向左,查找x
+	w		当前行向左移动到下一个单词
+	b		当前行向左移动到上一个单词
+	nGG 		移动到第n行
+	ctrl+G		当前位置
+	ctrl + O	切换到上一次位置
+	ctrl +　］	切换到下一次的位置
+	set number	设置显示行号
+	set nonumber	设置不显示行号
+	Ctrl + U	向上滚动一屏	
+	Ctrl + D	向下滚动一屏
+	H		当前屏幕顶部Home
+	M		当前屏幕中部Middle
+	L		当前屏幕底部Last
+
+	:set ignorecase	设置乎略大小写
+	:set noignorecase	设置不乎略大小写
+	*		搜索当前光标单词的,
+	g*		搜索当前光标所在单词包含的字符串
+	/the\>		搜索以the结尾的单词
+	"\>"	结尾"\<" 开头
+	:set hlsearch	设置搜索结果高亮显示
+	:set nohlsearch设置搜索结果非高亮显示
+	
+	vim编辑文件
+	edit path/filename	关闭当前文件,打开新文件
+	edit! path/filename	强制关闭当前文件,打开新文件
+	args			当前编辑文件
+	:set autowrite	文件切换时,自动保存
+	:set noautowrite	文件切换时,不自动保存
+
+	vim visual模式
+	在normal模式下按v 进入visual模式
+	通过移动光标可以选种操作内容
+	y		复制选种内容
+	x或d		删除选种内容
+	进入normal模式后
+	p		粘贴在当前位置之后
+	P		粘贴在当前位置之前
+	
+	split filename 分屏显示文件(水平)
+	vsplit filename 垂直分割文件
+	only		通过分屏打开多个文件后,only命令只编辑当前窗口文件
+	
+
+	:sp filename 令打开一个文件/分屏显示文件
+	ctrl +wj ,ctrl+wk,上下屏幕切换或者ctrl+w+w两个窗口切换
+	:files	显示当前打开文件列表
+
+
+	ctrl shift +	放大teminal字体
+	ctrl w -	缩小terminal字体
+	
+	:wq		保存退出
+	:q!		放弃修改退出
+	i		光标当前位置插入
+	a		光标下一位位置插入
+	A		光标所在行，行末插入（shift+a）
+	x		删除光标当前位置字符
+	dw		删除当從當前光標當前位置直到單字/單詞末尾，包括空格
+	de		删除当從當前光標當前位置直到單字/單詞末尾，不包括空格
+	dnw/dne	删除当從當前光標當前位置直到n个單字/單詞末尾
+	d$		從當前光標當前位置直到當前行末
+	dd		删除当前行
+	ndd 	从当前行起，删除n行
+	p		將最後一次刪除的內容置入光標之後(移动行操作，dd删除一行，光标移动到所要放在行的上面一行，p即可)
+	r *		输入r和一个字符*，将光标当前字符替换为输入的字符*
+	cw **   要改變一個單字/單詞的部分或者全部
+	c$		改变光标当前位置到行末
+	gg		文档开头
+	ngg		文档的第n行(或者shift+g)
+	G		文档结束
+	/		向后搜索	n(下一个) shift+n(上一个)
+	?		向前搜索
+	%		按 % 可以查找配對的括號 )、]、}。
+	:%s/old/new/gc	進行全文替換時詢問用戶確認每個替換需添加 c 選項
+	:#,# s/old/new	从#行到#行执行查找替换
+	:!		在vim内部执行外部命令
+	w filename 保存文件到filename
+	:#,# w filename 选择性保存从行号#到行号#
+	:r filename 可提取磁盤文件 FILENAME 並將其插入到當前文件的光標位置後面。
+	o 		將在光標的下方打開新的一行並進入插入模式
+	O		將在光標的上方打開新的一行並進入插入模式(shift+o)
+	R		连续替换多个字符
+	//撤销恢复操作
+	u		撤销操作命令
+	Ctrl+r  	欲撤消以前的撤消命令，恢復以前的操作結果
+	U		修正行为原始
+
+	//复制相关
+	nyy		从当前行开始复制n行
+	yy            复制当前行整行的内容到vi 缓冲区 
+	yw            复制当前光标到单词尾字符的内容到vi 缓冲区
+	y$            复制当前光标到行尾的内容到vi 缓冲区
+	y^            复制当前光标到行首的内容到vi 缓冲区
+	p             读取vi 缓冲区中的内容，并粘贴到光标当前的位置（不覆盖文件已有的内容）
+
+	//删除相关
+	ndd		从当前行开始删除n行
+	dd          	删除当前行                       del dir
+	dw         	删除单词到尾部（包括空格）     del word
+	de          	删除单词到尾部（不包括尾部空格） del end
+	d$          	删除当前到行尾的所有字符      del $( 代表尾部)
+	d^          	删除当前到行首的所有字符      del ^( 代表行首)
+
+	//搜索替换相关
+	:s/1/2     	搜索当前行第一个1 并用2 代替      search
+	:s/1/2/g   	搜索当前行所有的1 并用2 代替      global
+	:#,# s/1/2/g   在#,# 间搜索所有1 并用2 替换
+	:%s/1/2/g     在整个文档中将1 替换为2     100 ％（全部）
+	:s/1/2/c      每次替换都给出提示确认        cue 提示
+
+
+
+	vim 注释多行
+	:num1,num2 s/^/\/\//
+	或者
+	Ctrl + v
+	输入I（shift+i）
+	Esc
+	vim 删除多行注释
+	:num1,num2 s/\/\///
+	或者
+	Ctrl+v 块选中后d删除
+	//vim 缩进
+	v进入visual模式,选中所需缩进的行	>	右缩进
+	(多行需要选中)				<	撤销
+	:3,4>						3,4行右缩进Tab
+	:3,4>>						3,4行右缩进2个Tab
+
+
+	.vimrc是给vim使用
+	修该.vimrc使之生效	
+	:so %
+	so 为source % 代表当前文件名
+	在shell中执行 source .vimrc表示把.vimrc当成shell脚本执行,故是错误的
+
+
+	map
+	无前缀的map表示递归模式
+		:map a b
+		:map c a
+		等同于
+		:map c b
+	对于map而言，可能有这么几种前缀
+	nore	表示非递归，见下面的介绍
+	n	表示在普通模式下生效
+	v	表示在可视模式下生效
+	i	表示在插入模式下生效
+	c	表示在命令行模式下生效
+
+	unmap 后面加组合键,表示删除这个映射
+	:unmap c
+	mapclear 清除所有映射
+	
+	添加java自动补全
+
+	vim中添加	下载javacomplemete.zip
+	1. Unzip javacomplete.zip to a directory of 'runtimepath', e.g. 
+	$HOME/.vim (unix/linux), $VIM/vimfiles (windows). 
+	> unzip javacomplete.zip -d ~/.vim 
+
+	    To update Vim help tags, run vim and run command: 
+	:helptags $HOME/.vim/doc 
+	    or 
+	:helptags $VIM/vimfiles/doc 
+
+	NOTE: javacomplete.vim, java_parser.vim and Reflection.java should be in one 
+	autoload directory of 'runtimepath'. 
+	javacomplete.txt should be in one doc directory of 'runtimepath'. 
+	vimrc中添加一下代码
+	filetype plugin indent on
+	autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
+	autocmd FileType python set omnifunc=pythoncomplete#Complete
+	autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+	autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+	autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+	autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
+	autocmd FileType java set omnifunc=javacomplete#Complete
+	if has("autocmd") && exists("+omnifunc")
+	  autocmd Filetype *
+	  \ if &omnifunc == "" |
+	  \ setlocal omnifunc=syntaxcomplete#Complete |
+	  \ endif
+	endif
+	
+
+ctag安装
+
+
+	tags文件是由ctags程序产生的一个索引文件, ctags程序其是叫"Exuberant Ctags", 是Unix上面ctags程序的替代品, 并且比它功能强大, 是大多数Linux发行版上默认的ctags程序. 那么tags文件是做什么用的呢? 如果你在读程序时看了一个函数调用, 或者一个变量, 或者一个宏等等, 你想知道它们的定义在哪儿, 怎么办呢? 用grep? 那会搜出很多不相干的地方. 现在流行用是的<C-]>, 谁用谁知道呀, 当光标在某个函数或变量上时, 按下"Ctrl+]", 光标会自动跳转到其定义处, 够厉害吧, 你不用再羡慕Visual Studio的程序员了, 开始羡慕我吧~_~.
+
+	你现在先别急着去按<C-]>, 你按没用的, 要不要我干什么呀, 你现在要做的是查查你电脑里有没有ctags这个程序, 如果有, 是什么版本的, 如果是Ctags 5.5.4, 就象我一样, 你最好去装一个Ctags 5.6, 这个在后面的自动补全章节中会用到. 在这个网站: http://ctags.sourceforge.net, 下载一个类似 ctags-5.6.tar.gz 的文件下来(现在好像5.7版的也出来了, 不过我还没用过):
+
+	用下面的命令解压安装:
+	$ tar -xzvf ctags-5.6.tar.gz
+	$ cd ctags-5.6
+	$ make
+	# make install   // 需要root权限
+
+	然后去你的源码目录, 如果你的源码是多层的目录, 就去最上层的目录, 在该目录下运行命令: ctags -R
+	我现在以 vim71 的源码目录做演示
+	$ cd /home/wooin/vim71
+	$ ctags -R
+	此时在/home/wooin/vim71目录下会生成一个 tags 文件, 现在用vim打开 /home/wooin/vim71/src/main.c
+	$ vim /home/wooin/vim71/src/main.c
+	再在vim中运行命令:
+	:set tags=/home/wooin/vim71/tags
+	该命令将tags文件加入到vim中来, 你也可以将这句话放到~/.vimrc中去, 如果你经常在这个工程编程的话.
+	下面要开始真刀实枪的开干了, 如下图, 将光标放在setmouse()函数上
+
+
+	此时按下<C-]>, 光标会自动跳到setmouse()函数的定义处, 见下图:
+
+
+	如果此时你还想再跳回刚才的位置, 你还可以按<C-T>, 这样又跳回到setmouse()函数被调用的地方了, 变量, 结构, 宏, 等等, 都可以的, 赶快试试吧.....
+
+	此时在回头学习一下第3节中说的vim手册吧
+	:help usr_29
+
+	不过还有一个小瑕疵, 你修改程序后, 比如增加了函数定义, 删除了变量定义, tags文件不能自动rebuild, 你必须手动再运行一下命令:
+	$ ctags -R
+
+
+taglist安装
+
+下载地址 	http://www.vim.org/scripts/script.php?script_id=273
+版本 	4.4
+安装 	在 ~/.vim 目录下解压taglist_xx.zip
+手册 	:help taglist.txt
+
+在Windows平台上用过 Source Insight看程序的人肯定很熟悉代码窗口左边那个Symbol窗口, 那里面列出了当前文件中的所有宏, 全局变量, 函数名等, 在查看代码时用这个窗口总揽全局, 切换位置相当方便, 今天告诉你一个vim的插件: Taglist, 可以同样实现这个功能.
+
+上一节已经告诉你ctags的用法了, ctags的基本原理是将程序程序中的一些关键字(比如:函数名, 变量名等)的名字, 位置等信息通过一个窗口告诉你, 如果你已经安装好taglist, 则可以用下面的命令看看taglist自带的帮助文件:
+:help taglist.txt
+
+	首先请先在你的~/.vimrc文件中添加下面两句:
+	let Tlist_Show_One_File=1
+	let Tlist_Exit_OnlyWindow=1
+	此时用vim打开一个c源文件试试:
+	$ vim ~/vim/src/main.c
+	进入vim后用下面的命令打开taglist窗口, 如图5:
+	:Tlist
+
+
+	taglist使用
+	在项目根目录下执行ctags -R *.c
+	tag **		直接跳到**定义的内容
+	ctrl+]		跳到当前光标所在函数定义的地方
+	ctrl+o 	回到上次光标停在的位置
+
+
+本文不会教你:
+1.  如何使用vim. 本文不会从零开始教你如何使用vim, 如果你是第一次接触vim,
+   建议你先看看其他的vim入门的教程, 或者在shell下输入命令: vimtutor,
+   这是一个简单的入门教程.
+2.  编程技巧.
+3.  vim脚本的编写.
+
+我的工作环境是: Fedora Core 5
+gvim是自己编译的7.0, 如果你还没有安装gvim, 请看我的这篇文章<在Redhat Linux 9中编译和配置gvim 7.0>
+由于本人一直从事C语言工作, 所以下面这些例子都是在C语言程序中演示的, 其他语言的没有试过, 如果有朋友在别的语言下有问题, 可以跟我讨论一些, 我会尽量帮助你们的.
+
+本文用的示范源码是vim7.1的源码, 可以在www.vim.org下载到源码包:vim-7.1.tar.bz2, 你也可以不用下载, 就用你自己程序的源码, 关系不大的. 我把源码解压在我的home目录下: ~/vim71
+
+下面对文中的一些名字定义一下:
+1. 文中用到的一些用<>括起来的符号比如<C-T>, <C-S-A>, 之类的, 你可以用下面的命令看看解释:
+:help keycodes
+2. 文中说的一些路径, 比如:
+  ~/.vim/plugin
+  ~/.vim/doc
+  ~/.vim/syntax
+  如果你没有, 就自己创建.
+3. 文中说到的.vimrc文件都是指 ~/.vimrc
+
+先给大家看张图片, 我是vim的界面, 解解馋先^_^
+
+(--- 图1 ---)
+对照上图的图标, 我在本文中将教会你以下这些功能:
+1
+	简洁明了的Buffer浏览和操作
+2
+	文件浏览器
+3
+	tag浏览器
+4
+	高亮的书签
+5
+	更丰富的语法高亮
+6
+	成员变量的下拉, 自动补全
+
+2 	中文帮助手册的安装
+
+	vim自带的帮助手册是英文的, 对平时编程的人来说没有多大阅读困难, 何况还有"星级译王"呢, 可偏偏有一帮人将其翻译成了中文, 可偏偏我又挡不住诱惑将它安装了, 唉.......又痛失一个学习英文的好机会, 下不为例.
+大家看看我的中文帮助界面吧:
+
+(--- 图2 ---)
+安装方法:  
+在下面的网站下载中文帮助的文件包:
+http://vimcdoc.sf.net       (English)
+http://vcd.gro.clinux.org    (中文)
+
+下载的文件包应该是类似这样的: vimcdoc-1.5.0.tar.gz
+解压后其中有个doc文件夹, 将其中的内容全部复制到~/.vim/doc, 或者vim安装目录下的doc目录中, 此时vim中的help信息已经是中文的了.
+注意:
+a. 如果无法显示中文, 在~/.vimrc中增加下面这句试试:
+   set helplang=cn
+b. 帮助文件的文本是utf-8编码的, 如果想用vim直接查看, 需要在~/.vimrc中设置:
+   set encoding=utf-8
+3
+	vim编程常用命令
+
+	建议先看看帮助手册中的下面章节, 其中有关tags文件的部分你可以先跳过, 在后面的章节中会讲到, 到时候你在回来看看, 就觉得很简单了:
+:help usr_29
+:help usr_30
+下面是我常用的一些命令, 放在这里供我备忘:
+% 	跳转到配对的括号去
+[[ 	跳转到代码块的开头去(但要求代码块中'{'必须单独占一行)
+gD 	跳转到局部变量的定义处
+'' 	跳转到光标上次停靠的地方, 是两个', 而不是一个"
+mx 	设置书签,x只能是a-z的26 个字母
+`x 	跳转到书签处("`"是1左边的键)
+> 	增加缩进,"x>"表示增加以下x行的缩进
+< 	减少缩进,"x<"表示减少以下x行的缩进
+    
+4 	语法高亮
+
+	写程序没有语法高亮将是一件多么痛苦的事情啊, 幸亏vim的作者是个程序员(如果不是, 那可NB大了), 提供了语法高亮功能, 在上面的图片中大家也可以看到那些注释, 关键字, 字符串等, 都用不同颜色显示出来了, 要做到这样, 首先要在你的 ~/.vimrc 文件中增加下面几句话:
+syntax enable
+syntax on
+再重新启动vim, 并打开一个c程序文件, 是不是觉得眼前突然色彩缤纷了起来...
+如果你不喜欢这个配色方案你可以在"编辑->配色方案"(gvim)中选择一个你满意的配色方案, 然后在~/.vimrc文件中增加下面这句:
+colorscheme desert
+desert是我喜欢的配色方案, 你可以改成你的. 如果菜单中的配色方案你还不满意(你也太花了吧), 没关系, 在 vim.org 上跟你一样的人很多, 他们做了各种各样的颜色主题, 你可以下载下来一个一个的试, 多地可以看到你眼花. 如果这样你还不满意(你还真是XXXX), 没关系, vim的作者早想到会有你这种人了, 你可以创建你自己的颜色主题, 把下面的这篇文档好好学习一些一下吧:
+:help syntax.txt
+
+更炫的语法高亮:
+你可能会发现很多东西没有高亮起来, 比如运算符号, 各种括号, 函数名, 自定义类型等, 但是看上面的图片, 我的运算符号和函数名都加亮了^_^, 想知道为什么吗? 哇哈哈哈哈.... 让我来教你吧 ...
+
+主要的思路是新建一个语法文件, 在文件中定义你要高亮的东东, 想高亮什么就高亮什么, 用vim就是这么自信. 所谓的语法文件就是vim用来高亮各种源文件的一个脚本, vim靠这个脚本的描述来使文件中的不同文本显示不同的颜色, 比如C语言的语法文件放在类似于这样的一个路径中:
+/usr/share/vim/vim64/syntax/c.vim
+其他语言的语法文件也可以在这个路径中找到, 你的也许不在这个路径中, 不管它, 在你自己的HOME下新建一个语法文件, 新建一个空文件:
+~/.vim/syntax/c.vim
+在其中加入
+
+"========================================================
+" Highlight All Function
+"========================================================
+syn match   cFunction "/<[a-zA-Z_][a-zA-Z_0-9]*/>[^()]*)("me=e-2
+syn match   cFunction "/<[a-zA-Z_][a-zA-Z_0-9]*/>/s*("me=e-1
+hi cFunction        gui=NONE guifg=#B5A1FF
+
+"========================================================
+" Highlight All Math Operator
+"========================================================
+" C math operators
+syn match       cMathOperator     display "[-+/*/%=]"
+" C pointer operators
+syn match       cPointerOperator  display "->/|/."
+" C logical   operators - boolean results
+syn match       cLogicalOperator  display "[!<>]=/="
+syn match       cLogicalOperator  display "=="
+" C bit operators
+syn match       cBinaryOperator   display "/(&/||/|/^/|<</|>>/)=/="
+syn match       cBinaryOperator   display "/~"
+syn match       cBinaryOperatorError display "/~="
+" More C logical operators - highlight in preference to binary
+syn match       cLogicalOperator  display "&&/|||"
+syn match       cLogicalOperatorError display "/(&&/|||/)="
+
+" Math Operator
+hi cMathOperator            guifg=#3EFFE2
+hi cPointerOperator         guifg=#3EFFE2
+hi cLogicalOperator         guifg=#3EFFE2
+hi cBinaryOperator          guifg=#3EFFE2
+hi cBinaryOperatorError     guifg=#3EFFE2
+hi cLogicalOperator         guifg=#3EFFE2
+hi cLogicalOperatorError    guifg=#3EFFE2
+
+
+再打开你的C文件看看, 是不是又明亮了许多. 还有一个压箱底的要告诉你, 如果你自己增加了一个类型或者结构之类的, 怎么让它也象"int", "void"这样高亮起来呢? 再在上面的文件~/.vim/syntax/c.vim中添加下面的东东:
+
+"========================================================
+" My Own DataType
+"========================================================
+syn keyword cType       My_Type_1 My_Type_2 My_Type_3
+
+这样你自己的类型My_Type_1, My_Type_2, My_Type_3就也可以向"int"一样高亮起来了, 这样的缺点是每增加一个类型, 就要手动在这里添加一下, 如果有人知道更简单的方法请一定一定要告诉我, 用下面的地址:
+Email
+	: lazy.fox.wu#gmail.com
+Homepage 	: http://blog.csdn.net/wooin
+
+
+7.
+	文件浏览器和窗口管理器 -- 插件: WinManager
+
+	
+下载地址 	http://www.vim.org/scripts/script.php?script_id=95
+版本 	2.x
+安装 	在 ~/.vim 目录下解压winmanager.zip
+手册 	:help winmanager
+
+在图1中大家可以看到在图标2标识的地方是一个文件浏览器, 里面列出了当前目录中的文件, 可以通过这个浏览器来浏览工程中的源文件, 是不是越来越像常见的IDE了, 当光标停在某个文件或文件夹的时候, 按下回车, 可以打开该文件或文件夹.
+这个东东是怎么调出来的呢? 其实这个也是由插件实现的, 这个插件是netrw.vim, 只不过你不用下载和安装, 这个插件已经是标准的vim插件, 已经随vim一起安装进你的系统里了, 现在先简单演示一下, 进入"~/vim71"文件夹后运行vim, 然后在vim中运行命令:
+:e ~/vim71
+你将在vim看到如下图所示的界面:
+
+(--- 图6 ---)
+在该界面上你可以用下面的一些命令来进行常用的目录和文件操作:
+<F1> 	显示帮助
+<cr> 	如果光标下是目录, 则进入该目录; 如果光标下文件, 则打开该文件
+-
+	返回上级目录
+c
+	切换vim 当前工作目录正在浏览的目录
+d
+	创建目录
+D
+	删除目录或文件
+i
+	切换显示方式
+R
+	文件或目录重命名
+s
+	选择排序方式
+x
+	定制浏览方式, 使用你指定的程序打开该文件
+
+我这里不是教你怎么用netrw.vim插件, 而是要教你通过WinManager插件来将TagList窗口和netrw窗口整合起来, 就像图1中的图标2和3组成的那个效果
+现在在你的~/.vimrc中增加下面两句
+let g:winManagerWindowLayout='FileExplorer|TagList'
+nmap wm :WMToggle<cr>
+然后重启vim, 打开~/vim71/src/main.c, 在normal状态下输入"wm", 你将看到图7的样子:
+
+(--- 图7 ---)
+其中左上边是netrw窗口, 左下边是TagList窗口, 当再次输入"wm"命令时这两个窗口又关闭了.
+
+WinManager 的功能主要就是我介绍的这些, 但是它还有其他一些高级功能, 还可以支持其他几个插件, 如果你觉得我介绍的还不够你用, 建议你把它的帮助手册好好研究一下, 用下面的命令可以调出帮助手册:
+:help winmanager
+
+8. 	Cscope 的使用
+
+	这下更厉害了, 用Cscope自己的话说 - "你可以把它当做是超过频的ctags", 其功能和强大程度可见一斑吧, 关于它的介绍我就不详细说了, 如果你安装好了前文介绍的中文帮助手册, 用下面的命令看看介绍吧:
+:help if_cscop.txt
+我在这里简单摘抄一点, 供还在犹豫的朋友看看:
+Cscope 是一个交互式的屏幕下使用的工具，用来帮助你:
+* 无须在厚厚的程序清单中翻来翻去就可以认识一个 C 程序的工作原理。
+* 无须熟悉整个程序就可以知道清楚程序 bug 所要修改的代码位置。
+* 检查提议的改动 (如添加一个枚举值) 可能会产生的效果。
+* 验证所有的源文件都已经作了需要的修改；例如给某一个现存的函数添加一个参数。
+* 在所有相关的源文件中对一个全局变量改名。
+* 在所有相关的位置将一个常数改为一个预处理符号。
+
+它被设计用来回答以下的问题:
+* 什么地方用到了这个符号？
+* 这是在什么地方定义的？
+* 这个变量在哪里被赋值？
+* 这个全局符号的定义在哪里？
+* 这个函数在源文件中的哪个地方？
+* 哪些函数调用了这个函数？
+* 这个函数调用了哪些函数？
+* 信息 "out of space" 从哪来？
+* 这个源文件在整个目录结构中处于什么位置？
+* 哪些文件包含这个头文件？
+
+安装Cscope:
+如果你的系统中有cscope命令, 则可以跳过这一小段, 如果没有, 就先跟着我一起安装一个吧.
+在Cscope的主页: http://cscope.sourceforge.net 下载一个源码包, 解压后编译安装:
+# ./configure
+# make
+# make install       // 需要root权限
+
+先在~/vimrc中增加一句:
+:set cscopequickfix=s-,c-,d-,i-,t-,e-
+这个是设定是否使用 quickfix 窗口来显示 cscope 结果, 用法在后面会说到。
+
+跟Ctags一样, 要使用其功能必须先为你的代码生成一个cscope的数据库, 在项目的根目录运行下面的命令:
+$ cd /home/wooin/vim71/
+$ cscope -Rbq
+# 此后会生成三个文件
+$ ll cscope.*
+-rw-rw-r-- 1 wooin wooin 1.1M 2007-09-30 10:56 cscope.in.out
+-rw-rw-r-- 1 wooin wooin 6.7M 2007-09-30 10:56 cscope.out
+-rw-rw-r-- 1 wooin wooin 5.1M 2007-09-30 10:56 cscope.po.out
+# 打开文件, 开始Coding
+$ cd src
+$ vi main.c
+进入vim后第一件事是要把刚才生成的cscope文件导入到vim中来, 用下面的命令:
+:cs add /home/wooin/vim71/cscope.out /home/wooin/vim71
+上面这条命令很重要, 必须写全, 不能只写前半句:
+:cs add /home/wooin/vim71/cscope.out
+因为源码是多级目录的, 如果这样写, cscope是无法在子目录中的源码中工作的, 当然, 如果你的源码都在同一级目录中就无所谓了. 如果你要经常用cscope的话, 可以把上面那句加到~/.vimrc中去.
+
+下面我们来操练一下, 查找函数vim_strsave()的定义, 用命令:
+:cs find g vim_strsave
+如下图:
+
+(--- 图8 ---)
+按下回车后会自动跳转到vim_strsave()的定义处. 此时你肯定会说Ctags也可以做到这个呀, 那么下面说的这个Ctags就无法做到了, 我想查找vim_strsave()到底在那些地方被调用过了, 用命令:
+:cs find c vim_strsave
+按下回车后vim会自动跳转到第一个符合要求的地方, 并且在命令栏显示有多少符合要求的结果, 如图:
+
+(--- 图9 ---)
+如果自动跳转的位置你不满意, 想看其他的结果, 可以用下面的命令打开QuickFix窗口:
+:cw
+如图:
+
+(--- 图10 ---)
+这时你就可以慢慢挑选了^_^
+
+cscope的主要功能是通过同的子命令"find"来实现的
+"cscope find"的用法:
+cs find c|d|e|f|g|i|s|t name
+0 或 s 	查找本 C 符号(可以跳过注释)
+1 或 g 	查找本定义
+2 或 d 	查找本函数调用的函数
+3 或 c 	查找调用本函数的函数
+4 或 t 	查找本字符串
+6 或 e 	查找本 egrep 模式
+7 或 f 	查找本文件
+8 或 i 	查找包含本文件的文件
+
+如果每次查找都要输入一长串命令的话还真是件讨人厌的事情, Cscope的帮助手册中推荐了一些快捷键的用法, 下面是其中一组, 也是我用的, 将下面的内容添加到~/.vimrc中, 并重启vim:
+nmap <C-_>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-_>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-_>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-_>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-_>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-_>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-_>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-_>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+当光标停在某个你要查找的词上时, 按下<C-_>g, 就是查找该对象的定义, 其他的同理.
+按这种组合键有一点技巧,按了<C-_>后要马上按下一个键,否则屏幕一闪就回到nomal状态了
+<C-_>g的按法是先按"Ctrl+Shift+-", 然后很快再按"g"
+
+很奇怪, 其中的这句:
+nmap <C-_>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+在我的 vim中无法工作, 但是我改成:
+nmap <C-_>i :cs find i <C-R>=expand("<cfile>")<CR><CR>
+就可以正常工作了, 不知道是什么原因? 有哪位朋友知道请告诉我.
+
+cscope的其他功能你可以通过帮助手册自己慢慢学习
+
+reset : 重新初始化所有连接。
+用法  : cs reset
+
+9.
+	QuickFix 窗口
+
+	在上一节的图10中大家可以看到在窗口下面有一个显示查询结果的窗口, 这个窗口中列出了查询命令的查询结果, 用户可以从这个窗口中选择每个结果进行查看, 这个窗口叫"QuickFix"窗口, 以前也是一个vim的插件来的, 只不过现在成了vim的标准插件, 不用你在去安装了, QuickFix窗口的主要作用就是上面看到的那个功能: 输出一些供选择的结果, 可以被很多命令调用, 更详细的介绍和使用方法请用下面的命令打开QuickFix的手册来学习吧:
+:help quickfix
+这里我一个常用的例子来再介绍一种QuickFix窗口的使用方法. 这个例子是要模仿平时我们编程时, 当编译出错时, QuickFix会把出错的信息列出来, 供我们一条条地查看和修改. 首先还是用vim打开~/vim71/src/main.c, 事先最好先编译过vim71, 否则一会儿编译的时候有点慢, 或者你也可以自己写一个小的有错误的程序来跟着我做下面的步骤, 见下图:
+
+(--- 图11 ---)
+我们修改一下main.c, 人为地造成几处错误, 在第1019行增加了一个baobao_wu的没有任何定义的字符串, 删除了第1020行最后的一个括号")", 然后用下面的命令进行编译:
+:make
+显然编译会报很多错误, 当编译结束并退出到源码界面时, 刚才编译器报的错误都已经看不到了, 但是我们可以用QuickFix窗口再将错误信息找出来, 用下面的命令调出QuickFix窗口:
+:cw
+此时你就可以看如下图所示的QuickFix窗口了:
+
+(--- 图12 ---)
+在下面的QuickFix窗口中我们可以找到每一个编译错误, 同样你可以用鼠标点击每一条记录, 代码会马上自动跳转到错误处, 你还可以用下面的命令来跳转:
+:cn        // 切换到下一个结果
+:cp        // 切换到上一个结果
+如果你经常使用这两个命令, 你还可以给他们设定快捷键, 比如在~/.vimrc中增加:
+nmap <F6> :cn<cr>
+nmap <F7> :cp<cr>
+
+其还有其他的命令/插件也会用到QuickFix窗口, 但是用法基本上的都是类似的, 本文后面还会用到QuickFix窗口, 接着往下看吧.
+10.
+	快速浏览和操作Buffer -- 插件: MiniBufExplorer
+
+	
+下载地址 	http://www.vim.org/scripts/script.php?script_id=159
+版本 	6.3.2
+安装 	将下载的 minibufexpl.vim文件丢到 ~/.vim/plugin 文件夹中即可
+手册
+	在minibufexpl.vim 文件的头部
+
+在编程的时候不可能永远只编辑一个文件, 你肯定会打开很多源文件进行编辑, 如果每个文件都打开一个vim进行编辑的话那操作起来将是多麻烦啊, 所以vim有buffer(缓冲区)的概念, 可以看vim的帮助:
+:help buffer
+vim自带的buffer管理工具只有:ls, :bnext, :bdelete 等的命令, 既不好用, 又不直观. 现在隆重向你推荐一款vim插件(plugin): MiniBufExplorer
+
+使用方法:
+重新启动vim, 当你只编辑一个buffer的时候MiniBufExplorer 派不上用场, 当你打开第二个buffer的时候, MiniBufExplorer窗口就自动弹出来了, 见下图:
+
+(--- 图13 ---)
+上面那个狭长的窗口就是MiniBufExplorer窗口, 其中列出了当前所有已经打开的buffer, 当你把光标置于这个窗口时, 有下面几个快捷键可以用:
+<Tab> 	向前循环切换到每个buffer 名上
+<S-Tab> 	向后循环切换到每个buffer 名上
+<Enter> 	在打开光标所在的buffer
+d 	删除光标所在的buffer
+
+以下的两个功能需要在~/.vimrc中增加:
+let g:miniBufExplMapCTabSwitchBufs = 1
+
+<C-Tab> 	向前循环切换到每个buffer 上,并在但前窗口打开
+<C-S-Tab> 	向后循环切换到每个buffer 上,并在但前窗口打开
+
+如果在~/.vimrc中设置了下面这句:
+let g:miniBufExplMapWindowNavVim = 1
+则可以用<C-h,j,k,l>切换到上下左右的窗口中去,就像:
+C-w,h j k l    向"左,下,上,右"切换窗口.
+在~/.vimrc中设置:
+let g:miniBufExplMapWindowNavArrows = 1
+是用<C-箭头键>切换到上下左右窗口中去
+11. 	c/h文件间相互切换 -- 插件: A
+
+	
+下载地址 	http://www.vim.org/scripts/script.php?script_id=31
+版本
+	
+安装
+	将a.vim 放到 ~/.vim/plugin 文件夹中
+手册
+	无
+
+下面介绍它的用法:
+作为一个C程序员, 日常Coding时在源文件与头文件间进行切换是再平常不过的事了, 直接用vim打开其源/头文件其实也不是什么麻烦事, 但是只用一个按键就切换过来了, 这是多么贴心的功能啊....
+安装好a.vim后有下面的几个命令可以用了:
+:A 	在新Buffer中切换到c/h 文件
+:AS 	横向分割窗口并打开c/h文件
+:AV 	纵向分割窗口并打开c/h文件
+:AT 	新建一个标签页并打开c/h文件
+其他还有一些命令, 你可以在它的网页上看看, 我都没用过, 其实也都是大同小异, 找到自己最顺手的就行了.
+
+我在~/.vimrc中增加了一句:
+nnoremap <silent> <F12> :A<CR>
+意思是按F12时在一个新的buffer中打开c/h文件, 这样在写程序的时候就可以不假思索地在c/h文件间进行切换, 减少了按键的次数, 思路也就更流畅了, 阿弥陀佛....
+12. 	在工程中查找 -- 插件: Grep
+
+	
+下载地址 	http://www.vim.org/scripts/script.php?script_id=311
+版本 	1.8
+安装 	把grep.vim 文件丢到 ~/.vim/plugin 文件夹就好了
+手册
+	在grep.vim 文件头部
+
+下面介绍它的用法:
+vim 有自己的查找功能, 但是跟shell中的grep比起来还是有些差距的, 有时Coding正火急火燎的时候, 真想按下F3, 对光标所在的词来个全工程范围的grep, 不用敲那些繁琐的命令, 现在福音来了, 跟我同样懒的人不在少数, 在grep.vim脚本的前部可以找到一些说明文档:
+:Grep 	按照指定的规则在指定的文件中查找
+:Rgrep 	同上, 但是是递归的grep
+:GrepBuffer 	在所有打开的缓冲区中查找
+:Bgrep 	同上
+:GrepArgs 	在vim的argument filenames (:args)中查找
+:Fgrep 	运行fgrep
+:Rfgrep 	运行递归的fgrep
+:Egrep 	运行egrep
+:Regrep 	运行递归的egrep
+:Agrep 	运行agrep
+:Ragrep 	运行递归的agrep
+
+上面的命令是类似这样调用的:
+:Grep   [<grep_options>] [<search_pattern> [<file_name(s)>]]
+:Rgrep  [<grep_options>] [<search_pattern> [<file_name(s)>]]
+:Fgrep  [<grep_options>] [<search_pattern> [<file_name(s)>]]
+:Rfgrep [<grep_options>] [<search_pattern> [<file_name(s)>]]
+:Egrep  [<grep_options>] [<search_pattern> [<file_name(s)>]]
+:Regrep [<grep_options>] [<search_pattern> [<file_name(s)>]]
+:Agrep  [<grep_options>] [<search_pattern> [<file_name(s)>]]
+:Ragrep [<grep_options>] [<search_pattern> [<file_name(s)>]]
+:GrepBuffer [<grep_options>] [<search_pattern>]
+:Bgrep [<grep_options>] [<search_pattern>]
+:GrepArgs [<grep_options>] [<search_pattern>]
+
+但是我从来都不用敲上面那些命令的^_^, 因为我在~/.vimrc中增加了下面这句:
+nnoremap <silent> <F3> :Grep<CR>
+比如你想在/home/wooin/vim71/src/main.c中查找"FEAT_QUICKFIX", 则将光标移到"FEAT_QUICKFIX"上, 然后按下F3键, 如下图:
+
+(--- 图14 ---)
+在最下面的命令行会显示:
+Search for pattern: FEAT_QUICKFIX
+此时你还可以编辑该行, grep支持正则表达式, 你想全词匹配的话可以改成:
+Search for pattern: /<FEAT_QUICKFIX/>
+然后按下回车:
+
+(--- 图15 ---)
+在最下面的命令行会显示:
+Search in files: *
+是问你搜索范围, 默认是该目录下的所有文件, 此时你还可以编辑该行, 比如你只想搜索源码文件:
+Search in files: *.c *.h
+然后在按下回车, 会在弹出的QuickFix窗口中列出所有符合条件的搜索结果, 你可以在其中查找你想要的结果, 如下图:
+
+(--- 图16 ---)
+
+其实还有一些其他功能和设置, 但是我都没有用过, 这些功能再加上正则表达式, 已经够我用了, 其他的你可以在网页上看看它的文档, 如果有什么惊人发现记得跟我互通有无, 共同进步哦....
+13.
+	高亮的书签 -- 插件: VisualMark
+
+	
+下载地址 	http://www.vim.org/scripts/script.php?script_id=1026
+版本
+	
+安装 	把visualmark.vim 文件丢到 ~/.vim/plugin 文件夹就好了
+手册
+	无
+
+下面介绍它的用法:
+vim 也和其他编辑器一样有"书签"概念, 在vim中叫"Mark", 可以用下面的命令查看相关说明:
+:help Mark
+该"书签"有个很很大的缺点: 不可见.
+我下面要介绍的Visual Mark插件跟vim中的"Mark"没有什么关系, 并不是使其可见, 而是自己本身就是"可见的书签", 接着往下看就明白了, 用作者的话说就是"类似UltraEdit中的书签".
+另外, 网上也有使vim中的Mark可见的插件, 但是我试了一下, 好像没Visual Mark好用, 我就不介绍了.
+
+按照上面的方法安装好Visual Mark后, 你什么也不用设置, 如果是gvim, 直接在代码上按下Ctrl+F2, 如果是vim, 用"mm", 怎么样, 发现光标所在的行变高亮了吧, 见下图:
+
+(--- 图17 ---)
+如果你设置了多个书签, 你可以用F2键正向在期间切换, 用Shift+F2反向在期间切换.
+好了, 我Visual Mark介绍完了, 够简单吧^_^.
+
+如果你嫌书签的颜色不好看, 你还可以自己定义, 不过是修改这个插件脚本的的源码, 在目录~/.vim/plugin/中找到并打开visualmark.vim, 找到下面这段代码:
+if &bg == "dark"  // 根据你的背景色风格来设置不同的书签颜色
+ highlight SignColor ctermfg=white ctermbg=blue guifg=wheat guibg=peru
+else             // 主要就是修改guibg的值来设置书签的颜色
+ highlight SignColor ctermbg=white ctermfg=blue guibg=grey guifg=RoyalBlue3
+endif
+
+我还有几个不满意的地方:
+1 这个书签不能自动保存, 关闭vim就没了.
+2 切换书签时不能在不同文件间切换, 只能在同一个文件中切换
+
+如果哪位朋友能解决这两个问题, 请一定要告诉寡人啊....还是用下面的地址:
+Email
+	: lazy.fox.wu#gmail.com
+Homepage 	: http://blog.csdn.net/wooin
+
+14.
+	自动补全
+
+	用过Microsoft Visual Studio的朋友一定知道代码补全功能, 输入一个对象名后再输入"."或者"->", 则其成员名都可以列出来, 使Coding流畅了许多, 实现很多懒人的梦想, 现在我要告诉你, 这不再是Microsoft Visual Studio的专利了, vim也可以做到! 下面由我来教你, 该功能要tags文件的支持, 并且是ctags 5.6版本, 可以看看前文介绍tags文件的章节.
+
+我这里要介绍的功能叫"new-omni-completion(全能补全)", 你可以用下面的命令看看介绍:
+:help new-omni-completion
+
+你还需要在~/.vimrc文件中增加下面两句:
+filetype plugin indent on
+打开文件类型检测, 加了这句才可以用智能补全
+set completeopt=longest,menu
+关掉智能补全时的预览窗口
+
+请确定你的Ctags 5.6已经安装好, 并且生成的tags文件已经可以用了, 那么我们就要抄家伙开搞了.
+用vim打开源文件
+$ vi /home/wooin/vim71/src/main.c
+设置tags文件
+:set tags=/home/wooin/vim71/tags
+随便找一个有成员变量的对象, 比如"parmp", 进入Insert模式, 将光标放在"->"后面,
+然后按下"Ctrl+X Ctrl+O", 此时会弹出一个下列菜单, 显示所有匹配的标签, 如下图:
+
+(--- 图18 ---)
+此时有一些快捷键可以用:
+Ctrl+P 	向前切换成员
+Ctrl+N 	向后切换成员
+Ctrl+E 	表示退出下拉窗口, 并退回到原来录入的文字
+Ctrl+Y 	表示退出下拉窗口, 并接受当前选项
+
+如果你增加了一些成员变量, 全能补全还不能马上将新成员补全, 需要你重新生成一下tags文件, 但是你不用重启vim, 只是重新生成一下tags文件就行了, 这时全能补全已经可以自动补全了, 还真够"全能"吧.
+
+vim中的其他补全方式还有:
+Ctrl+X Ctrl+L
+	整行补全
+Ctrl+X Ctrl+N 	根据当前文件里关键字补全
+Ctrl+X Ctrl+K 	根据字典补全
+Ctrl+X Ctrl+T 	根据同义词字典补全
+Ctrl+X Ctrl+I 	根据头文件内关键字补全
+Ctrl+X Ctrl+] 	根据标签补全
+Ctrl+X Ctrl+F 	补全文件名
+Ctrl+X Ctrl+D 	补全宏定义
+Ctrl+X Ctrl+V 	补全vim命令
+Ctrl+X Ctrl+U 	用户自定义补全方式
+Ctrl+X Ctrl+S 	拼写建议
+
+15.
+	加速你的补全 -- 插件: SuperTab
+
+	
+下载地址 	http://www.vim.org/scripts/script.php?script_id=1643
+版本 	0.43
+安装 	把supertab.vim 文件丢到 ~/.vim/plugin 文件夹就好了
+手册
+	supertab.vim 文件头部, 和命令 ":SuperTabHelp"
+
+在上面一节中你应该学会了自动补全代码的功能, 按下"Ctrl+X Ctrl+O"就搞定了, 如果你够懒的话肯定会说"这么麻烦啊, 居然要按四个键", 不必为此自责, 因为Gergely Kontra 和 Eric Van Dewoestine也跟你差不多, 只不过人家开发了supertab.vim这个插件, 可以永远懒下去了, 下面我来教你偷懒吧.
+
+在你的~/.vimrc文件中加上这两句:
+let g:SuperTabRetainCompletionType=2
+let g:SuperTabDefaultCompletionType="<C-X><C-O>"
+以后当你准备按"Ctrl+X Ctrl+O"的时候直接按<Tab>就好了, 够爽吧 ....
+
+我稍微再介绍一下上面那两句配置信息:
+let g:SuperTabDefaultCompletionType="<C-X><C-O>"
+" 设置按下<Tab>后默认的补全方式, 默认是<C-P>,
+" 现在改为<C-X><C-O>. 关于<C-P>的补全方式,
+" 还有其他的补全方式, 你可以看看下面的一些帮助:
+" :help ins-completion
+" :help compl-omni
+
+let g:SuperTabRetainCompletionType=2
+" 0 - 不记录上次的补全方式
+" 1 - 记住上次的补全方式,直到用其他的补全命令改变它
+" 2 - 记住上次的补全方式,直到按ESC退出插入模式为止
+
+
+

@@ -1,0 +1,23 @@
+1.ubuntu 中文输入法安装
+（1）launch
+（2）keyboard input meothod syste 选择ibus
+（3）install/Remove language 选择chinese， simple chinese
+（4）安装完成后，注销用户重新进入
+（5）在屏幕上方输入法配置中添加中文输入法chinese—pinyin
+
+
+2 tar 压缩解压
+压缩tar -zcvf Settings.tar.gz ./Settings/
+解压tar -zxvf Settings.tar.gz
+
+参数 -z filter the archive through gzip
+     -j filter the archive through bzip2
+     -c create archive
+     -x extract files from an archive
+
+     tar -zxvf Settings.tar.gz -C DIR 解压文件到制定目录
+     tar -f Settings.tar.gz --list 显示压缩文件内容
+
+3 linux chm 察看软件
+sudo apt-get install chmsee
+

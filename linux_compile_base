@@ -1,0 +1,552 @@
+linux ，Android基础知识总结
+1. Android编译系统分析
+2. 文件系统分析
+3. 制作交叉工具链
+4. 软件编译常识
+5. 设置模块流程分析
+6. linux系统启动流程分析
+7. linux下svn使用指南
+8. LFS 相关
+9. linux 内核的初步理解
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+android系统开发指南（常用环境的搭建和使用）
+说明:
+有的步骤会用到脚本简化操作，脚本通过svn服务器获取：
+svn co svn://192.168.2.148/smartphone/td0901/release/images/scripts
+用户名为各位的姓名拼音，密码与用户名相同
+一  编译android源码，制作文件系统
+二   ubuntu下烧录内核和文件系统
+一  编译android源码，制作文件系统
+1. 开发主线源码位置：
+svn://192.168.2.148/smartphone/td0901/trunk/cupcake-jianping  //cupcake 源代码
+svn://192.168.2.148/smartphone/td0901/trunk/linux-2.6.28-a1   //内核源代码
+2. 打标的源代码位置
+svn list svn://192.168.2.148/smartphone/td0901/tag
+我们可以通过 svn list  svn://192.168.2.148/smartphone 查看svn版本库内核
+更多信息请参卡以下文档：
+http://192.168.2.148/svn/smartphone/
+http://192.168.2.148/svn/smartphone/智能平台开发部资料管理手册V1.0.doc
+http://192.168.2.148/svn/smartphone/linux下svn操作指南及规范.doc
+用户名为各位的姓名拼音，密码与用户名相同
+3. 编译源码
+进入 cupcake 工作拷贝的顶层目录，执行：
+. ./make_image15.sh
+部分执行结果：
+out/target/product/littleton/root/   内核需要使用的 initramfs 
+out/target/product/littleton/system  文件系统的系统分区
+out/target/product/littleton/data/   文件系统数据分区
+4. 编译内核
+此处内核编译主要针对驱动组之外的同事
+1> 设置工具链
+内核的 linux-2.6.28-a1/Makefile 中设定了：
+CROSS_COMPILE        ?= arm-linux-
+所以设置PATH环境变量，保证能找到正确的工具链
+假设工具链位于： /usr/local/marvell-arm-linux-4.1.1/ 设置为：
+export PATH:=/usr/local/marvell-arm-linux-4.1.1/bin/:$PATH
+2> 更改编译选项（网络启动或者本机启动）
+内核顶层目录执行：
+make menuconfig
+General setup  ---> 
+  
+Initial RAM filesystem and RAM disk (initramfs/initrd) support
+    ()    Initramfs source file(s) (NEW) 
+如果需要支持网络启动反选  [] Initial RAM filesystem and RAM disk (initramfs/initrd) support
+如果需要支持本地启动选中  
+Initial RAM filesystem and RAM disk (initramfs/initrd) support
+设置 ()    Initramfs source file(s) (NEW) 为 root
+拷贝  cupcake 编译结果  out/target/product/littleton/root/  到内核顶层目录
+3> 编译
+内核顶层目录执行 make zImage
+编译好的内核：
+arch/arm/boot/zImage
+5. 搭建网络开发环境
+1>  安装nfs服务器
+sudo apt-get install nfs-kernel-server nfs-common
+2> 修改nfs服务器配置文件/etc/exports ，确保有以下配置项
+/nfsroot/rootfs *(rw,no_root_squash,sync)
+我们在内核中已经固定，手机通过网络方式启动，默认从 /nfsroot/rootfs 
+读取文件系统，修改配置项后需要重启nfs服务器：
+sudo /etc/init.d/nfs-kernel-server restart
+3> 配置网络根文件系统
+拷贝  out/target/product/littleton/root/  内容到  /nfsroot/rootfs 目录
+拷贝  out/target/product/littleton/system 内容到  /nfsroot/rootfs/system
+修改  /nfsroot/rootfs/init.rc 去掉几个mount命令 
+为了使大家的过程，结果统一，可以使用脚本 mkfs.cupcake 完成 
+在执行 mkfs.cupcake.nfs  脚本前先到  cupcake-jianping 目录下执行: . ./make_env15.sh设置环境变量,
+获取通过手动输入android源码的位置，让脚本来设置环境变量。
+二   ubuntu下烧录内核和文件系统
+1. 硬件： 
+手机一台
+usb转串口线一根
+usb转网卡线一根
+2. 软件环境
+1> tftp 服务器
+执行脚本： setup_tftpd.sh 安装和配置tftp服务器，我们默认以 /tftpboot 
+为 tftp服务器的根目录，需要下载的文件都放在该目录下。
+2> 获取待烧录的镜像文件
+svn list svn://192.168.2.148/smartphone/td0901/release/images 查看服务器上的
+版本情况，通常我们下载最新的,例如，下载9月18号发布的版本：
+svn co svn://192.168.2.148/smartphone/td0901/release/images/images20090918
+3> 烧录镜像文件
+用以下文件为例，示范通过tftp烧写内核和文件系统
+内核           zImage0917 
+系统分区： system0918.img  
+数据分区    data0918.img 
+待烧写的以上文件必须存在于tftp服务器根目录/tftpboot下。
+具体步骤：
+首先连接好硬件设备进入blob下载模式
+1> blob 起来后按任意键
+Processing obm parameters...
+Can't detect micco. Set PMIC as normal I2C mode.
+NAND flash(Manu=0x98 Device=0xba) detected!
+Slot 0 Found
+get relocation table
+Found Main Bad block table at address 0x0f000000, version 0x01
+Found Mirror Bad block table at address 0x0efc0000, version 0x01
+Consider yourself BLOBed!
+blob version 2.0.5-pre3 for Marvell Littleton
+Copyright (C) 1999 2000 2001 2002 2003 Jan-Derk Bakker and Erik Mouw
+blob comes with ABSOLUTELY NO WARRANTY; read the GNU GPL for details.
+This is free software, and you are welcome to redistribute it
+under certain conditions; read the GNU GPL for details.
+length not align with page size, change to 0x0
+Read flash from 0x60000, length 0x0
+Done
+Autoboot (2 seconds) in progress, press any key to stop ..
+Autoboot aborted
+Type "help" to get a list of commands
+blob> 
+2> 通过 tftp 下载内核到pc内存 0x80800000 地址处 
+blob> tftp zImage0917
+Begin init ether usbnet!!!
+***** Plug-in USB cable & config usbdnet now ****** 
+exit check_usb_connection:1
+TFTPing zImage0917*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ OK.
+received 6144 blocks (3145156 bytes)
+tftp_cmd: file 'zImage0917' loaded via tftp to address 0x80800000.
+3> 擦除原来的内核分区，0x100000 为分区起始地址，0x300000为分区长度
+blob> nanderase -z 0x100000 0x400000
+the current NAND chip does not support Block Unlocking.
+Erase 0x300000 length data from flash: 0x100000
+Erase flash from 0x100000, length 0x300000
+........................Done
+4> 烧写内存 0x80800000 开始 实际长度为 3145156 的内核数据到起始地址为 0x100000 的内核分区
+blob> nandwrite -z 0x80800000 0x100000 3145156
+the current NAND chip does not support Block Unlocking.
+Write 0x2ffdc4 length data from RAM: 0x80800000 to flash: 0x100000
+Write flash from 0x100000, length 0x2ffdc4
+Erase flash from 0x100000, length 0x300000
+........................Done
+........................Done
+5> 下载系统分区镜像文件到pc内存 0x80800000 地址处 
+blob> tftp system0918.img
+TFTPing system0918.img*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ OK.
+received 113138 blocks (57925824 bytes)
+tftp_cmd: file 'system0918.img' loaded via tftp to address 0x80800000.
+6> 擦除原来的flash系统分区
+blob> nanderase -z 0x500000 0x4000000
+the current NAND chip does not support Block Unlocking.
+Erase 0x3e0f800 length data from flash: 0x400000
+Erase flash from 0x400000, length 0x3e0f800
+...................................................................................
+...................................................................................
+...................................................................................
+..........................Done
+7> 烧写数据到flash系统分区
+blob> nandwrite -y 0x80800000 0x500000 57925824
+the current NAND chip does not support Block Unlocking.
+Write 0x373e0c0 length data from RAM: 0x80800000 to flash: 0x400000
+Write flash from 0x400000, length 0x3591800
+Erase flash from 0x400000, length 0x3591800
+....................................................................................
+.....................................................................................
+................................................................................Done
+....................................................................................
+....................................................................................
+................................................................Done
+8> 下载数据分区镜像文件到pc内存 0x80800000 地址处 
+blob> tftp data0918.img
+TFTPing data0918.img*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ OK.
+received 33992 blocks (17402880 bytes)
+tftp_cmd: file 'data0918.img' loaded via tftp to address 0x80800000.
+blob> 
+9> 擦除原来的flash数据分区
+blob> nanderase -z 0x4500000 0xBB00000
+the current NAND chip does not support Block Unlocking.
+Erase 0xa81f000 length data from flash: 0x4400000
+Erase flash from 0x4400000, length 0xa81f000
+.....................................................................................
+.....................................................................................
+.....................................................................................
+.....................................................................................
+...................................................Done
+10> 烧写数据镜像到flash数据分区
+blob> nandwrite -y 0x80800000 0x4500000 17402880
+the current NAND chip does not support Block Unlocking.
+Write 0x1098c00 length data from RAM: 0x80800000 to flash: 0x4400000
+Write flash from 0x4400000, length 0x1018000
+Erase flash from 0x4400000, length 0x1018000
+..................................................................................Done
+..................................................................................Done
+blob> 
+flash分区图：
+*******************************************
+*        *          *         *           *
+*  blob  *  kernel  *  system *    data   *
+*        *          *         *           *
+*******************************************
+nanderase -z 0x100000 0x400000
+tftp zImage
+nandwrite -z 0x80800000 0x100000 
+烧写system.img：
+nanderase -z 0x500000 0x4000000
+tftp system.img
+nandwrite -y 0x80800000 0x500000 
+烧写 userdata.img ：
+nanderase -z 0x4500000 0xBB00000
+tftp userdata.img
+nandwrite -y 0x80800000 0x4500000 
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+涉及的内容：
+svn服务器的使用
+android的编译系统，原理，工具链，辅助工具，参数等，环境变量，怎样单独添加编译一个单独的模块等。
+android 的编译结果：文件系统分析
+文件系统的使用，启动流程
+设置模块流程分析
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+1. Android编译系统分析
+编译脚本及系统变量
+build/envsetup.sh脚本分析
+在编译源代码之前通常需要在android源代码顶层目录执行 . ./build/envsetup.sh 目的是为了使用
+脚本 envsetup.sh 里面定义了一些函数：
+function help()
+function get_abs_build_var()
+function get_build_var()
+function check_product()
+function check_variant()
+function setpaths()
+function printconfig()
+function set_stuff_for_environment()
+function set_sequence_number()
+function settitle()
+function choosetype()
+function chooseproduct()
+function choosevariant()
+function tapas()
+function choosecombo()
+function print_lunch_menu()
+function lunch()
+function gettop
+function m()
+function findmakefile()
+function mm()
+function mmm()
+function croot()
+function pid()
+function gdbclient()
+function jgrep()
+function cgrep()
+function resgrep()
+function getprebuilt
+function tracedmdump()
+function runhat()
+function getbugreports()
+function startviewserver()
+function stopviewserver()
+function isviewserverstarted()
+function smoketest()
+function runtest()
+function runtest_py()
+function godir ()
+choosecombo 命令分析：
+function choosecombo()
+{
+    choosesim $1
+    echo
+    echo
+    choosetype $2
+    echo
+    echo
+    chooseproduct $3
+    echo
+    echo
+    choosevariant $4
+    echo
+    set_stuff_for_environment
+    printconfig
+}
+会依次进行如下选择：
+Build for the simulator or the device?
+     1. Device
+     2. Simulator
+Which would you like? [1] 
+Build type choices are:
+     1. release
+     2. debug
+Which would you like? [1] 
+Product choices are:
+     1. emulator
+     2. generic
+     3. sim
+     4. littleton
+You can also type the name of a product if you know it.
+Which would you like? [littleton] 
+Variant choices are:
+     1. user
+     2. userdebug
+     3. eng
+Which would you like? [eng] user
+默认选择以后会出现：
+TARGET_PRODUCT=littleton
+TARGET_BUILD_VARIANT=user
+TARGET_SIMULATOR=false
+TARGET_BUILD_TYPE=release
+TARGET_ARCH=arm
+HOST_ARCH=x86
+HOST_OS=linux
+HOST_BUILD_TYPE=release
+BUILD_ID=
+＝＝＝＝＝＝＝＝＝＝
+function chooseproduct()函数分析：
+choices=(`/bin/ls build/target/board/*/BoardConfig.mk vendor/*/*/BoardConfig.mk 2> /dev/null`)
+读取 build/target/board/* 目录下的板配置文件：BoardConfig.mk
+读取 vendor/*/*/目录下的板配置文件：BoardConfig.mk
+choices 的值为：
+build/target/board/emulator/BoardConfig.mk
+build/target/board/generic/BoardConfig.mk
+build/target/board/sim/BoardConfig.mk
+vendor/marvell/littleton/BoardConfig.mk
+经过：
+    for choice in ${choices[@]}                
+    do
+        # The product name is the name of the directory containing
+        # the makefile we found, above.
+        prodlist=(${prodlist[@]} `dirname ${choice} | xargs basename`)
+    done
+的处理，prodlist的值为：
+emulator generic sim littleton
+所以选择菜单为：
+Product choices are:
+     1. emulator
+     2. generic
+     3. sim
+     4. littleton
+如果选择 4，那么 TARGET_PRODUCT 被赋值为： littleton。
+board_config_mk := \
+        $(strip $(wildcard \
+                $(SRC_TARGET_DIR)/board/$(TARGET_DEVICE)/BoardConfig.mk \
+                vendor/*/$(TARGET_DEVICE)/BoardConfig.mk \
+        ))
+怎样添加一个模块
+LOCAL_PATH:= $(call my-dir)
+#编译静态库
+include $(CLEAR_VARS)
+LOCAL_MODULE = libhellos
+LOCAL_CFLAGS = $(L_CFLAGS)
+LOCAL_SRC_FILES = hellos.c
+LOCAL_C_INCLUDES = $(INCLUDES)
+LOCAL_SHARED_LIBRARIES := libcutils
+LOCAL_COPY_HEADERS_TO := libhellos
+LOCAL_COPY_HEADERS := hellos.h
+include $(BUILD_STATIC_LIBRARY)
+#编译动态库
+include $(CLEAR_VARS)
+LOCAL_MODULE = libhellod
+LOCAL_CFLAGS = $(L_CFLAGS)
+LOCAL_SRC_FILES = hellod.c
+LOCAL_C_INCLUDES = $(INCLUDES)
+LOCAL_SHARED_LIBRARIES := libcutils
+LOCAL_COPY_HEADERS_TO := libhellod
+LOCAL_COPY_HEADERS := hellod.h
+include $(BUILD_SHARED_LIBRARY)
+BUILD_TEST=true
+ifeq ($(BUILD_TEST),true)
+#使用静态库
+include $(CLEAR_VARS)
+LOCAL_MODULE := hellos
+LOCAL_STATIC_LIBRARIES := libhellos
+LOCAL_SHARED_LIBRARIES :=
+LOCAL_LDLIBS += -ldl
+LOCAL_CFLAGS := $(L_CFLAGS)
+LOCAL_SRC_FILES := mains.c
+LOCAL_C_INCLUDES := $(INCLUDES)
+include $(BUILD_EXECUTABLE)
+#使用动态库
+include $(CLEAR_VARS)
+LOCAL_MODULE := hellod
+LOCAL_MODULE_TAGS := debug
+LOCAL_SHARED_LIBRARIES := libc libcutils libhellod
+LOCAL_LDLIBS += -ldl
+LOCAL_CFLAGS := $(L_CFLAGS)
+LOCAL_SRC_FILES := maind.c
+LOCAL_C_INCLUDES := $(INCLUDES)
+include $(BUILD_EXECUTABLE)
+endif # ifeq ($(WPA_BUILD_SUPPLICANT),true)
+########################
+#local_target_dir := $(TARGET_OUT)/etc/wifi
+#include $(CLEAR_VARS)
+#LOCAL_MODULE := wpa_supplicant.conf
+#LOCAL_MODULE_TAGS := user
+#LOCAL_MODULE_CLASS := ETC
+#LOCAL_MODULE_PATH := $(local_target_dir)
+#LOCAL_SRC_FILES := $(LOCAL_MODULE)
+#include $(BUILD_PREBUILT)
+########################
+系统变量解析
+LOCAL_MODULE     － 编译的目标对象
+LOCAL_SRC_FILES  － 编译的源文件
+LOCAL_C_INCLUDES － 需要包含的头文件目录
+LOCAL_SHARED_LIBRARIES － 链接时需要的外部库
+LOCAL_PRELINK_MODULE   － 是否需要prelink处理
+BUILD_SHARED_LIBRARY   － 指明要编译成动态库
+LOCAL_PATH - 编译时的目录
+$(call 目录，目录….) 目录引入操作符
+如该目录下有个文件夹名称 src，则可以这样写 $(call src)，那么就会得到 src 目录的完整路径
+include $(CLEAR_VARS) -清除之前的一些系统变量
+CLEAR_VARS:= $(BUILD_SYSTEM)/clear_vars.mk
+在 build/core/config.mk 定义 CLEAR_VARS:= $(BUILD_SYSTEM)/clear_vars.mk
+通过include 包含自定义的.mk文件（即是自定义编译规则）或是引用系统其他的.mk文件（系统定义的编译规则）。
+LOCAL_SRC_FILES － 编译的源文件
+可以是.c, .cpp, .java, .S（汇编文件）或是.aidl等格式
+不同的文件用空格隔开。如果编译目录子目录，采用相对路径，如子目录/文件名。也可以通过$(call 目录)，指明编译某目录
+下所有.c/.cpp/.java/.S/ .aidl文件.追加文件 LOCAL_SRC_FILES += 文件
+LOCAL_C_INCLUDES － 需要包含的头文件目录
+可以是系统定义路径，也可以是相对路径. 如该编译目录下有个include目录，写法是include/*.h
+LOCAL_SHARED_LIBRARIES  － 链接时需要的外部共享库
+LOCAL_STATIC_LIBRARIES  － 链接时需要的外部外部静态
+LOCAL_JAVA_LIBRARIES     加入jar包
+LOCAL_MODULE － 编译的目标对象
+module 是指系统的 native code，通常针对c,c++代码
+./system/core/sh/Android.mk:32:LOCAL_MODULE:= sh
+./system/core/libcutils/Android.mk:71:LOCAL_MODULE := libcutils
+./system/core/cpio/Android.mk:9:LOCAL_MODULE := mkbootfs
+./system/core/mkbootimg/Android.mk:8:LOCAL_MODULE := mkbootimg
+./system/core/toolbox/Android.mk:61:LOCAL_MODULE:= toolbox
+./system/core/logcat/Android.mk:10:LOCAL_MODULE:= logcat
+./system/core/adb/Android.mk:65:LOCAL_MODULE := adb
+./system/core/adb/Android.mk:125:LOCAL_MODULE := adbd
+./system/core/init/Android.mk:20:LOCAL_MODULE:= init
+./system/core/vold/Android.mk:24:LOCAL_MODULE:= vold
+./system/core/mountd/Android.mk:13:LOCAL_MODULE:= mountd
+LOCAL_PACKAGE_NAME 
+Java 应用程序的名字用该变量定义
+./packages/apps/Music/Android.mk:9:LOCAL_PACKAGE_NAME := Music
+./packages/apps/Browser/Android.mk:14:LOCAL_PACKAGE_NAME := Browser
+./packages/apps/Settings/Android.mk:8:LOCAL_PACKAGE_NAME := Settings
+./packages/apps/Stk/Android.mk:10:LOCAL_PACKAGE_NAME := Stk
+./packages/apps/Contacts/Android.mk:10:LOCAL_PACKAGE_NAME := Contacts
+./packages/apps/Mms/Android.mk:8:LOCAL_PACKAGE_NAME := Mms
+./packages/apps/Camera/Android.mk:8:LOCAL_PACKAGE_NAME := Camera
+./packages/apps/Phone/Android.mk:11:LOCAL_PACKAGE_NAME := Phone
+./packages/apps/VoiceDialer/Android.mk:8:LOCAL_PACKAGE_NAME := VoiceDialer
+BUILD_SHARED_LIBRARY － 指明要编译成动态库。
+编译的目标，用include 操作符
+UILD_STATIC_LIBRARY来指明要编译成静态库。
+如果是java文件的话，会用到系统的编译脚本host_java_library.mk，用BUILD_PACKAGE来指明。三个编译
+－－－－－－－－－－－－－－－－－－－
+include $(BUILD_STATIC_LIBRARY)
+BUILD_STATIC_LIBRARY:= $(BUILD_SYSTEM)/static_library.mk
+－－－－－－－－－－－－－－－－－－－
+include $(BUILD_SHARED_LIBRARY)
+./build/core/config.mk:50:BUILD_SHARED_LIBRARY:= $(BUILD_SYSTEM)/shared_library.mk
+－－－－－－－－－－－－－－－－－－－
+include $(BUILD_HOST_SHARED_LIBRARY)
+BUILD_HOST_SHARED_LIBRARY:= $(BUILD_SYSTEM)/host_shared_library.mk
+－－－－－－－－－－－－－－－－－－－
+include $(BUILD_EXECUTABLE)
+build/core/config.mk:51:BUILD_EXECUTABLE:= $(BUILD_SYSTEM)/executable.mk
+－－－－－－－－－－－－－－－－－－－
+include $(BUILD_HOST_EXECUTABLE)
+./build/core/config.mk:53:BUILD_HOST_EXECUTABLE:= $(BUILD_SYSTEM)/host_executable.mk
+－－－－－－－－－－－－－－－－－－－
+BUILD_HOST_JAVA_LIBRARY:= $(BUILD_SYSTEM)/host_java_library.mk
+－－－－－－－－－－－－－－－－－－－
+BUILD_JAVA_LIBRARY
+./build/core/config.mk:58:BUILD_JAVA_LIBRARY:= $(BUILD_SYSTEM)/java_library.mk
+－－－－－－－－－－－－－－－－－－
+BUILD_STATIC_JAVA_LIBRARY 编译静态JAVA库
+./build/core/config.mk:59:BUILD_STATIC_JAVA_LIBRARY:= $(BUILD_SYSTEM)/static_java_library.mk
+－－－－－－－－－－－－－－－－－－
+BUILD_HOST_JAVA_LIBRARY   编译本机用的JAVA库
+./build/core/config.mk:60:BUILD_HOST_JAVA_LIBRARY:= $(BUILD_SYSTEM)/host_java_library.mk
+－－－－－－－－－－－－－－－－－－
+BUILD_HOST_STATIC_LIBRARY:= $(BUILD_SYSTEM)/host_static_library.mk
+BUILD_HOST_SHARED_LIBRARY:= $(BUILD_SYSTEM)/host_shared_library.mk
+BUILD_STATIC_LIBRARY:= $(BUILD_SYSTEM)/static_library.mk
+BUILD_RAW_STATIC_LIBRARY := $(BUILD_SYSTEM)/raw_static_library.mk
+BUILD_SHARED_LIBRARY:= $(BUILD_SYSTEM)/shared_library.mk
+BUILD_EXECUTABLE:= $(BUILD_SYSTEM)/executable.mk
+BUILD_RAW_EXECUTABLE:= $(BUILD_SYSTEM)/raw_executable.mk
+BUILD_HOST_EXECUTABLE:= $(BUILD_SYSTEM)/host_executable.mk
+BUILD_PACKAGE:= $(BUILD_SYSTEM)/package.mk
+BUILD_HOST_PREBUILT:= $(BUILD_SYSTEM)/host_prebuilt.mk
+BUILD_PREBUILT:= $(BUILD_SYSTEM)/prebuilt.mk
+BUILD_MULTI_PREBUILT:= $(BUILD_SYSTEM)/multi_prebuilt.mk
+BUILD_JAVA_LIBRARY:= $(BUILD_SYSTEM)/java_library.mk
+BUILD_STATIC_JAVA_LIBRARY:= $(BUILD_SYSTEM)/static_java_library.mk
+BUILD_HOST_JAVA_LIBRARY:= $(BUILD_SYSTEM)/host_java_library.mk
+BUILD_DROIDDOC:= $(BUILD_SYSTEM)/droiddoc.mk
+BUILD_COPY_HEADERS := $(BUILD_SYSTEM)/copy_headers.mk
+BUILD_KEY_CHAR_MAP := $(BUILD_SYSTEM)/key_char_map.mk
+＝＝＝＝＝＝＝＝＝＝＝＝
+LOCAL_PRELINK_MODULE
+        Prelink利用事先链接代替运行时链接的方法来加速共享库的加载，它不仅可以加快起动速度，还可以减少部分内存开销，
+是各种Linux架构上用于减少程序加载时间、缩短系统启动时间和加快应用程序启动的很受欢迎的一个工具。程序运行时的
+动态链接尤其是重定位(relocation)的开销对于大型系统来说是很大的。
+        动态链接和加载的过程开销很大，并且在大多数的系统上, 函数库并不会常常被更动, 每次程序被执行时所进行的链接
+动作都是完全相同的，对于嵌入式系统来说尤其如此。因此，这一过程可以改在运行时之前就可以预先处理好，即花一些时间
+利用Prelink工具对动态共享库和可执行文件进行处理，修改这些二进制文件并加入相应的重定位等信息，节约了本来在程序
+启动时的比较耗时的查询函数地址等工作，这样可以减少程序启动的时间，同时也减少了内存的耗用。 
+        Prelink的这种做法当然也有代价：每次更新动态共享库时，相关的可执行文件都需要重新执行一遍Prelink才能保
+证有效，因为新的共享库中的符号信息、地址等很可能与原来的已经不同了，这就是为什么 android framework代码一改动，
+这时候就会导致相关的应用程序重新被编译。
+这种代价对于嵌入式系统的开发者来说可能稍微带来一些复杂度，不过好在对用户来说几乎是可以忽略的。
+－－－－－－－－－－－－－－－－－－－－
+变量设置为false那么将不做prelink操作
+LOCAL_PRELINK_MODULE := false
+默认是需要prlink的，同时需要在 build/core/prelink-linux-arm.map 中加入
+libhellod.so      0x96000000
+这个map文件好像是制定动态库的地址的，在前面注释上面有一些地址范围的信息，注意库与库之间的间隔数，
+如果指定不好�
+Initial RAM filesystem and RAM disk (initramfs/initrd) support
+    ()    Initramfs source file(s) (NEW) 
+如果需要支持网络启动反选  [] Initial RAM filesystem and RAM disk (initramfs/initrd) support
+如果需要支持本地启动选中  
+Initial RAM filesystem and RAM disk (initramfs/initrd) support
+设置 ()    Initramfs source file(s) (NEW) 为 root
+拷贝  cupcake 编译结果  out/target/product/littleton/root/  到内核顶层目录
+3> 编译
+内核顶层目录执行 make zImage
+编译好的内核：
+arch/arm/boot/zImage
+initramfs与initrd
+1. initrd是一个单独的文件；initramfs和Linux内核链接在一起(/usr目录下的程序负责生成initramfs文档)。
+2. initrd是一个压缩的文件系统映像(可以是ext2等，需要内核的驱动)；initramfs是类似tar的cpio压缩文档。
+内核中的cpio解压缩代码很小，而且init数据在boot后可以丢弃。
+3. initrd运行的程序(initd，不是init)进行部分setup后返回内核；initramfs执行的init程序不返回内核
+(如果/init需要向内核传递控制权，可以再次安装在/目录下一个新的root设备并且启动一个新的init程序)。
+编译脚本及系统变量
+initramfs与initrd的区别
+1. initrd是一个单独的文件；initramfs和Linux内核链接在一起(/usr目录下的程序负责生成initramfs文档)。
+2. initrd是一个压缩的文件系统映像(可以是ext2等，需要内核的驱动)；initramfs是类似tar的cpio压缩文档。
+内核中的cpio解压缩代码很小，而且init数据在boot后可以丢弃。
+3. initrd运行的程序(initd，不是init)进行部分setup后返回内核；initramfs执行的init程序不返回内核
+(如果/init需要向内核传递控制权，可以再次安装在/目录下一个新的root设备并且启动一个新的init程序)。
+4. 切换到另一个root设备时，initrd执行pivot_root后，卸载ramdisk；initramfs是rootfs，既不能 
+pivot_root，也不能卸载。initramfs会删掉rootfs的所有内容(find -xdev / -exec rm '{}' ';')，
+再次安装root到rootfs(cd /newmount; mount --move . /; chroot .)，把stdin/sdout/stderr挂在
+新的/dev/console上，重新执行init。由于这是一个相当困难的实现过程(包括在使用一个命令之前把它删除)，所以
+klibc工具包引入一个帮助程序/utils/run_init.c来执行上述过程。其他大部分工具包(包括busybox) 把这个命令
+称为"switch_root"。
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝ end ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝

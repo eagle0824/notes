@@ -1,0 +1,240 @@
+最近在做软件从2.3到4.0的改变的一些工作，其中涉及了一些style和 theme相关的东西。上网上查了一些东西，这个一并说说。关于android中style和theme的基本使用，这里就不再赘述了，可以查看Dev Guide上的东东，这里主要说说自己比较困惑的一些部分。
+
+Android platform已经提供了许多的style和theme供开发者使用，可以在R.style类中找到可供使用的style，不过需要把其中的下划线 (_)改成点号(.). 如果我们查看R.style类的文档，发现有些style没有描述或者描述的不怎么清楚，还是看看原文件中怎么定义的吧。style和themem的原文 件可以在<ANDROID_SDK_HOME>/platforms/android-15/data/res/values/下面找到，其 中styles.xml和theme.xml文件就是R.style类的定义文件。可以看到theme.xml中定义了Theme.Holo, Theme.Holo.Light等theme。
+
+在values文件下还有一个文件就是attrs.xml,这是R.attr 和R.styleable类的定义文件。attrs.xml中定义了每个view的可用的属性，例如使用android:textAppearance就 是在attrs.xml中定义了<attr name="textAppearance" format="reference" />，那麽这里点format="reference"使什么意思呢？这里解释一下，一些例子来源于网络：
+
+
+1. reference：参考某一资源ID。
+
+
+    （1）属性定义：
+
+            <declare-styleable name = "名称">
+
+                   <attr name = "background" format = "reference" />
+
+            </declare-styleable>
+
+    （2）属性使用：
+
+             <ImageView
+
+                     android:layout_width = "42dip"
+
+                     android:layout_height = "42dip"
+
+                     android:background = "@drawable/图片ID"
+
+                     />
+
+2. color：颜色值
+
+
+           <declare-styleable name = "名称">
+
+                   <attr name = "textColor" format = "color" />
+
+            </declare-styleable>
+
+3. boolean：布尔值
+
+
+            <declare-styleable name = "名称">
+
+                   <attr name = "focusable" format = "boolean" />
+
+            </declare-styleable>
+
+4. dimension：尺寸值。
+
+
+            <declare-styleable name = "名称">
+
+                   <attr name = "layout_width" format = "dimension" />
+
+            </declare-styleable>
+
+5. float：浮点值。
+
+6. integer：整型值。
+
+7. string：字符串
+
+8. fraction：百分数。
+
+9. enum：枚举值
+
+10. flag：位或运算
+
+
+注意：
+
+     属性定义时可以指定多种类型值。
+
+    （1）属性定义：
+
+            <declare-styleable name = "名称">
+
+                   <attr name = "background" format = "reference|color" />
+
+            </declare-styleable>
+
+    （2）属性使用：
+
+             <ImageView
+
+                     android:layout_width = "42dip"
+
+                     android:layout_height = "42dip"
+
+                     android:background = "@drawable/图片ID|#00FF00"
+
+                     />
+
+
+ok, 了解完这些，下面说说怎么自定义View和属性，可以参考http://blog.csdn.net/jincf2011/article/details/6344678
+
+
+
+在xml 文件里定义控件的属性，我们已经习惯了android:attrs="" ,那么我们能不能定义自己的属性能，比如:test:attrs="" 呢？答案是肯定的.
+
+进入主题。大致以下步骤:
+
+
+一、 在res/values 文件下定义一个attrs.xml 文件.代码如下:
+
+<?xml version="1.0" encoding="utf-8"?>  
+     1. <resources>  
+     2.     <declare-styleable name="MyView">  
+     3.         <attr name="textColor" format="color" />  
+     4.         <attr name="textSize" format="dimension" />  
+     5.     </declare-styleable>  
+     6. </resources>  
+     7. 二、 我们在MyView.java 代码编写如下，其中下面的构造方法是重点，我们获取定义的属性R.sytleable.MyView_textColor, 获取方法中后面通常设定默认值(float textSize = a.getDimension(R.styleable.MyView_textSize, 36 ); )， 防止我们在xml 文件中没有定义.从而使用默认值!
+
+MyView 就是定义在<declare-styleable name="MyView "></declare-styleable> 里的 名字,获取里面属性用 名字_ 属性 连接起来就可以.TypedArray 通常最后调用 .recycle() 方法，为了保持以后使用该属性一致性！
+
+
+public MyView(Context context,AttributeSet attrs)  
+     1.     {  
+     2.         super(context,attrs);  
+     3.         mPaint = new Paint();  
+     4.           
+     5.         TypedArray a = context.obtainStyledAttributes(attrs,  
+     6.                 R.styleable.MyView);  
+     7.           
+     8.         int textColor = a.getColor(R.styleable.MyView_textColor,  
+     9.                 0XFFFFFFFF);  
+    10.         float textSize = a.getDimension(R.styleable.MyView_textSize, 36);  
+    11.           
+    12.         mPaint.setTextSize(textSize);  
+    13.         mPaint.setColor(textColor);  
+    14.           
+    15.         a.recycle();  
+    16.     }  
+    17. MyView.java  MyView控件全部代码如下:
+
+
+package com.android.tutor;  
+     1. import android.content.Context;  
+     2. import android.content.res.TypedArray;  
+     3. import android.graphics.Canvas;  
+     4. import android.graphics.Color;  
+     5. import android.graphics.Paint;  
+     6. import android.graphics.Rect;  
+     7. import android.graphics.Paint.Style;  
+     8. import android.util.AttributeSet;  
+     9. import android.view.View;  
+    10. public class MyView extends View {  
+    11.     private Paint mPaint;  
+    12.     private Context mContext;  
+    13.     private static final String mString = "Welcome to Mr Wei's blog";  
+    14.       
+    15.     public MyView(Context context) {  
+    16.         super(context);  
+    17.         mPaint = new Paint();  
+    18.     }  
+    19.     public MyView(Context context,AttributeSet attrs)  
+    20.     {  
+    21.         super(context,attrs);  
+    22.         mPaint = new Paint();  
+    23.           
+    24.         TypedArray a = context.obtainStyledAttributes(attrs,  
+    25.                 R.styleable.MyView);  
+    26.           
+    27.         int textColor = a.getColor(R.styleable.MyView_textColor,  
+    28.                 0XFFFFFFFF);  
+    29.         float textSize = a.getDimension(R.styleable.MyView_textSize, 36);  
+    30.           
+    31.         mPaint.setTextSize(textSize);  
+    32.         mPaint.setColor(textColor);  
+    33.           
+    34.         a.recycle();  
+    35.     }  
+    36.     @Override  
+    37.     protected void onDraw(Canvas canvas) {  
+    38.         // TODO Auto-generated method stub  
+    39.         super.onDraw(canvas);  
+    40.         //设置填充  
+    41.         mPaint.setStyle(Style.FILL);  
+    42.           
+    43.         //画一个矩形,前俩个是矩形左上角坐标，后面俩个是右下角坐标  
+    44.         canvas.drawRect(new Rect(10, 10, 100, 100), mPaint);  
+    45.           
+    46.         mPaint.setColor(Color.BLUE);  
+    47.         //绘制文字  
+    48.         canvas.drawText(mString, 10, 110, mPaint);  
+    49.     }  
+    50. }  
+    51. 三、将我们自定义的MyView 加入布局main.xml 文件中，并且使用自定义属性,自定义属性必须加上:
+
+    " xmlns:test ="http://schemas.android.com/apk/res/com.android.tutor"  ,test是自定义属性的前缀，           com.android.tutor 是我们包名.
+
+
+main.xml 全部代码如下:
+
+
+<?xml   
+     1. version="1.0" encoding="utf-8"?>  
+     2. <LinearLayout   
+     3. xmlns:android="http://schemas.android.com/apk/res/android"  
+     4.                 
+     5. xmlns:test="http://schemas.android.com/apk/res/com.android.tutor"  
+     6.     android:orientation="vertical"  
+     7.     android:layout_width="fill_parent"  
+     8.     android:layout_height="fill_parent"  
+     9.     >  
+    10. <TextView    
+    11.     android:layout_width="fill_parent"   
+    12.     android:layout_height="wrap_content"   
+    13.     android:text="@string/hello"  
+    14.     />  
+    15. <com.android.tutor.MyView  
+    16.     android:layout_width="fill_parent"   
+    17.     android:layout_height="fill_parent"   
+    18.     test:textSize="20px"  
+    19.     test:textColor="#fff"  
+    20. />  
+    21. </LinearLayout>  
+    22. 
+四、运行之效果如下图:
+
+
+
+
+最后：
+
+关于在引用资源时使用@还是？的问题，我们在设置style的时候既可以使用@也可以使用?, 例如android:textAppearance="@andorid:style/TextAppearance.Medium", 
+
+android:textAppearance="?android:attr/textAppearanceMedium"
+
+使用@表示使用固定的style，而不会跟随Theme改变，这个style可以在style.xml中找到。
+
+而？表示从Theme中查找引用的资源名，例如上面的 textAppearanceMedium，查看themes.xml文件，可以看到在不同的theme中，textAppearanceMedium引 用的style是不同的。如在Them.Holo中<item name="textAppearanceMedium">@android:style/TextAppearance.Holo.Medium</item>
+
+，Theme.Holo.Light中为<item name="textAppearanceMedium">@android:style/TextAppearance.Holo.Light.Medium</item>
+
+
+
+

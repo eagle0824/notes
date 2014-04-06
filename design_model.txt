@@ -1,0 +1,118 @@
+1.模板模式(继承)
+	定义一个算法的骨架,而将一些步骤延迟到子类中.模板方法使子类在不改变算法结构的情况下,重新定义算法的某些步骤.
+	
+	public abstract class TemplateMethod {
+
+	    //method can't override 
+	    final void template(){
+
+		step1();
+		step2();
+		step3();
+		if(hook()){
+		    step4();
+		}
+	    }
+
+	    //sub class can't override
+	    private void step1(){
+		System.out.println("..........step1...........");
+	    }
+
+	    //sub class implements
+	    abstract void step2();
+
+	    //sub class implements
+	    abstract void step3();
+
+	    public void step4(){
+		System.out.println("..........step4...........");
+	    }
+
+	    //hook method blank method or default implement
+	    //sub class can override it and control the template execution 
+	    public boolean hook(){
+		return true;
+	    }
+	}
+
+2.策略模式(组合)
+	定义了算法簇,分别封装起来,让他们之间可以互相替换,此模式让算法的变化独立于使用算法的客户
+	有一个可以实例化的类,通常给它一个实现某些行为的策略对象(传递不同策略)
+
+3.状态模式
+	允许对象在内部状态改变时改变它的行为,对象看起来好像修改了它的类
+	(改变行为,是定义在方案中的,并不需要主动调用)
+
+4.代理模式
+	为另一个对象提供一个替身或占位符以访问这个对象
+
+
+5.命令模式
+	将"请求"封装成命令对象,并将命令对象应用于请求,队列和日志等对象的初始化中,命令对象还可以执行撤销操作
+
+6.观察者模式
+
+	建立对象之间一对多的关系,当对象状态改变时,所有依赖它的对象都获得通知并更新
+
+	public abstract class Observable {
+    private final ArrayList<Observer> mObservers;
+    private Iterator<Observer> mIterator;
+
+    public Observable() {
+        mObservers = new ArrayList<Observer>();
+    }
+
+    /**
+     * Attach an observer to this object.
+     *
+     * @param observer The observer object to be attached to.
+     */
+    public void attach(Observer observer) {
+        mObservers.add(observer);
+    }
+
+    /**
+     * Detach an observer from this object.
+     *
+     * @param observer The observer object to be detached from.
+     */
+    public void detach(Observer observer) {
+        if (mIterator != null) {
+            mIterator.remove();
+        } else {
+            mObservers.remove(observer);
+        }
+    }
+
+    /**
+     * Notify all observers that a status change has occurred.
+     */
+    public void notifyObservers() {
+        mIterator = mObservers.iterator();
+        try {
+            while (mIterator.hasNext()) {
+                mIterator.next().update(this);
+            }
+        } finally {
+            mIterator = null;
+        }
+    }
+}
+
+
+
+public interface Observer {
+
+    /**
+     * Update the state of the observable.
+     *
+     * @param observable An observable object.
+     */
+    void update(Observable observable);
+
+}
+
+
+
+
