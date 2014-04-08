@@ -235,6 +235,16 @@
 8	git push origin localbranch:newbranch 用本地分支localbranch在服务器上创建新的分支newbranch
     git push origin :newbranch    删除服务器上的分支newbranch，本地分支仍旧存在
     
+9   git filter-branch
+
+    git filter-branch -f --env-filter "GIT_AUTHOR_NAME='eagle'; GIT_AUTHOR_EMAIL='l22k77@163.com'; GIT_COMMITTER_NAME='eagle'; GIT_COMMITTER_EMAIL='l22k77@163.com';"
+    修改已经提交过提交记录的信息
+
+    若已经未提交到服务器用git push origin master
+    若修改已经提交到服务器的提交记录用 git push -f origin master
+
+
+    
 
 Git 是分散式的版本控制系統, 從架設、簡易操作、設定, 此篇主要是整理 基本操作、遠端操作 等.
 
