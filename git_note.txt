@@ -43,6 +43,11 @@
 
  	git config --global -e	打开~/.gitconfig文件并编辑
 
+    git 颜色设置
+    git config --global color.status auto  
+    git config --global color.diff auto  
+    git config --global color.branch auto  
+    git config --global color.interactive auto
 
 1	git常用命令
 
