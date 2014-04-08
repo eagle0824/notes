@@ -295,3 +295,5 @@
 33 	cut 截取字符串（man cut）
 	echo hello | cut -c 2-4 输出（ello）
 
+34 xclip
+    xclip -sel clip < file 将file文件中的内容复制到剪切板上，Ctrl+V 复制
