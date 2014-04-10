@@ -111,50 +111,176 @@ environmental variables:
 
 
 
-adb logcat
+adb logcat 详解
 
-unknown option -- hUnrecognized Option
+*注：可以用 adb logcat > 路径/文件名 来保存，
+ 　　此命令执行之时起的全部日志信息到一个文件里，ctrl + C 结束日志输出；
+ 　　后面不加 > 路径/文件名 的话，则在 stdout (终端窗口)中输出！
+例如：$ adb logcat -v long Checkin *:S > ~/桌面/log.txt
+
+一、在 Java 与 C 语言中输出日志：
+1) Java 代码在程序中输出日志, 使用 android.util.Log 类的以下 5 个方法：
+   Log.v()、Log.d()、Log.i()、Log.w()、Log.e()。
+   分对应 Verbose、Debug、INFO、Warn、Error 的首字母。
+   例如：Log.i( "类::函数名", "日期_时间_源码文件名_行号_日志信息内容" );
+
+2) C 代码在程序中输出日志，使用 log 的 API 函数：
+   __android_log_write( 日志类型宏，日志标签字符串，日志令牌内容字符串 );
+   需要：1. Android.mk 中添加 LOCAL_LDLIBS := -L$(SYSROOT)/usr/lib -llog
+   　　　2. *.c 中添加 #include <android/log.h>
+   　　　3. 日志类型宏有：
+        //
+        // Android log priority values, in ascending priority order.
+        //
+        typedef enum android_LogPriority {
+            ANDROID_LOG_UNKNOWN = 0,
+            // only for SetMinPriority() 
+            ANDROID_LOG_DEFAULT,
+            ANDROID_LOG_VERBOSE,
+            ANDROID_LOG_DEBUG,
+            ANDROID_LOG_INFO,
+            ANDROID_LOG_WARN,
+            ANDROID_LOG_ERROR,
+            ANDROID_LOG_FATAL,
+            // only for SetMinPriority(); must be last 
+            ANDROID_LOG_SILENT,
+        } android_LogPriority;
+        
+二、logcat 使用方法:      
 Usage: logcat [options] [filterspecs]
-options include:
-  -s              Set default filter to silent.
-                  Like specifying filterspec '*:s'
-  -f <filename>   Log to file. Default to stdout
-  -r [<kbytes>]   Rotate log every kbytes. (16 if unspecified). Requires -f
-  -n <count>      Sets max number of rotated logs to <count>, default 4
-  -v <format>     Sets the log print format, where <format> is one of:
+用法：  logcat [选项] [过滤说明]
 
-                  brief process tag thread raw time threadtime long
+options include:
+选项包含：
+  -s              Set default filter to silent.
+                  Like specifying filterspec '*:S'
+                  设置默认过滤为无声的。
+                  像指定过滤说明为 *:S ，见下面 过滤说明 部份详述
+                  
+  -f <filename>   Log to file. 
+                  Default to stdout
+                  输出日志到文件。
+                  默认为 stdout 
+                  
+  -r [<kbytes>]   Rotate log every kbytes. 
+                  (16 if unspecified). 
+                  Requires -f
+                  设置环形日志缓冲区的kbytes。
+                  默认值为16。
+                  需要和 -f 选项一起使用
+                  
+  -n <count>      Sets max number of rotated logs to <count>, default 4
+                  设置环形日志缓冲区的最大数目，默认值是4，需要和 -r 选项一起使用
+                  
+  -v <format>     Sets the log print format, where <format> is one of:
+                  设置 log 的打印格式,  格式有如下主要7种:(不能组合使用)
+
+                  brief 
+                  process 
+                  tag 
+                  thread 
+                  raw 
+                  time 
+                  threadtime 
+                  long
 
   -c              clear (flush) the entire log and exit
+                  清除所有 log 并退出
+                  
   -d              dump the log and then exit (don't block)
+                  得到所有log并退出且不阻塞
+                  
   -t <count>      print only the most recent <count> lines (implies -d)
+                  仅打印最近的由参数 count 指出的行数(必然包含 -d)
+                  
   -g              get the size of the log's ring buffer and exit
-  -b <buffer>     request alternate ring buffer
-                  ('main' (default), 'radio', 'events')
-	Android日志系统为日志消息保持了多个循环缓冲区，而且不是所有的消息都被发送到默认缓冲区，要想查看这些附加的缓冲区，可以使用-b 选项，以下是可以指定的缓冲区：
-	radio — 查看包含在无线/电话相关的缓冲区消息
-	events — 查看事件相关的消息
-	main — 查看主缓冲区 (默认缓冲区)
+                  得到环形缓冲区的大小并退出
+                  
+  -b <buffer>     Request alternate ring buffer, 'main', 'system', 'radio' or 'events'.
+                  Multiple -b parameters are allowed and the results are interleaved. 
+                  The default is -b main -b system.
+                  请求供替换的环形缓冲区，如：main，system，radio，events。
+                  多个 -b 参数是被允许，并且结果是交错输出的。
+                  -b main -b system 是默认的。
+                  
   -B              output the log in binary
-filterspecs are a series of 
-  <tag>[:priority]
+                  输出 log 到二进制文件中。
+                  
+filterspecs are a series of <tag>[:priority]
+过滤说明是一系列 <tag>[:priority]
 
 where <tag> is a log component tag (or * for all) and priority is:
-  V    Verbose
-  D    Debug
-  I    Info
-  W    Warn
-  E    Error
-  F    Fatal
-  S    Silent (supress all output)
+tag 是 eclipse 中 logcat 图形界面中 Tag 的内容(或者有 * 表示全部)，它之后的冒号(:)后面跟优先级：
+    日志类型标识符(优先级由低到高排列):
+    1. V — Verbose 详细的 <- 最低优先权
+    2. D — Debug   调试
+    3. I — Info    消息
+    4. W — Warn    警告
+    5. E — Error   错误
+    6. F — Fatal   致命的
+    7. S — Silent  无声的 <- 最高优先权
 
 '*' means '*:d' and <tag> by itself means <tag>:v
+* 意味着 *:d 且 单孤地 tag 意味着 tag:V
 
 If not specified on the commandline, filterspec is set from ANDROID_LOG_TAGS.
-If no filterspec is found, filter defaults to '*:I'
+如果在命令行上没有详细说明，过滤规格即是 ANDROID_LOG_TAGS 结果集。
 
-If not specified with -v, format is set from ANDROID_PRINTF_LOG
-or defaults to "brief"
+If no filterspec is found, filter defaults to '*:I'
+如果没有过滤说明，过滤规格默认为 *:I
+
+If not specified with -v, format is set from ANDROID_PRINTF_LOG or defaults to "brief"
+如果没有 -v 指定格式，将是 ANDROID_PRINTF_LOG 或 brief 格式集。
+
+1) 只输出指定 标签 和 类型 的日志
+   格式：
+   adb logcat <日志标签>:<日志类型标识符> <日志标签>:<日志类型标识符> ... *:S
+   注：1. 可以写多个 <日志标签>:<日志类型标识符> 之间用空格分隔；
+   　　2. 最后必须是 *:S ，表示其它的都不要显示出来
+   例如：
+   $ adb logcat dalvikvm:D Checkin:W *:S
+   
+   注：adb logcat Checkin *:S =等同于=> adb logcat Checkin:V *:S
+   注：以上命令均没加 -v 来指出日志格式，即默认为: ANDROID_PRINTF_LOG 或 brief 格式集。
+
+2) 输出指定 标签 和 类型 的带有格式的日志
+注：以下测试日志内容为：test log format，
+　　即 eclipse 中的 logcat 图形界面里的 Text 中的内容！
+
+1. brief      - 日志类型/日志标签(进程ID): 日志内容
+   例如：$ adb logcat -v brief Checkin *:S
+   　　　I/Checkin(24713): test log format
+   　　　
+2. process    - 日志类型(进程ID) 日志内容 (日志标签)
+   例如：$ adb logcat -v process Checkin *:S
+   　　　I(24713) test log format  (Checkin)
+   　　　
+3. tag        - 日志类型/日志标签: 日志内容
+   例如：$ adb logcat -v tag Checkin *:S
+        I/Checkin: test log format
+           
+4. thread     - 日志类型(进程ID:线程ID)
+   例如：$ adb logcat -v thread Checkin *:S
+        I(24713:0x6089) test log format
+        
+5. raw        - 日志内容
+   例如：$ adb logcat -v raw Checkin *:S
+        test log format
+        
+6. time       - 日期 调用时间 日志类型/日志标签(进程ID): 日志内容
+   例如：$ adb logcat -v time Checkin *:S
+   05-27 11:25:33.854 I/Checkin(24713): test log format
+
+7. threadtime - 日期 调用时间 进程ID 线程ID 日志类型 日志标签: 日志内容
+   例如：$ adb logcat -v time Checkin *:S
+   05-27 11:25:33.854 24713 24713 I Checkin: test log format
+   注：只有此种格式时 线程ID 为十进制数。
+   
+8. long       - [ 日期 调用时间 进程ID:线程ID 日志类型/日志标签 ] 转行显示 日志内容
+   例如：$ adb logcat -v long Checkin *:S
+   [ 05-27 11:25:33.854 24713:0x6089 I/Checkin ]
+   test log format
+
 
 
 显示时间绰	adb logcat -v threadtime
@@ -171,7 +297,6 @@ log输出到文件 	adb logcat -f filename
 
 		adb logcat ActivityManager:D *:E	打印标签为ActivityManager且优先级大于Debug,和其他优先级大于Error的log
 		adb logcat -s ActivityManager 等价与 adb logcat -s ActivityManager:D *:S
-
 
 
 
