@@ -297,3 +297,10 @@
 
 34 xclip
     xclip -sel clip < file 将file文件中的内容复制到剪切板上，Ctrl+V 复制
+
+35 管道边压缩边传输：
+
+    本地：
+    tar czvf - src_path | tar xzvf - -C dest_path
+    局域网：
+    tar czvf - src_path | ssh username@192.168.1.x tar xzvf - -C dest_path
