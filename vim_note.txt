@@ -26,7 +26,7 @@
 	nGG 		移动到第n行
 	ctrl+G		当前位置
 	ctrl + O	切换到上一次位置
-	ctrl +　］	切换到下一次的位置
+	ctrl + I	切换到下一次的位置
 	set number	设置显示行号
 	set nonumber	设置不显示行号
 	Ctrl + U	向上滚动一屏	
