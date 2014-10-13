@@ -304,3 +304,17 @@
     tar czvf - src_path | tar xzvf - -C dest_path
     局域网：
     tar czvf - src_path | ssh username@192.168.1.x tar xzvf - -C dest_path
+
+36 find 命令
+    -prune 参数 排除某个目录  -o 或者
+    find ./ -name aaa -prune -o -name *.java   在当前目录下查找java文件，跳过目录aaa
+
+    -print0
+    find ./ -name *.java -print 等价于 find ./ -name *.java
+    查询结果以换行符结束
+
+    find ./ -name *.java -print0 
+    查询结果以'\0'空字符结束
+
+    find ./ -type f -name *.java -print0 | xargs -0 grep --color -n "aaa"
+    在当前目录的java文件中查找字符串“aaa”
