@@ -1,0 +1,72 @@
+1.竞争条件：
+    两个或多个进程读写某些共享数据，而最后的结果取决于进程运行的精确时序，称为竞争条件（race condition）
+
+    惰性初始化，复合操作
+
+    demo 检查才运行(复合操作)
+        if(A){
+            B
+        }
+    假定，A操作，B操作均是原子操作，但是此类符合代码却存在竞争条件，多线程操作会因不同步，产生意外结果
+
+    原子操作：一个操作序列在任何情况下都不可以被打断！
+
+2.锁
+    内部锁 (互斥锁 mutex 至多有一个线程可以拥有锁)
+        synchronized (obj){
+            /*...*/
+        }
+
+    重进入 (可避免死锁)
+    重进入意味着所有请求是基于“每线程”而不是基于“每调用”的（pthread POSIX threads）的互斥锁的默认锁行为不同，它的授权是基于“每调用”的
+    ReentrantLock
+
+    (1)锁提供了两种主要特性：互斥（mutual exclusion） 和可见性（visibility）
+    (2)volatile变量具有可见性特性，但是不具备原子特性
+
+3.可见性
+    我们不仅希望避免一个线程修改其他线程正在使用对象的状态，而且希望确保当一个线程修改了对象的状态后，其他的线程能够真正看到改变。(同步)
+
+    public class Visibility {
+
+        private /*volatile*/ static boolean stop;
+
+        public static void main(String[] args) throws Exception {
+            Thread t1 = new Thread(new Runnable(){
+                public void run() {
+                    int i = 0;
+                    while(!stop) {//无volatile 此可能不能进入
+                        i++;
+                    }
+                    System.out.println("finish loop,i=" + i);
+                }
+            });
+            t1.start();
+            Thread.sleep(1000);
+            stop = true;
+            Thread.sleep(2000);
+            System.out.println("finish main");
+        }
+    }
+
+    volatile修饰的成员变量在每次被线程访问时，都强迫从共享内存中重读该成员变量的值。而且，当成员变量发生变化时，强迫线程将变化值回写到共享内存。这样在任何时刻，两个不同的线程总是看到某个成员变量的同一个值。
+    使用建议：在两个或者更多的线程访问的成员变量上使用volatile。当要访问的变量已在synchronized代码块中，或者为常量时，不必使用
+
+    volatile使用条件：可以被写入 volatile 变量的这些有效值独立于任何程序的状态，包括变量的当前状态(i++ 不可以)
+
+
+
+    demo 开销较低的读－写锁策略
+
+    public class CheesyCounter {
+        // Employs the cheap read-write lock trick
+        // All mutative operations MUST be done with the 'this' lock held
+        @GuardedBy("this") 
+        private volatile int value;//保证value的可见性
+
+        public int getValue() { return value; }
+
+        public synchronized int increment() {//保证写操作的原子性
+            return value++;
+        }
+    }
