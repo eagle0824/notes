@@ -22,7 +22,18 @@
     ReentrantLock
 
     (1)锁提供了两种主要特性：互斥（mutual exclusion） 和可见性（visibility）
-    (2)volatile变量具有可见性特性，但是不具备原子特性
+        读取和写入线程必须使用公共的锁进行同步
+    (2)volatile 确保对一个变量的更新以可预见的方式告知其他的线程
+        变量具有可见性特性，但是不具备原子特性
+
+    一般说来，volatile用在如下的几个地方：
+        1、中断服务程序中修改的供其它程序检测的变量需要加volatile；
+        
+        2、多任务环境下各任务间共享的标志应该加volatile；
+        
+        3、存储器映射的硬件寄存器通常也要加volatile说明，因为每次对它的读写都可能由不同意义；
+        
+        另外，以上这几种情况经常还要同时考虑数据的完整性（相互关联的几个标志读了一半被打断了重写），在1中可以通过关中断来实现，2中可以禁止任务调度，3中则只能依靠硬件的良好设计了。
 
 3.可见性
     我们不仅希望避免一个线程修改其他线程正在使用对象的状态，而且希望确保当一个线程修改了对象的状态后，其他的线程能够真正看到改变。(同步)
@@ -61,7 +72,7 @@
     public class CheesyCounter {
         // Employs the cheap read-write lock trick
         // All mutative operations MUST be done with the 'this' lock held
-        @GuardedBy("this") 
+        @GuardedBy("this")
         private volatile int value;//保证value的可见性
 
         public int getValue() { return value; }
@@ -69,4 +80,8 @@
         public synchronized int increment() {//保证写操作的原子性
             return value++;
         }
+
     }
+
+4.共享数据
+    非原子的64位操作，double/long -------volatile 或 加锁
