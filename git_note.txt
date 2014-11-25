@@ -316,6 +316,29 @@ Git Tag
 	git tag v1 ebff # log 是 commit ebff810c461ad1924fc422fd1d01db23d858773b 的內容, 設定簡短好記得 Tag: v1
       * git tag 中文 ebff # tag 也可以下中文, 任何文字都可以
       * git tag -d 中文 # 把 tag=中文 刪掉
+
+      添加tag
+      git tag -a v1.1 -m "new release"
+
+      对之前某次提交添加标签
+      git tag -a v1.1 commitid
+      
+      tag push 到服务器
+      git push --tags
+
+      删除本地tag
+      git tag -d v1.1
+
+      删除服务器tag
+      git push origin :refs/tags/v1.1
+      或者 git push origin :v1.1
+
+      察看本地tag
+      git tag -l
+
+      切换到某一个tag并创建新的分支
+      git checkout v1.1 -b new_branch_name
+
 Git log
 	git log # 將所有 log 秀出
       * git log --all # 秀出所有的 log (含 branch)
