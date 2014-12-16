@@ -64,7 +64,7 @@
 	     [echo]               unless 'nodeps' is used as well.
 
 
-jdk	jarsigner
+4 jdk	jarsigner
 	用法：jarsigner [选项] jar 文件别名
        jarsigner -verify [选项] jar 文件
 
@@ -114,4 +114,10 @@ jdk	jarsigner
 	jarsigner -verify ./bin/TestApp-release.apk 
 	jar 已验证。
 
+5. dumpsys
+    查看dumpsys 支持的参数 
+    adb shell dumpsys | grep "DUMP OF SERVICE"
 
+    example:
+        dumpsys activty  打印系统activity信息
+        dumpsys meminfo  打印内存信息
