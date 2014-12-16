@@ -318,3 +318,43 @@
 
     find ./ -type f -name *.java -print0 | xargs -0 grep --color -n "aaa"
     在当前目录的java文件中查找字符串“aaa”
+
+37 格式化sdcard
+
+   (1) mount 查看设备
+    mount
+   
+   /dev/sdb1 on /media/B917-F8EC type vfat (rw,nosuid,nodev,uid=1000,gid=1000,shortname=mixed,dmask=0077,utf8=1,showexec,flush,uhelper=udisks)
+    是我们的sdcard设备
+   (2) fdisk 查看分区
+    fdisk /dev/sdb
+    
+    p(查看分区)
+    
+    Command (m for help): p
+
+
+    Disk /dev/sdb: 3965 MB, 3965190144 bytes
+    128 heads, 63 sectors/track, 960 cylinders, total 7744512 sectors
+    Units = sectors of 1 * 512 = 512 bytes
+    Sector size (logical/physical): 512 bytes / 512 bytes
+    I/O size (minimum/optimal): 512 bytes / 512 bytes
+    Disk identifier: 0x00000000
+
+       Device Boot      Start         End      Blocks   Id  System
+       /dev/sdb1
+
+    显示仅有一个分区
+
+    若有多个分区此处要执行删除分区命令(d)
+    q 退出
+    (3)umount /dev/sda1
+    (4)格式化
+        mkfs.vfat /dev/sda1
+    即可完成对sdcard的格式化
+    查看：
+        mkdir /mnt/sda1 创建挂在目录
+        mount /dev/sda1 /mnt/sda1 将sdcard设备挂载到/mnt/sda1
+        df -h /mnt/sda1 查看sdcard容量
+
+    
