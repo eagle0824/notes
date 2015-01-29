@@ -1,121 +1,93 @@
 怎样使用Eclipse来开发Android源码
-    用eclipse ＋ ADT作为android开发工具，可以说是很方便的，在HelloActivity小程序里我们就感觉到eclipse功能的强大。那么，我们可以用 eclipse来开发android源码吗？如果我们直接把android源码里一个工程导入eclipse，一般来说都会出现错误，说许多类库（包）找不到。 
 
-今天找到关于怎样使用eclipse来开发android源码的官方文档： 
+今天找到关于怎样使用eclipse来开发android源码的官方文档：
 
-https://sites.google.com/a/android.com/opensource/using-eclipse 
+https://sites.google.com/a/android.com/opensource/using-eclipse
 
-从该文档和实践可以总结出几点： 
+下面，从官方文档总结出具体怎样用eclipse来开发android源码
 
-1、可以使用eclipse来编辑JAVA程序、检查错误（主要是类库包含和语法方面），但是不能在eclipse上编译运行android源码，还是得在shell中make(或mm或mmm) 
+1、建立基本的android开发环境
 
-2、android源码文件夹里提供有一些eclipse配置文件， 
+请参考官方文档或＜android模拟器在ubuntu8.10的安装＞
 
-.claapath：eclipse工程的配置文件，方便我们直接把android源码相应的文件和JAVA包导入工程 
+2、编译android源码
 
-android-formatting.xml和android.importorder：这个很重要，主要是用来规范我们的编码风格，更容易使我们的代码风格一致 
+android源码根目录下通过make进行编译，请注意一些配置，具体可参考＜android源码的编译＞
 
-3、把android源码作为一个工程导入eclipse时，必须注意两点 
+3、把eclipse工程配置文件复制到android源码根目录下
 
-1)、新建的工程必须是java project，不能是android project，否则会破坏android源码（一般是多添加文件/文件夹） 
+cp development/ide/eclipse/.classpath ./
 
-2)、导入前最好检查.classpath里的文件在android源码中是否有相应的文件（文件夹），否则也会破坏android源码（一般是多添加文件/文件夹） 
+chmod u+w .classpath  # Make the copy writable
+
+4、修改eclipse程序的配置
+
+1）、修改eclipse缓存设置
+
+把eclipse.ini（在eclipse软件的安装目录下）的3个值改为下面的值：
+
+-Xms128m
+
+-Xmx512m
+
+-XX:MaxPermSize=256m
+
+2）、把android-formatting.xml和android.importorder导入eclipse
+
+android-formatting.xml、.classpath和android.importorder都放在development/ide/eclipse/下
+
+android-formatting.xml用来配置eclipse编辑器的代码风格；
+android.importorder用来配置eclipse的import的顺序和结构。
+
+eclipse
+
+在window->preferences->java->Code style->Formatter中导入android-formatting.xml
+在window->preferences->java->Code style->Organize Imports中导入android.importorder
 
 
+3）、安装anyedit插件（可选）
 
-总的来说： 
+在http://andrei.gmxhome.de/anyedit/下载并导入eclipse中
 
-1、用eclipse来编辑代码、检查错误 
+5、把android源码作为一个工程导入eclipse
 
-2、不在eclipse上编译、运行android源码程序，只能在命令行通过make(或mm或mmm)编译android源码 
+导入前先检查.classpath里的文件在android源码中是否有相应的文件（文件夹），否则也会破坏android源码（一般是多添加文件/文件夹），.classpath里多余的路径可删除
 
-3、可以在eclipse上调试android源码程序（原理：eclipse通过ddms服务器在emulator上进行调试），并可以单步调试、断点调试。 
+新建Java Project（不是android project，否则会破坏android源码），选择从已存在的工程导入，工程名任意，完成。
 
+导入时，eclipse要build工程，比较慢。导完后，一般都没有错误。
 
+6、eclipse上调试android里的程序。
 
-下面，从官方文档总结出具体怎样用eclipse来开发android源码 
+先执行：
 
+cd android源码目录
 
+. build/envsetup.sh
 
-1、建立基本的android开发环境 
+lunch 1   # to build the emulator
 
-请参考官方文档或＜android模拟器在ubuntu8.10的安装＞ 
+emulator &  # you should see a GUI picture of a phone
 
-2、编译android源码 
+ddms &     # you should get a splufty debugging console
 
-android源码根目录下通过make进行编译，请注意一些配置，具体可参考＜android源码的编译＞ 
+然后在eclipse中配置调试类型和端口：
 
-3、把eclipse工程配置文件复制到android源码根目录下 
+在Run->Debug Configurations->Remote java application上双击，然后，”Host:”设为localhost，”Port:”设为8700，”Connection Type”为Standard(Socket Attach)
 
-cp development/ide/eclipse/.classpath ./ 
+然后“Apply”
 
-chmod u+w .classpath  # Make the copy writable 
+注意，在点击”Debug”时苦出错，说8700端口被占用，那么把DDMS程序关掉，重新打开DDMS就OK了。如果提供连不到VM错误时，请注意，要先在DDMS中选中某一进程（对应某一应用程序），才能在eclipse执行 Debug。
 
-4、修改eclipse程序的配置 
+在eclipse调试时，可以设断点、单步调试。估计google团队也是这样开发、调试android应用程序的
 
-1）、修改eclipse缓存设置 
+7、编译android源码
 
-把eclipse.ini（在eclipse软件的安装目录下）的3个值改为下面的值： 
+执行：
 
--Xms128m 
+cd android源码目录
 
--Xmx512m 
-
--XX:MaxPermSize=256m 
-
-2）、把android-formatting.xml和android.importorder导入eclipse 
-
-android-formatting.xml、.classpath和android.importorder都放在development/ide/eclipse/下 
-
-android-formatting.xml用来配置eclipse编辑器的代码风格；android.importorder用来配置eclipse的import的顺序和结构。 
-
-在window->preferences->java->Code style->Formatter中导入android-formatting.xml 
-
-在window->preferences->java->Code style->Organize Imports中导入android.importorder 
-
-3）、安装anyedit插件（可选） 
-
-在http://andrei.gmxhome.de/anyedit/下载并导入eclipse中 
-
-5、把android源码作为一个工程导入eclipse 
-
-导入前先检查.classpath里的文件在android源码中是否有相应的文件（文件夹），否则也会破坏android源码（一般是多添加文件/文件夹），.classpath里多余的路径可删除 
-
-新建Java Project（不是android project，否则会破坏android源码），选择从已存在的工程导入，工程名任意，完成。 
-
-导入时，eclipse要build工程，比较慢。导完后，一般都没有错误。 
-
-6、eclipse上调试android里的程序。 
-
-先执行： 
-
-cd android源码目录 
-
-. build/envsetup.sh 
-
-lunch 1   # to build the emulator 
-
-emulator &  # you should see a GUI picture of a phone 
-
-ddms &     # you should get a splufty debugging console 
-
-然后在eclipse中配置调试类型和端口： 
-
-在Run->Debug Configurations->Remote java application上双击，然后，”Host:”设为localhost，”Port:”设为8700，”Connection Type”为Standard(Socket Attach) 
-
-然后“Apply” 
-
-注意，在点击”Debug”时苦出错，说8700端口被占用，那么把DDMS程序关掉，重新打开DDMS就OK了。如果提供连不到VM错误时，请注意，要先在DDMS中选中某一进程（对应某一应用程序），才能在eclipse执行 Debug。 
-
-在eclipse调试时，可以设断点、单步调试。估计google团队也是这样开发、调试android应用程序的 
-
-7、编译android源码 
-
-执行： 
-
-cd android源码目录 
-
-. build/envsetup.sh 
+. build/envsetup.sh
 
 那么就会多出mm/mmm等命令，mm/mmm用来编译模块（包括C、C＋＋、JAVA程序）。我们也可以直接在 android源码根目录下执行“make 模块名”来编译模块。
 
@@ -129,11 +101,19 @@ cd android源码目录
 	（2） 修改Eclipse的设置
 		修改eclipse.ini文件，更改下列内容：
 		[plain] view plaincopy
-		-Xms40m  
-		-Xmx384m  
+		-Xms40m
+		-Xmx384m
 		改为：
 		[java] view plaincopy
-		-Xms128m  
-		-Xmx512m  
+		-Xms128m
+		-Xmx512m
 		这里增大最小Java堆大小到128MB，增大最大Java堆大小到512MB。
 	（3）新建java工程，location选择，源码framework目录
+
+
+3. eclipse查看jdk源码
+   widow-> Preferences-> java -> installed JRES -> 右边选中当前jdk-> Edit
+   -> 单击 rt.jar -> Source attachment 双击->External location 添加路径或文件(JAVA_HOME/src.zip)
+
+4. eclipse 查看android源码
+    右击项目->java Build path -> android.jar 单击 -> Source attachment 双击-> 选择源码路径 framework/base/core 或（sdk源码包)

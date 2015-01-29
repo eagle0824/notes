@@ -11,7 +11,7 @@
 	ctrl + y	将之前剪切的命令，复制到当前光标位置
 
 
-	
+
 
 
 
@@ -19,7 +19,7 @@
 
 2	nautilus path		可视化查看文件夹命令
 
-3	mount 命令 
+3	mount 命令
 		mount [-t type] [-o options] device dir
 		mount -o remount,ro newdir	//重新挂载更改权限,只读权限
 	-t通常不用置顶,命令会自动匹配
@@ -39,7 +39,7 @@
 		sudo mount /dev/sda1 /mnt/media	//将/dev/sda1挂载到/mnt/media
 		sudo mount -t vfat -o iocharset=utf8 /dev/sdc1 /mnt/media	// -t 表示磁盘格式为fats -o表示iocharset=utf8显示中文
 		sudo umount /mnt/media			//卸载/dev/sda1
-		
+
 	umount	执行时,发现device is busy
 		lsof(list open file) 列出打开的所有文件目录和共享库
 		lsof /mnt/media
@@ -71,7 +71,7 @@
 	df -h --max-depth=1 filepath/folderpath
 
 
-	du -sh * | sort -nr 
+	du -sh * | sort -nr
 
 9	ps
 
@@ -85,14 +85,14 @@
 	s	sock文件(见/dev)
 	b	block文件(见/dev)
 	c	字符文件
-	
-	ls -sh	易读形式显示文件大小	-s  size	-h 易读格式显示文件大小 
+
+	ls -sh	易读形式显示文件大小	-s  size	-h 易读格式显示文件大小
 
 11	touch 文件名 创建文件/修改文件各种时间
 	touch * 修改当前目录下文件修改时间
 
 12	chattr	设置文件属性	chattr +i filename (文件filename,不能删除)
-	lsattr	查看文件属性	
+	lsattr	查看文件属性
 
 13	解压命令
 	tar -xzvf httpd-2.0.48.tar.gz	z表示.tar.gz文件
@@ -115,67 +115,67 @@
 	sudo apt-get remove name	卸载
 
 17	下面是使用linux 自带的dd命令测试硬盘的读写速度。
-   
+
     time有计时作用，dd用于复制，从if读出，写到of.if=/dev/zero不产生IO,因此可以用来测试纯写速度。同理of=/dev/null不产生IO,可以用来测试纯读速度。bs是每次读或写的大小，即一个块的大小，count是读写块的数量。
-   
+
     测/data目录所在磁盘的纯写速度：
-   
+
     [root@nagios ~]# time dd if=/dev/zero of=/var/test bs=8k count=1000000
-   
+
     1000000+0 records in
-   
+
     1000000+0 records out
-   
+
     8192000000 bytes （8.2 GB） copied, 52.5749 seconds, 156 MB/s
-   
+
     real    0m55.841s
-   
+
     user    0m0.507s
-   
+
     sys     0m15.706s
-   
+
     ##红色部分是因为使用了time命令才显示的，因此需要time命令来计算复制的时间。
-   
+
     测/data目录所在磁盘的纯读速度：
-   
+
     [root@nagios ~]# time dd if=/var/test of=/dev/null bs=8k
-   
+
     1000000+0 records in
-   
+
     1000000+0 records out
-   
+
     8192000000 bytes （8.2 GB） copied, 49.0088 seconds, 167 MB/s
-   
+
     real    0m49.025s
-   
+
     user    0m0.559s
-   
+
     sys     0m6.383s
-   
+
     测读写速度：
-   
+
     [root@nagios ~]# time dd if=/var/test of=/tmp/test bs=64k
-   
+
     125000+0 records in
-   
+
     125000+0 records out
-   
+
     8192000000 bytes （8.2 GB） copied, 129.239 seconds, 63.4 MB/s
-   
+
     real    2m9.251s
-   
+
     user    0m0.114s
-   
+
     sys     0m21.494s
-   
+
     看来这个测试结果还不错，嘿嘿
-   
+
     备注：理论上测试复制量越大测试结果越准确。
-   
+
     正常测试的时候可能不止测试一边，可能会需要很多遍求取平均值，这个测试结果在普通的重定向是没有效果的 之后 google 了一下 用下面的方式重定向到一个文件
-   
+
     dd if=/dev/zero of=/var/test bs=8k count=1000000  2》 info
-   
+
     这样测试的结果就到info文件里面了
 
 
@@ -184,10 +184,10 @@
 	察看内核log
 
 
-19	快速匹配之前输入的命令	
+19	快速匹配之前输入的命令
 	ctrl + R
 	提示之前输入过的命令，输入开始字符匹配
-	
+
 	输入	history
 	执行	！number
 	同样功能
@@ -204,9 +204,9 @@
 	LC_ALL=C	C是unix系统原始locale，sort时添加LC_ALL=C，是屏蔽本地化设置，按照byte排序，速度比较快
 23	命令行窗口输入制表符	ctrl-v ctrl-i
 
-	
 
-24 whereis 
+
+24 whereis
 	查询命名
 	for example		whereis ssh
 				whereis bash
@@ -256,12 +256,12 @@
 	cd ~         #同样也是回到主目录，一般用于进入主目录的下级目录
 
 
-27	export 
+27	export
 		export [-fn] [name[=value] ...] or export -p
 		创建环境变量或者方法[-f]
 		export或者export -p显示所有变量定义
 		export设置的环境变量，保存在内存中，用户推出当前shell后就丢失，要想每次开机自动load可以保存在/etc/profile（全局用户） 或者/home/.bashrc（当前用户）文件中
-	unset	
+	unset
 		unset [-f] [-v] [name ...]
 		撤销环境变量或方法[-f]
 
@@ -280,7 +280,7 @@
 
 30	修改用户密码
 	（1）普通用户
-	passwd 用户名	
+	passwd 用户名
 		输入之前用户密码，输入两次新密码
 	（2）root用户
 	passwd
@@ -291,7 +291,7 @@
 
 32 	tee	从标准输入读取数据，并将数据写入标准输出和文件
 	adb logcat | tee file
-	
+
 33 	cut 截取字符串（man cut）
 	echo hello | cut -c 2-4 输出（ello）
 
@@ -313,7 +313,7 @@
     find ./ -name *.java -print 等价于 find ./ -name *.java
     查询结果以换行符结束
 
-    find ./ -name *.java -print0 
+    find ./ -name *.java -print0
     查询结果以'\0'空字符结束
 
     find ./ -type f -name *.java -print0 | xargs -0 grep --color -n "aaa"
@@ -323,14 +323,14 @@
 
    (1) mount 查看设备
     mount
-   
+
    /dev/sdb1 on /media/B917-F8EC type vfat (rw,nosuid,nodev,uid=1000,gid=1000,shortname=mixed,dmask=0077,utf8=1,showexec,flush,uhelper=udisks)
     是我们的sdcard设备
    (2) fdisk 查看分区
     fdisk /dev/sdb
-    
+
     p(查看分区)
-    
+
     Command (m for help): p
 
 
@@ -357,4 +357,15 @@
         mount /dev/sda1 /mnt/sda1 将sdcard设备挂载到/mnt/sda1
         df -h /mnt/sda1 查看sdcard容量
 
-    
+38 查看系统内存使用情况
+    free
+    free -m 以M为单位查看系统内存使用情况
+
+    清理内存
+    sync
+    echo 3 > /proc/sys/vm/drop_caches
+
+39 dpkg --help
+    dpkg -l 显示安装包信息
+    dpkg -i *.deb安装deb文件
+

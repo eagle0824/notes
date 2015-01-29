@@ -108,16 +108,20 @@
 
 	[-providerClass <类>        加密服务提供者的名称
 	[-providerArg <参数>]] ... 主类文件和构造函数参数
-	
+
 
 	（1）验证签名是否成功
-	jarsigner -verify ./bin/TestApp-release.apk 
+	jarsigner -verify ./bin/TestApp-release.apk
 	jar 已验证。
 
 5. dumpsys
-    查看dumpsys 支持的参数 
+    查看dumpsys 支持的参数
     adb shell dumpsys | grep "DUMP OF SERVICE"
 
     example:
         dumpsys activty  打印系统activity信息
         dumpsys meminfo  打印内存信息
+
+6. aapt
+    aapt d badging file
+    查看apk的包名和主activity名等基本信息
