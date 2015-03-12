@@ -1,9 +1,9 @@
-1.//josn数组解析实例 
+1.//josn数组解析实例
    String string =  "{"
         + " \"id\":0,"
        + " \"cmd\": \"awl\","
         + " \"cnt\":[{\"list_number\":\"10086\",\"list_name\":\"name2\"},"
-        + " {"+ 
+        + " {"+
         " \"list_number\":\"10000\",\"list_name\":\"name\" "+
                         "}]}";
       JSONObject jsonObject = (JSONObject) new JSONTokener(str).nextValue();
@@ -16,19 +16,19 @@
 
     public static void addWhiteList(Context context,String str){
         String strSTR = "[{\"list_number\":\"10086\",\"list_name\":\"name2\"},"
-            + " {"+ 
+            + " {"+
             " \"list_number\":\"10000\",\"list_name\":\"name\" "+
                             "}]";
         Log.d(TAG,"STR:"+str);
-       
+
             JSONArray jsonArray = new JSONArray(strSTR);
             Log.d(TAG,"jsonArray:"+jsonArray.length());
             for (int j=0; j<jsonArray.length();j++) {
                 String address = (String) jsonArray.getJSONObject(j).get(
                         "list_number");
                 Log.d(TAG, "number:" + address);
- 
-            }    
+
+            }
    }
 
 	[]	Array
@@ -54,7 +54,7 @@ private boolean isConnected() {
 
 
 //判断网络是否可以使用
-	private boolean isNetworkAvailable(){           
+	private boolean isNetworkAvailable(){
 
             ConnectivityManager connectivity = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             if (connectivity == null) {
@@ -65,13 +65,13 @@ private boolean isConnected() {
                     for (int i = 0; i < info.length; i++) {
                         if (info[i].getState() == NetworkInfo.State.CONNECTED) {
                             return true;
-                        }   
-                    }   
-                }   
-            }   
+                        }
+                    }
+                }
+            }
             Log.w(TAG, "network is not available");
             return false;
-        }   
+        }
 
 
 通过ConnectivityManager获取NetworkInfo==（CM.getActiveNetworkInfo()）=networkInfo
@@ -180,7 +180,7 @@ private ContentObserver mContentObserver = new ContentObserver(new Handler()) {
 
 	涉及的目录：
 	(1)system/app		系统自带的应用程序，无法删除
-	(2)data/app		用户程序安装的目录，有删除权，安装时，将APK文件复制到此目录	
+	(2)data/app		用户程序安装的目录，有删除权，安装时，将APK文件复制到此目录
 	(3)data/data		存放应用程序的数据
 	(4)data/dalvik-cache	（dex文件时dalvik虚拟机的可执行文件，其大小约为原始apk文件大小的四分之一）
 
@@ -202,7 +202,7 @@ private ContentObserver mContentObserver = new ContentObserver(new Handler()) {
 	设备上，防止点不到最底下的按钮，ontouch事件，y点要偏移-10;即y的实际值为触点位置y+（-10）
 
 12.公开系统id，或者资源
-	（1）在build/frameworks/base/core/res/res/values/ids.xml 
+	（1）在build/frameworks/base/core/res/res/values/ids.xml
 	添加定义，例如： <item type="id" name="inputExtractAction" />
 	（2）在build/frameworks/base/core/res/res/values/public.xml
 	添加公开资源id，例如： <public type="id" name="inputExtractAction" id="0x0102002d" />
@@ -295,8 +295,8 @@ private ContentObserver mContentObserver = new ContentObserver(new Handler()) {
 	1.eclipse-->ddms-->devices-->screen capture(titlebar上的拍照图标)
 
 19.设置开屏密码等系统权限
-	1.receiver ---》DeviceAdminReceiver 
-	<receiver android:name=".app.DeviceAdminSample"      
+	1.receiver ---》DeviceAdminReceiver
+	<receiver android:name=".app.DeviceAdminSample"
 		android:label="@string/sample_device_admin"
 		android:description="@string/sample_device_admin_description"
 	       android:permission="android.permission.BIND_DEVICE_ADMIN">
@@ -342,7 +342,7 @@ private ContentObserver mContentObserver = new ContentObserver(new Handler()) {
 20.从资源文件中读取drawable
 	java.io.InputStream is = context.getResources().openRawResource(R.drawable.beach);
        BitmapFactory.Options opts = new BitmapFactory.Options();
-       Bitmap mBitmap;    
+       Bitmap mBitmap;
        opts.inJustDecodeBounds = true;
        mBitmap = BitmapFactory.decodeStream(is, null, opts);
 	canvas.drawBitmap(mBitmap, 10, y, p);
@@ -381,7 +381,7 @@ private ContentObserver mContentObserver = new ContentObserver(new Handler()) {
 
 	具体有一下几个关于类型的类的限制
 	DateKeyListener	DateTimeKeyListener	DialerKeyListener(电话号码相关)	DigitsKeyListener	KeyListener	LinkMovementMethod
-	MetaKeyKeyListener	MovementMethod	PasswordTransformationMethod	SingleLineTransformationMethod	TextKeyListener	
+	MetaKeyKeyListener	MovementMethod	PasswordTransformationMethod	SingleLineTransformationMethod	TextKeyListener
 	TimeKeyListener	TransformationMethod
 
 25.安装apk-----adb install -r ***.apk
@@ -454,14 +454,14 @@ private ContentObserver mContentObserver = new ContentObserver(new Handler()) {
 32.横竖屏切换不重启activity
 
 	可以给每个activity加上android:configChanges="keyboardHidden|orientation"属性,就不会重启activity.而是去调用onConfigurationChanged(Configuration newConfig). 这样就可以在这个方法里调整显示方式.比如
-Java代码  
-if(newConfig.orientation==Configuration.ORIENTATION_LANDSCAPE){   
-    //横向   
-    setContentView(R.layout.file_list_landscape);   
-}else{   
-    //竖向   
-    setContentView(R.layout.file_list);   
-} 
+Java代码
+if(newConfig.orientation==Configuration.ORIENTATION_LANDSCAPE){
+    //横向
+    setContentView(R.layout.file_list_landscape);
+}else{
+    //竖向
+    setContentView(R.layout.file_list);
+}
 
 
 33	横竖屏备忘
@@ -471,19 +471,19 @@ Android横竖屏要解决的问题应该就两个：一。布局问题；二。�
 
 1.布局问题：如果不想让软件在横竖屏之间切换，最简单的办法就是在项目的 AndroidManifest.xml中找到你所指定的activity中加上android:screenOrientation属性，他有以下几个参数：
 
-"unspecified" 
-默认值 由系统来判断显示方向.判定的策略是和设备相关的，所以不同的设备会有不同的显示方向. 
-"landscape" 
-横屏显示（宽比高要长） 
-"portrait" 
-竖屏显示(高比宽要长) 
-"user" 
-用户当前首选的方向 
-"behind" 
-和该Activity下面的那个Activity的方向一致(在Activity堆栈中的) 
-"sensor" 
-有物理的感应器来决定。如果用户旋转设备这屏幕会横竖屏切换。 
-"nosensor" 
+"unspecified"
+默认值 由系统来判断显示方向.判定的策略是和设备相关的，所以不同的设备会有不同的显示方向.
+"landscape"
+横屏显示（宽比高要长）
+"portrait"
+竖屏显示(高比宽要长)
+"user"
+用户当前首选的方向
+"behind"
+和该Activity下面的那个Activity的方向一致(在Activity堆栈中的)
+"sensor"
+有物理的感应器来决定。如果用户旋转设备这屏幕会横竖屏切换。
+"nosensor"
 忽略物理感应器，这样就不会随着用户旋转设备而更改了 （ "unspecified"设置除外 ）。
 
 也可以在Java代码中通过setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);来设置。
@@ -492,12 +492,12 @@ Android横竖屏要解决的问题应该就两个：一。布局问题；二。�
 
 1）在res目录下建立layout-land和layout-port目录,相应的layout文件不变，比如main.xml。layout-land是横屏的layout,layout-port是竖屏的layout，其他的不用管，模拟器会自动寻找。
 
-2）通过this.getResources().getConfiguration().orientation来判断当前是横屏还是竖屏然后来加载相应的xml布局文件。因为当屏幕变为横屏的时候,系统会重新呼叫当前Activity的OnCreate方法,你可以把以下方法放在你的OnCreate中来检查当前的方向,然后可以让你的SetContentView来载入不同的Layout xml. 
-if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) { 
-Log.i("info", "landscape"); 
-} 
-else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) { 
-Log.i("info", "portrait"); 
+2）通过this.getResources().getConfiguration().orientation来判断当前是横屏还是竖屏然后来加载相应的xml布局文件。因为当屏幕变为横屏的时候,系统会重新呼叫当前Activity的OnCreate方法,你可以把以下方法放在你的OnCreate中来检查当前的方向,然后可以让你的SetContentView来载入不同的Layout xml.
+if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+Log.i("info", "landscape");
+}
+else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+Log.i("info", "portrait");
 }
 
 2.重新载入问题。如果不需要从新载入，可以在androidmanifest.xml中加入配置android:configChanges="orientation"，配置android:configChanges的作用就是如文档所说的：Specify one or more configuration changes that the activity will handle itself. If not specified, the activity will be restarted if any of these configuration changes happen in the system。这样在程序中. Activity就不会重复的调用onCreate()甚至不会调用onPause.onResume.只会调用一个onConfigurationChanged(Configuration newConfig)。
@@ -514,31 +514,31 @@ Log.i("info", "portrait");
 
 保存临时图片：
 
-@Override 
-public Object onRetainNonConfigurationInstance() {  
-final LoadedPhoto[] list = new LoadedPhoto[numberOfPhotos];  
-    keepPhotos(list);  
-return list;  
-}  
+@Override
+public Object onRetainNonConfigurationInstance() {
+final LoadedPhoto[] list = new LoadedPhoto[numberOfPhotos];
+    keepPhotos(list);
+return list;
+}
 之后便可以在activity的onCreate()函数中实现重新调用临时文件，在代码中需要判断系统是否需要重新加载临时文件。以下是放在OnCreate()函数中加载临时文件的代码：
 
-private void loadPhotos() {  
-final Object data = getLastNonConfigurationInstance();  
-  
-// The activity is starting for the first time, load the photos from Flickr 
+private void loadPhotos() {
+final Object data = getLastNonConfigurationInstance();
+
+// The activity is starting for the first time, load the photos from Flickr
 
 
-if (data == null) {  
-        mTask = new GetPhotoListTask().execute(mCurrentPage);  
-    } else {  
-// The activity was destroyed/created automatically, populate the grid 
-// of photos with the images loaded by the previous activity 
-final LoadedPhoto[] photos = (LoadedPhoto[]) data;  
-for (LoadedPhoto photo : photos) {  
-            addPhoto(photo);  
-        }  
-    }  
-}  
+if (data == null) {
+        mTask = new GetPhotoListTask().execute(mCurrentPage);
+    } else {
+// The activity was destroyed/created automatically, populate the grid
+// of photos with the images loaded by the previous activity
+final LoadedPhoto[] photos = (LoadedPhoto[]) data;
+for (LoadedPhoto photo : photos) {
+            addPhoto(photo);
+        }
+    }
+}
 对于大多数的情况并不需要做如上的操作，所以需要谨慎使用这个行文，毕竟最好的行为也并不适用于所有情况，如果应用的不好反而会给程序带来不必要的麻烦。
 
 如果要彻底禁止翻转，可以设置android:screenOrientation的属性为nosensor，如此就可以忽略重力感应带来的麻烦了。不过不知道为什么，在模拟器上不管用，听别人说在真机上是正确的，我没有真机，等有了真机再试试看。
@@ -550,18 +550,18 @@ for (LoadedPhoto photo : photos) {
 
 35	android屏幕禁止休眠的方法
 
-	实现这一功能的方法有两种，一种是在Manifest.xml文件里面声明，一种是在代码里面修改LayoutParams的标志位。具体如下： 
+	实现这一功能的方法有两种，一种是在Manifest.xml文件里面声明，一种是在代码里面修改LayoutParams的标志位。具体如下：
 
-	1、在Manifest.xml文件里面用user-permission声明。代码如下： 
-   		<uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission> 
+	1、在Manifest.xml文件里面用user-permission声明。代码如下：
+   		<uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
 
-　　	这种方法，在安装apk时，系统会提示安装人是否允许使用禁止休眠功能。 
+　　	这种方法，在安装apk时，系统会提示安装人是否允许使用禁止休眠功能。
 
-	2、在程序中用代码实现。代码如下： 
-	getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, 		WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); 
+	2、在程序中用代码实现。代码如下：
+	getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, 		WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-复制代码 
-　　把这段代码加在setContentView(R.layout.main)之前即可 
+复制代码
+　　把这段代码加在setContentView(R.layout.main)之前即可
 　　这种方法，安装时，不会提示安装人是否允许使用禁止休眠功能
 
 
@@ -571,17 +571,17 @@ for (LoadedPhoto photo : photos) {
 
 	在画图的时候，图片如果旋转或缩放之后，总是会出现那些华丽的锯齿。其实Android自带了解决方式。
    	 方法一：给Paint加上抗锯齿标志。然后将Paint对象作为参数传给canvas的绘制方法。
-	Java代码  	paint.setAntiAlias(true);   
+	Java代码  	paint.setAntiAlias(true);
    	 方法二：给Canvas加上抗锯齿标志。
 	有些地方不能用paint的，就直接给canvas加抗锯齿，更方便。
-	Java代码  	canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));   
+	Java代码  	canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));
 
- 
+
 
 37	android 的invalidate与postinvalidate的用法
 
 	根据Android SDK api文档说明 invalidate 方法是用来更新视图（View）的方法，不过这东西的用法比较古怪 invalidate 方法如果你直接在主线程中调用，是看不到任何更新的。如果跟线程结合使用的话比如在下面的代码中就会抛出异常 UIThread implements Runnable{ public voi
-　　 
+　　
 根据Android SDK api文档说明
 invalidate 方法是用来更新视图（View）的方法，不过这东西的用法比较古怪
 invalidate 方法如果你直接在主线程中调用，是看不到任何更新的。
@@ -607,16 +607,16 @@ class UIUpdateThread implements Runnable{
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                
+
             }
-            
+
              final Handler mHandler = new Handler();
                 final Runnable mUpdateResults = new Runnable() {
                     public void run() {
                         invalidate(); //更新视图
                     }
                 };
-            
+
 }
 你必须实现一个Handler.然后再你下载数据的线程中放上一个mHandler.post(mUpdateResults);这样就可以了。
 
@@ -634,22 +634,22 @@ public void run(){
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             // 这里处理视图需要更新的代码。
-                    
+
         }
    };
-  
+
 37	android隐藏titlebar
 	代码中
 	requestWindowFeature(Window.FEATURE_NO_TITLE);requestWindowFeature(Window.FEATURE_NO_TITLE);
 	代码中，全屏（同时隐藏statubar）
-	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-	
+
 	manifest.xml中
 	android:theme="@android:style/Theme.Black.NoTitleBar"
-	代码中，全屏	
+	代码中，全屏
 	android:theme="@android:style/Theme.Black.NoTitleBar.FullScreen"
- 
+
 WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context.WINDOW_SERVICE);
 
 38	设置textView中文字滚动效果（代码，xml中都要添加）
@@ -665,41 +665,41 @@ WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context
 
 
 40	除去string 中的html标签
-      public  String html2Text(String inputString) {    
-      String htmlStr = inputString; //含html标签的字符串    
-      String textStr ="";    
-      java.util.regex.Pattern p_script;    
-      java.util.regex.Matcher m_script;    
-      java.util.regex.Pattern p_style;    
-      java.util.regex.Matcher m_style;    
-      java.util.regex.Pattern p_html;    
-      java.util.regex.Matcher m_html;    
-          
-      try {    
-       String regEx_script = "<[/s]*?script[^>]*?>[/s/S]*?<[/s]*?//[/s]*?script[/s]*?>"; //定义script的正则表达式{或<script>]*?>[/s/S]*?<//script> }    
-       String regEx_style = "<[/s]*?style[^>]*?>[/s/S]*?<[/s]*?//[/s]*?style[/s]*?>"; //定义style的正则表达式{或<style>]*?>[/s/S]*?<//style> }    
-          String regEx_html = "<[^>]+>"; //定义HTML标签的正则表达式    
-           
-          p_script = Pattern.compile(regEx_script,Pattern.CASE_INSENSITIVE);    
-          m_script = p_script.matcher(htmlStr);    
-          htmlStr = m_script.replaceAll(""); //过滤script标签    
-   
-          p_style = Pattern.compile(regEx_style,Pattern.CASE_INSENSITIVE);    
-          m_style = p_style.matcher(htmlStr);    
-          htmlStr = m_style.replaceAll(""); //过滤style标签    
-           
-          p_html = Pattern.compile(regEx_html,Pattern.CASE_INSENSITIVE);    
-          m_html = p_html.matcher(htmlStr);    
-          htmlStr = m_html.replaceAll(""); //过滤html标签    
-           
-       textStr = htmlStr;    
-           
-      }catch(Exception e) {    
-                  System.err.println("Html2Text: " + e.getMessage());    
-      }    
-          
-      return textStr;//返回文本字符串    
-    }      
+      public  String html2Text(String inputString) {
+      String htmlStr = inputString; //含html标签的字符串
+      String textStr ="";
+      java.util.regex.Pattern p_script;
+      java.util.regex.Matcher m_script;
+      java.util.regex.Pattern p_style;
+      java.util.regex.Matcher m_style;
+      java.util.regex.Pattern p_html;
+      java.util.regex.Matcher m_html;
+
+      try {
+       String regEx_script = "<[/s]*?script[^>]*?>[/s/S]*?<[/s]*?//[/s]*?script[/s]*?>"; //定义script的正则表达式{或<script>]*?>[/s/S]*?<//script> }
+       String regEx_style = "<[/s]*?style[^>]*?>[/s/S]*?<[/s]*?//[/s]*?style[/s]*?>"; //定义style的正则表达式{或<style>]*?>[/s/S]*?<//style> }
+          String regEx_html = "<[^>]+>"; //定义HTML标签的正则表达式
+
+          p_script = Pattern.compile(regEx_script,Pattern.CASE_INSENSITIVE);
+          m_script = p_script.matcher(htmlStr);
+          htmlStr = m_script.replaceAll(""); //过滤script标签
+
+          p_style = Pattern.compile(regEx_style,Pattern.CASE_INSENSITIVE);
+          m_style = p_style.matcher(htmlStr);
+          htmlStr = m_style.replaceAll(""); //过滤style标签
+
+          p_html = Pattern.compile(regEx_html,Pattern.CASE_INSENSITIVE);
+          m_html = p_html.matcher(htmlStr);
+          htmlStr = m_html.replaceAll(""); //过滤html标签
+
+       textStr = htmlStr;
+
+      }catch(Exception e) {
+                  System.err.println("Html2Text: " + e.getMessage());
+      }
+
+      return textStr;//返回文本字符串
+    }
 
 
 
@@ -741,7 +741,7 @@ WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context
           	 }
       	  }
    	 };
-	
+
 	其中要在xml文件中添加权限
 	 <uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
 
@@ -763,7 +763,7 @@ WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context
                 }
             }
 
-43	重启modeom	
+43	重启modeom
 	echo 0 > /sys/devices/platform/u6300_modem/power_state
 	ls /dev/ttyUSB*
 
@@ -775,7 +775,7 @@ WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context
 
 45	listview getChildAt()方法，at中取值只能取当前屏幕中可见项目的（0到n-1）n为当前屏幕看见item的数目
 	取位于listview的第y个item，要通过getChildAt(y-getFirstVisiblePosition())即可获得第y个item，直接通过getChildAt（y）取，会得到null
-	
+
 46	layout.xml中包含另一个layout可以用在当前layout文件中，添加<include layout="@layout/layoutid" />
 
 47	android:textAppearance="?android:attr/textAppearanceLarge"
@@ -815,12 +815,12 @@ WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context
 	android:descendantFocusability值
 	beforeDescendants	0	 The ViewGroup will get focus before any of its descendants.
 	afterDescendants	1	The ViewGroup will get focus only if none of its descendants want it.
-	blocksDescendants	2	The ViewGroup will block its descendants from receiving focus. 
+	blocksDescendants	2	The ViewGroup will block its descendants from receiving focus.
 
 	listview item中可能有button，此时，若同时设置button和listitem的selector，点击listitem时，button背景会改变
 	android：duplicateParentState=”false“不管用
 	解决办法，修改button背景，为默认，设置button的ontouch事件，在onkeydown与onkeyup时，分别设置button的背景
-	
+
 
 52	过滤文件夹目录下文件类型xml示例（）
 	File file = new File(Constants.PATH_CARBOX+Constants.PATH_ROADBOOK);
@@ -844,7 +844,7 @@ WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context
 	今天在Android项目中要实现一个通过GPS或NetWork来获取当前移动终端设备的经纬度功能。要实现该功能要用到Android Framework 中的 LocationManager 类。下面我就直接贴上主要的代码说明如何实现通过GPS或NetWork来获取实时位置的经纬度。
 01	private double latitude=0.0;
 02	private double longitude =0.0;
-03	 
+03
 04	LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 05	        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
 06	            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -854,41 +854,41 @@ WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context
 10	                }
 11	        }else{
 12	            LocationListener locationListener = new LocationListener() {
-13	                 
+13
 14	                // Provider的状态在可用、暂时不可用和无服务三个状态直接切换时触发此函数
 15	                @Override
 16	                public void onStatusChanged(String provider, int status, Bundle extras) {
-17	                     
+17
 18	                }
-19	                 
+19
 20	                // Provider被enable时触发此函数，比如GPS被打开
 21	                @Override
 22	                public void onProviderEnabled(String provider) {
-23	                     
+23
 24	                }
-25	                 
+25
 26	                // Provider被disable时触发此函数，比如GPS被关闭
 27	                @Override
 28	                public void onProviderDisabled(String provider) {
-29	                     
+29
 30	                }
-31	                 
+31
 32	                //当坐标改变时触发此函数，如果Provider传进相同的坐标，它就不会被触发
 33	                @Override
 34	                public void onLocationChanged(Location location) {
-35	                    if (location != null) {  
-36	                        Log.e("Map", "Location changed : Lat: " 
-37	                        + location.getLatitude() + " Lng: " 
-38	                        + location.getLongitude());  
+35	                    if (location != null) {
+36	                        Log.e("Map", "Location changed : Lat: "
+37	                        + location.getLatitude() + " Lng: "
+38	                        + location.getLongitude());
 39	                    }
 40	                }
 41	            };
-42	            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,1000, 0,locationListener);  
-43	            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);  
-44	            if(location != null){  
-45	                latitude = location.getLatitude(); //经度  
+42	            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,1000, 0,locationListener);
+43	            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+44	            if(location != null){
+45	                latitude = location.getLatitude(); //经度
 46	                longitude = location.getLongitude(); //纬度
-47	            }  
+47	            }
 48	        }
 同时别忘了在AndroidManifest.xml文件中加入如下权限：
 1	<!-- 连接互联网Internet权限 -->
@@ -971,7 +971,7 @@ WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context
             }
         }
 
-    } 
+    }
 
 58	android下xml文件解析：
 	SAX	SAX是一个解析速度快并且占用内存少的xml解析器，非常适合用于Android等移动设备。 SAX解析XML文件采用的是事件驱动，也就是说，它并不需要解析完整个文档，在按内容顺序解析文档的过程中，SAX会判断当前读到的字符是否合法XML语法中的某部分，如果符合就会触发事件。所谓事件，其实就是一些回调（callback）方法，这些方法(事件)定义在ContentHandler接口。
@@ -983,7 +983,7 @@ WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context
 
 	SAXParser saxParser = spf.newSAXParser(); //创建解析器
 
-	//设置解析器的相关特性，http://xml.org/sax/features/namespaces = true 表示开启命名空间特性  
+	//设置解析器的相关特性，http://xml.org/sax/features/namespaces = true 表示开启命名空间特性
 
 	saxParser.setProperty("http://xml.org/sax/features/namespaces",true);
 
@@ -1025,13 +1025,13 @@ WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context
 
 	Node node = (Node) childsNodes.item(j); //判断是否为元素类型
 
-		if(node.getNodeType() == Node.ELEMENT_NODE){    
+		if(node.getNodeType() == Node.ELEMENT_NODE){
 			Element childNode = (Element) node; //判断是否name元素
 
    			if ("name".equals(childNode.getNodeName())) { //获取name元素下Text节点,然后从Text节点获取数据
 
-       			person.setName(childNode.getFirstChild().getNodeValue());                              
-	
+       			person.setName(childNode.getFirstChild().getNodeValue());
+
    			} else if (“age”.equals(childNode.getNodeName())) {
 
             			 person.setAge(new Short(childNode.getFirstChild().getNodeValue()));
@@ -1045,7 +1045,7 @@ WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context
    	persons.add(person);
 
 	inStream.close();
-	
+
 	(3)PULL
 
  	XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
@@ -1085,7 +1085,7 @@ WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context
 			if (name.equalsIgnoreCase("name")) {
 
 				currentPerson.setName(parser.nextText());// 如果后面是Text元素,即返回它的值
-	
+
 			} else if (name.equalsIgnoreCase("age")) {
 
 				currentPerson.setAge(new Short(parser.nextText()));
@@ -1139,7 +1139,7 @@ WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // TODO Auto-generated method stub
         if(keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0){
-            
+
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -1177,7 +1177,7 @@ WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context
 		(2)自定义view	Toast toast = new Toast(Context  context);	toast.setView(customView);
 
 69	计时器功能 CountDownTimer	//其还有两个方法为start()开始计时，cancel()取消计时，并不会调用finish方法
-	
+
 	 class MyCountDownTimer extends CountDownTimer{
 
 
@@ -1199,7 +1199,7 @@ WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context
             Log.d(TAG,"CountDownTimer onTick................!");
             //Toast.makeText(mContext, "onTick................", Toast.LENGTH_LONG).show();
         }
-        
+
     }
 
 70	将源码作为一个工程导入eclipse
@@ -1207,7 +1207,7 @@ WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context
 	在eclipse中直接导入已经存在的工程
 
 
-71	建立一个透明activity	
+71	建立一个透明activity
 	<style name="BackgroundOnly">
        	<item name="android:windowBackground">@null</item>
         	<item name="android:windowContentOverlay">@null</item>
@@ -1219,14 +1219,14 @@ WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context
 
 72	inputStream 与String相互转换
 	String --> InputStream 	InputStream is = new ByteArrayInputStream(str.getBytes[]);
-	InputStrem --> String 
+	InputStrem --> String
 
 	public String convertStreamToString(InputStream is) throws IOException {
 
         if (is != null) {
             StringBuilder sb = new StringBuilder();
             String line;
- 
+
             try {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
                 while ((line = reader.readLine()) != null) {
@@ -1236,7 +1236,7 @@ WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context
                 is.close();
             }
             return sb.toString();
-        } else {       
+        } else {
             return "";
         }
     }
@@ -1251,7 +1251,7 @@ WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context
 	});
 	可以实现DialogInterface.OnCancelListener接口，在其cancel方法中，进行资源清理工作
 
-74	
+74
 	<manifest ... >
 		<uses-permission android:name="android.permission.BLUETOOTH" />	蓝牙链接权限
 		<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />	蓝牙设备搜索，蓝牙设置权限（与BLUETOOTH一起使用）
@@ -1272,9 +1272,9 @@ WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context
 	When the PSE also contains a SIM card, SIM card phone book information shall be located under the SIM1/telecom/ folder(根目录下/SIM1/telecom/pb)
 	详细请见pbap协议p15
 
-	pbap	(1)下载	下载整个pb	PullPhonebook	
-		(2)浏览		以单条数据的vcard形式下载	
-	
+	pbap	(1)下载	下载整个pb	PullPhonebook
+		(2)浏览		以单条数据的vcard形式下载
+
 76	电话按键音实现	ToneGenerator 详见电话
 
 77	button selector 实例（按下释放效果实例）
@@ -1290,10 +1290,10 @@ WindowManager wm = (WindowManager)this.getApplication().getSystemService(Context
 78	android service activity 之间复杂信息的传输	可以实现application
 
 79	NANP 	North American Number Plan (北美编号计划)
-	JAPAN	
+	JAPAN
 
 80 	SDCard mount and unmount 监听
-	
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -1301,7 +1301,7 @@ import android.os.Environment;
 import android.util.Log;
 
 public class SDCardMountBroadcastReceiver extends BroadcastReceiver{
-    
+
     private static final String TAG = "SDCardMountBroadcastReceiver";
 
     public interface SDCardMountResponse {
@@ -1309,9 +1309,9 @@ public class SDCardMountBroadcastReceiver extends BroadcastReceiver{
 
         void onSDCardUnMount();
     }
-    
+
     private SDCardMountResponse mSDCardMountResponse;
-    
+
     public void setSDCardMountResponse(SDCardMountResponse mSDCardMountResponse) {
         this.mSDCardMountResponse = mSDCardMountResponse;
     }
@@ -1320,7 +1320,7 @@ public class SDCardMountBroadcastReceiver extends BroadcastReceiver{
     public void onReceive(Context context, Intent intent) {
         if (Intent.ACTION_MEDIA_EJECT.equals(intent.getAction())) {
             String ejectedPath = intent.getData().getPath();
-            
+
             if (Environment.getExternalSDStorageDirectory().toString().equals(ejectedPath)) {
                 mSDCardMountResponse.onSDCardUnMount();
             } else if (Environment.getExternalUDiskStorageDirectory().toString().equals(ejectedPath)) {
@@ -1332,7 +1332,7 @@ public class SDCardMountBroadcastReceiver extends BroadcastReceiver{
         if (Intent.ACTION_MEDIA_SCANNER_FINISHED.equals(intent.getAction())) {
             String ejectedPath = intent.getData().getPath();
             if (Environment.getExternalSDStorageDirectory().toString().equals(ejectedPath)) {
-                mSDCardMountResponse.onSDCardMount();                
+                mSDCardMountResponse.onSDCardMount();
             } else if (Environment.getExternalUDiskStorageDirectory().toString().equals(ejectedPath)) {
 
             } else if (Environment.getExternalExtSDStorageDirectory().toString().equals(ejectedPath)) {
@@ -1340,7 +1340,7 @@ public class SDCardMountBroadcastReceiver extends BroadcastReceiver{
             }
         }
     }
-    
+
 }
 
 
@@ -1371,19 +1371,19 @@ public class SDCardMountBroadcastReceiver extends BroadcastReceiver{
 	L2CAP						sdptool	浏览远端设备SDP服务
 
 	sdptool browse 00:02:72:B0:00:26		浏览00:02:72:B0:00:26所提供的服务
-	
+
 	sdptool browse 00:02:72:B0:00:26 浏览地址为 00:02:72:B0:00:26的设备所提供的服务
 
 	sdptool search 0x1112 00:02:72:B0:00:26 查找地址为00:02:72:B0:00:26的设备上的Headset Audio Gateway服务。
 
 	hcidump -tXV	打印详细信息
-	
+
 	hcidump -tXV > /sdcard/btlog.txt	将log信息打印到sdcard的btlog.txt文件中
 
 83 	判断系统是否有sim卡或usim卡（wcdma），TelephonyManager.getDefault().hasIccCard()
 
 	boolean hasSim = ((TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE)).hasIccCard();
-	
+
 	int state = ((TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE)).getSimState();获得sim卡状态，详情看TelephonyManager
 
 	absent，pin locked，pun locked，network pin Locked，unknown
@@ -1428,13 +1428,13 @@ public class SDCardMountBroadcastReceiver extends BroadcastReceiver{
                 return null;
             }
 
-85	近场技术（NFC Near Field Conmmunication）	基于FIRD 	传输距离在20cm之内	
-	
+85	近场技术（NFC Near Field Conmmunication）	基于FIRD 	传输距离在20cm之内
+
 86	启动	Setting activity
 	am start -n com.android.settings/com.android.settings.Settings
 
 87	数据库异步处理AsyncQueryHandler
-	
+
     private static class QueryHandler extends AsyncQueryHandler {
         protected final WeakReference<ContactsListActivity> mActivity;
         protected boolean mLoadingJoinSuggestions = false;
@@ -1484,7 +1484,7 @@ public class SDCardMountBroadcastReceiver extends BroadcastReceiver{
 
                     wrapper.setVisibility(View.GONE);
                     searchView.setVisibility(View.GONE);
-                    
+
                     if (activity.mDeleteMode) {
                         activity.finish();
                     } else {
@@ -1514,8 +1514,8 @@ public class SDCardMountBroadcastReceiver extends BroadcastReceiver{
 
 
 
-	
-	
+
+
 90	获取setting设置值
 	final String enabledStr = Settings.Secure.getString(
                 mContext.getContentResolver(),
@@ -1556,11 +1556,11 @@ public class SDCardMountBroadcastReceiver extends BroadcastReceiver{
   	  	<item android:drawable="@drawable/download_anim13" android:duration="200" />
   	  	<item android:drawable="@drawable/download_anim14" android:duration="200" />
 	</animation-list>
-	
+
 
 	使用
 	AnimationDrawable mDownloadImageAnim = (AnimationDrawable)mContext.getResources().getDrawable(R.anim.download_dialog_anim);
-	
+
 	ImageView imageView = (ImageView)mDownloadDialog.findViewById(R.id.download_image);
       	imageView.setBackgroundDrawable(mDownloadImageAnim);
        mDownloadDLHandler.post(new StartAnimationRunnable());//启动动画
@@ -1623,7 +1623,7 @@ public class SDCardMountBroadcastReceiver extends BroadcastReceiver{
 
 	 a.recycle();
 
-	
+
 96	android input介绍
 	/system/lib/input
 	按键值的定义,代码位于源码frameworks/base/native/include/android/keycodes.h
@@ -1647,9 +1647,9 @@ public class SDCardMountBroadcastReceiver extends BroadcastReceiver{
             //System.out.println(String.format("%s\n", scanner.next()));
             //System.out.println(String.format(Locale.CHINA,  "%s\n", scanner.next()));
         }
-	
 
-99	BluetoothAdapter	本地蓝牙设备	
+
+99	BluetoothAdapter	本地蓝牙设备
 	BluetoothHfp	蓝牙电话(1)
 	BluetoothA2dp	蓝牙音乐(2)
 	BluetoothPbap	蓝牙电话本(手动)
@@ -1658,12 +1658,12 @@ public class SDCardMountBroadcastReceiver extends BroadcastReceiver{
 100	Thread.dumpStack()
 	以error的形式,打印出堆栈信息
 
-	
-Adb shell am instrument 
+
+Adb shell am instrument
 -e class com.jayway.test.NotePadTest#testAddNote
 -w com.jayway.test /android.test.InstrumentationTestRunner
 -e size large(medium,small)
--e perf true -e debug true 
+-e perf true -e debug true
 
 adb shell am instrument -e class com.android.contacts.test.TwelveKeyDialerTest -w com.android.contacts.test/android.test.InstrumentationTestRunner
 
@@ -1677,7 +1677,7 @@ adb shell am instrument -e class com.android.contacts.test.TwelveKeyDialerTest -
 	a.长按home键,在recent中点击应用图标,显示B界面
 	b.再点击应用图标显示A界面
 
-103	引用系统style 
+103	引用系统style
 	style="?android:attr/btnStyleDarkSmallNarrow"
 
 104 	卸载程序
@@ -1695,16 +1695,16 @@ adb shell am instrument -e class com.android.contacts.test.TwelveKeyDialerTest -
 	List(无序,可以有重复元素)	ArrayList(一般应用) LinkedList(Quene存放顺序,插入删除效率高)
 	Set(有序,无重复元素)	HashSet	TreeSet(SortSet--实现Comparable接口)	LinkedHashSet(存放的顺序)
 	Map 	(key-value)
-	HashMap	
-	LinkedHashMap	
+	HashMap
+	LinkedHashMap
 	TreeMap	(存放的顺序排序)
-	
+
 
 107	安装卸载程序广播获取安装卸载应用包名
 	android.intent.action.PACKAGE_REMOVED
 	android.intent.action.PACKAGE_ADDED
 
-	广播注册 	
+	广播注册
 	IntentFilter intentFilter = new IntentFilter("android.intent.action.PACKAGE_REMOVED");
        intentFilter.addDataScheme("package");
 
@@ -1791,20 +1791,20 @@ adb shell am instrument -e class com.android.contacts.test.TwelveKeyDialerTest -
 	newSate	COMPONENT_ENABLED_STATE_ENABLED, COMPONENT_ENABLED_STATE_DISABLED  and COMPONENT_ENABLED_STATE_DEFAULT
 	flags		DONT_KILL_APP  or 0
 
-	
+
   	setComponentEnabledSetting  (ComponentName  componentName, int newState, int flags)
 	componentName 	activity,service,provider,receiver manifest
 
 
 113	process and threads
-	
+
 	android 一个应用对应一个process 和一个main thread (UI thread)
 
-	process 等级	(1)Foreground Process		
-			(2)Visible Process	
-			(3)Service Process	
-			(4)Background process	
-			(5)Empty process	
+	process 等级	(1)Foreground Process
+			(2)Visible Process
+			(3)Service Process
+			(4)Background process
+			(5)Empty process
 	为防止,activity,或BroadCastRecevier 中,执行耗时任务,process被系统kill,最好在servcie中执行,而非thread中执行
 
 	thread (1)不要阻塞ui线程(ANR 5秒)
@@ -1817,7 +1817,7 @@ adb shell am instrument -e class com.android.contacts.test.TwelveKeyDialerTest -
 	ANR 问题:(ActivityMnanager 与 Window manager系统服务监视的)
 	(1)ui交互时间超过5秒没有返回(按键,触屏等操作)
 	(2)BroadcaseReceiver onRecevie()方法中处理时间时间超过10秒
-	
+
 	出现ANR问题时,分析log
 	logcat -b system -v time -d *:v
 	(1)搜索 "ANR "
@@ -1848,7 +1848,7 @@ Same as "singleTask", except that the system doesn't launch any other activities
 115	startActivity(启动一个activity,无论是否在一个应用)
 	(1)	Intent intent = new Intent(action);
 		intent.setAction();
-	或者 
+	或者
 	(2)	ComponentName cm = new ComponentName("com.archermind.activitytask", "com.archermind.activitytask.Activity1");//pkg 是包名,cls 是包名加activity名
 		intent.setComponent(cm);
 	若用方法一,要在定义activity的manifest中添加fillter
@@ -1858,7 +1858,7 @@ Same as "singleTask", except that the system doesn't launch any other activities
         </intent-filter>
 
 116	反射访问某个类的私有的成员变量
-	
+
 	     java.lang.reflect.Field field = AnimationDrawable.class.getDeclaredField("mCurFrame");
             field.setAccessible(true);//设置私有变量可以访问
             int curFrame = field.getInt(mAnimationDrawable);//mAnimationDrawable 为AnimationDrawable的某个实例
@@ -1980,7 +1980,7 @@ Same as "singleTask", except that the system doesn't launch any other activities
         mmsport="80"
         type="mms"
         current="1"
-                /> 
+                />
 <apn carrier="China Mobile net"
         mcc="460"
         mnc="02"
@@ -2007,7 +2007,7 @@ Same as "singleTask", except that the system doesn't launch any other activities
         mmsport="80"
         type="mms"
         current="1"
-                />                 
+                />
 <apn carrier="China Mobile net"
         mcc="460"
         mnc="07"
@@ -2075,11 +2075,11 @@ Same as "singleTask", except that the system doesn't launch any other activities
 
 
 145	android 引用framework资源(未公开的)
-	代码中	com.android.internal.R.drawable.icon	
-	xml中	android:drawable="@*android:drawable/stat_sys_gps_on" 
+	代码中	com.android.internal.R.drawable.icon
+	xml中	android:drawable="@*android:drawable/stat_sys_gps_on"
 
 	android 引用framework资源(已公开的)
-	代码中	com.android.R.drawable.icon	
+	代码中	com.android.R.drawable.icon
 	xml中	android:drawable="@android:drawable/stat_sys_gps_on"
 
 
@@ -2097,7 +2097,7 @@ Same as "singleTask", except that the system doesn't launch any other activities
 	actionSend
 	添加自己的处理
 	 mGo.setOnEditorActionListener(new OnEditorActionListener() {
-            
+
             @Override
             public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {
                 switch(arg1){
@@ -2109,7 +2109,7 @@ Same as "singleTask", except that the system doesn't launch any other activities
                         break;
                     default:
                             break;
-                    
+
                 }
                 return false;
             }
@@ -2123,7 +2123,7 @@ Same as "singleTask", except that the system doesn't launch any other activities
 
 	仅当点击edittext时,才会显示输入法
 	getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-	
+
 
 
 150	设置inputmethod为默认输入法
@@ -2138,7 +2138,7 @@ Same as "singleTask", except that the system doesn't launch any other activities
 
 
 	frameworks/base/packages/SettingsProvider/src/com/android/providers/settings/DatabaseHelper.java
-	
+
 	添加以下代码
 
 	private void loadSecureSettings(SQLiteDatabase db){
@@ -2150,8 +2150,8 @@ Same as "singleTask", except that the system doesn't launch any other activities
 
 
 153 	java值传递
-	
-		在java中实质只存在一种传递方式：即值传递。 而引用传递是对C/C++而言的。结论： 
+
+		在java中实质只存在一种传递方式：即值传递。 而引用传递是对C/C++而言的。结论：
 
 	　　对于基本类型，在方法体内对方法参数进行重新赋值，并不会改变原有变量的值。
 
@@ -2172,7 +2172,7 @@ Same as "singleTask", except that the system doesn't launch any other activities
 	　　基本类型和基本类型变量被当作参数传递给方法时，是值传递。在方法实体中，无法给原变量重新赋值，也无法改变它的值。
 
 	　　对象和引用型变量被当作参数传递给方法时，在方法实体中，无法给原变量重新赋值，但是可以改变它所指向对象的属性。
-		
+
 	(引用类型当做参数传递时,会自动生成原引用的一个副本b,指向原址,此时,改变引用所指向的对象,其实是修改b所指向的对象,所以原来的值不会改变,但是,改变b的属性,是改变的原对象的属性)
 
 
@@ -2188,14 +2188,14 @@ Same as "singleTask", except that the system doesn't launch any other activities
 155	sendStickyBroadcast(Intent intent)
 	发送的广播长久存在,保留最后一次发送的广播,当后来者注册此intent的时候registerReceiver(BroadcastReceiver, IntentFilter),就会立即重新收到前面已经发送过的最后一次广播内容!若只想处理一次,可以通过removeStickyBroadcast(Inttent intent);将此广播移除
 	发送sticky广播,要获得权限android.Manifest.permission#BROADCAST_STICKY
-	
+
 156	彻底删除raw_contacts
 	String str = ContactsContract.RawContacts.CONTENT_URI.toString()+"?"+ContactsContract.CALLER_IS_SYNCADAPTER + "=true";
        this.getContentResolver().delete(Uri.parse(str), ContactsContract.RawContacts._ID+">0", null);
 
 
 167	object equals()方法复写
-	@Override 
+	@Override
 	public boolean equals(Object o) {
 	     // Return true if the objects are identical.
 	     // (This is just an optimization, not required for correctness.)
@@ -2222,7 +2222,7 @@ Same as "singleTask", except that the system doesn't launch any other activities
 	}
 
 	hashcode()复写
-	 @Override 
+	 @Override
 	public int hashCode() {
 	     // Start with a non-zero constant.
 	     int result = 17;
@@ -2236,7 +2236,7 @@ Same as "singleTask", except that the system doesn't launch any other activities
 	     result = 31 * result + intField;			//int		32bits
 
 	     result = 31 * result + (int) (longField ^ (longField >>> 32));	//long 	64bits
-	
+
 	     result = 31 * result + Float.floatToIntBits(floatField);	//float	32bits
 
 	     long doubleFieldBits = Double.doubleToLongBits(doubleField);		//64bits
@@ -2251,15 +2251,15 @@ Same as "singleTask", except that the system doesn't launch any other activities
 
 	     return result;
 	}
- 
+
 	若不用hash key
-	 @Override 
+	 @Override
 	public int hashCode() {
 	     throw new UnsupportedOperationException();
 	}
 
 	两个对象相等equals,则hashcode相同(java准则,在两个对象equals时,要保证其hashcode值相等);
-	
+
 	若两个对象hashcode相同,则两个对象equals不一定相等
 
 	hashset 	原理,先比较hashcode,hashcode相同,再比较equals	by
@@ -2269,14 +2269,14 @@ Same as "singleTask", except that the system doesn't launch any other activities
 	byte -> char -> int
 	byte 有符号,char无符号,int 有符号位
 	byte 转换成char	高位补符号位
-		byte 转换成char	不希望符号位扩展	char cha = (char) (b & 0xff);		
+		byte 转换成char	不希望符号位扩展	char cha = (char) (b & 0xff);
 	char 转换成int		高位补零(乎略符号位,最高位为0则结果正确)
 		char 转换成int要保留符号为可以用如下方法	int i = (short)char;
 	宽字节转变成窄字节	直接截断低位,若要舍入用Math.round()方法
-	
 
 
-	
+
+
 168	动态设置view的高度宽度
 	LayoutParams lParams = mDeleteTopView.getLayoutParams();
        lParams.height = (int)getResources().getDimension(R.dimen.list_item_height);
@@ -2284,12 +2284,12 @@ Same as "singleTask", except that the system doesn't launch any other activities
 
 
 169	layout_weight		LinearLayout.LayoutParams	控件所占比例
-	当控件layout_width=fill_parent,layout_weight 标明你的控件的优先级要尽可能大,但是大要有限度即full_parent,layout_weight 越小,占比例越大	
+	当控件layout_width=fill_parent,layout_weight 标明你的控件的优先级要尽可能大,但是大要有限度即full_parent,layout_weight 越小,占比例越大
 	当控件layout_width=wrap_content,layout_weight 标明你的控件的优先要尽可能小,但是小要有限度即wrap_content
 	当控件layout_width=0px,layout_weight ayout_weight 比例越大,占比例越大,当比例够大时,会将小比例的空间,挤小
 
 170	android编译时,屏蔽Mms
-		build/build/target/product/generic.mk	
+		build/build/target/product/generic.mk
 		build/build/target/product/core.mk
 
 171	精确运算时,不要使用double,float
@@ -2307,23 +2307,23 @@ Same as "singleTask", except that the system doesn't launch any other activities
 		若result1 与result2类型不一致,
 		(1)	如果一个操作数类型为T,T表示byte,short或char,而另一操作数为int类型的 常量 表达式,它的值可以用类型T表示的,那么条件表达式的类型就是T
 		(2)	否则,将对操作数类型运用二进制数字提升,而条件表达式的类型就是第二个和第三个操作数被提升之后的类型
-	
+
 		a	65	A	97
 
 
 173	复合表达式
 		注意操作符两侧的类型应该相一致,
-		short a = 34;	
+		short a = 34;
 		int b;
 		a +=b;	//直接计算,肯能值会截断
-		a = a+ b;//编译失败需要加强制转换	
+		a = a+ b;//编译失败需要加强制转换
 
 174	打印char 数组
 		char[] letters = {'a','b','c'};
 		System.out.println(letters);		//abc	println()将char数组转化为string
 		System.out.println("string " + letters);	//string @...		调用char[]的toString方法,因没有override故打印出来的是hashcode
-	
-				
+
+
 175	try 	catch
 	public class Indecisive {
 		public static void main(String[] args) {
@@ -2340,7 +2340,7 @@ Same as "singleTask", except that the system doesn't launch any other activities
 	一条语句或一个语句块在它抛出了一个异常，或者对某个封闭型语句执行了一个break 或continue，或是象这个程序一样在方法中执行了一个return 时，将发生意外结束。它们之所以被称为意外结束，是因为它们阻止程序去按顺序执行下面的语句!
 	要想不执行finally中语句,可以用System.exit(0);
 	catch的异常必须是try语句块中抛出的异常;但是对任何语句,捕获Exception是可以的!
-	
+
 
 	public class HelloGoodbye1 {
 		public static void main(String[] args) {
@@ -2410,7 +2410,7 @@ Same as "singleTask", except that the system doesn't launch any other activities
 
 
 191	andorid 加密,支持MD5 or SHA-1
-	
+
        MessageDigest md = MessageDigest.getInstance("SHA-1");
        byte[] hash = md.digest(res);
 
@@ -2426,13 +2426,13 @@ Same as "singleTask", except that the system doesn't launch any other activities
 	   1. You will receive the down event here.
 	   2. The down event will be handled either by a child of this view group, or given to your own onTouchEvent() method to handle; this means you should implement onTouchEvent() to return true, so you will continue to see the rest of the gesture (instead of looking for a parent view to handle it). Also, by returning true from onTouchEvent(), you will not receive any following events in onInterceptTouchEvent() and all touch processing must happen in onTouchEvent() like normal.
 	   3. For as long as you return false from this function, each following event (up to and including the final up) will be delivered first here and then to the target's onTouchEvent().
-	   4. If you return true from here, you will not receive any following events: the target view will receive the same event but with the action ACTION_CANCEL, and all further events will be delivered to your onTouchEvent() method and no longer appear here. 
-	
+	   4. If you return true from here, you will not receive any following events: the target view will receive the same event but with the action ACTION_CANCEL, and all further events will be delivered to your onTouchEvent() method and no longer appear here.
+
 Parameters
 ev 	The motion event being dispatched down the hierarchy.
 Returns
 
-    * Return true to steal motion events from the children and have them dispatched to this ViewGroup through onTouchEvent(). The current target will receive an ACTION_CANCEL event, and no further messages will be delivered here. 
+    * Return true to steal motion events from the children and have them dispatched to this ViewGroup through onTouchEvent(). The current target will receive an ACTION_CANCEL event, and no further messages will be delivered here.
 	1.回收到down事件
 	2.
 	3.return false;所有up事件,先到onInterceptTouchEvent,然后,进入目标view的onTouchEvent()
@@ -2514,7 +2514,7 @@ Returns
    		<drawable name="black">#000</color>
     	       <drawable name="white">#FFF</drawable>
 	</resources>
-	
+
 	在drawable下创建bt_text_color_selector.xml(默认黑色点击时为白色)
 		<selector xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -2531,17 +2531,17 @@ Returns
 
 	在布局文件中
 	<Button
-	android:textColor="@drawable/bt_text_color_selector"	
+	android:textColor="@drawable/bt_text_color_selector"
 	/>
 
-197	HandlerThread(封装了Thread跟looper)	
+197	HandlerThread(封装了Thread跟looper)
 	private HandlerThread mHandlerThread = new HandlerThread("mcu-process");
 	mHandlerThread.start();
        mHandler = new Handler(mHandlerThread.getLooper(), this);
 	释放资源
 	mHandlerThread.quit();
 
-198	
+198
 	private void startAnimation(boolean isAnimation,int preIndex,int pressIndex){
         Log.d(TAG, "preIndex is : " + preIndex + " ; pressIndex is : " + pressIndex);
         mMoveAnimation = null;
@@ -2561,22 +2561,22 @@ Returns
         return DateFormat.format("yyyy-MM-dd hh:mm:ss", dateTaken).toString();
     }
 
-	import java.util.Formatter;  
-	import java.util.Locale;  
-	private String stringForTime(int timeMs) {  
+	import java.util.Formatter;
+	import java.util.Locale;
+	private String stringForTime(int timeMs) {
 		StringBuilder               mFormatBuilder;
 		Formatter                   mFormatter;
 		mFormatBuilder = new StringBuilder();
 		mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
-		int totalSeconds = timeMs / 1000;  
-		int seconds = totalSeconds % 60;  
-		int minutes = (totalSeconds / 60) % 60; 
+		int totalSeconds = timeMs / 1000;
+		int seconds = totalSeconds % 60;
+		int minutes = (totalSeconds / 60) % 60;
 		int hours = totalSeconds / 3600;
 		mFormatBuilder.setLength(0);
 		if (hours > 0) {
-			return mFormatter.format("%d:%02d:%02d", hours, minutes, seconds).toString();<br>  
+			return mFormatter.format("%d:%02d:%02d", hours, minutes, seconds).toString();<br>
 		} else {
-			return mFormatter.format("%02d:%02d", minutes, seconds).toString(); <br>  
+			return mFormatter.format("%02d:%02d", minutes, seconds).toString(); <br>
 		}
 	}
 
@@ -2584,7 +2584,7 @@ Returns
 	if(DateFormat.is24HourFormat(mContext)){
        	DateFormat.format("kk:mm:ss", cal).toString();//24小时制
 	}else{
-		DateFormat.format("hh:mm:ss", cal).toString();//12小时制                                                        
+		DateFormat.format("hh:mm:ss", cal).toString();//12小时制
 	}
 
 
@@ -2598,7 +2598,7 @@ Returns
 	<uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
        <uses-permission android:name="android.permission.STATUS_BAR" />
   	代码中添加
-	
+
 	    public static void disableStatusBar(Context context){
 		Log.d(TAG, "disable StatusBar");
 		if(mStatusBarManager == null){
@@ -2613,12 +2613,12 @@ Returns
 		    mStatusBarManager = (StatusBarManager)context.getSystemService(Context.STATUS_BAR_SERVICE);
 		}
 		mStatusBarManager.disable(StatusBarManager.DISABLE_NONE);
-	    }	
+	    }
 
 
 201
 	<TextView
-			style="@style/Tips" 
+			style="@style/Tips"
 			android:text="@string/red"
         />
      <style name="Tips" parent="android:Widget.TextView">
@@ -2671,7 +2671,7 @@ Returns
                 return;
             }
 
-        
+
 	    }
 
 
@@ -2879,7 +2879,7 @@ Returns
         }
 
         if (mDrawWatermark) {
-            String[] toks ={"Only For Test"}; 
+            String[] toks ={"Only For Test"};
             mWatermark = new Watermark(mFxSession, toks);
         }
        /*
@@ -2925,9 +2925,9 @@ Returns
 		int l=str.length();
 		if(l==1)
 			return "0"+str;
-		else 
-			return str.substring(l-2,l);  
-	} 
+		else
+			return str.substring(l-2,l);
+	}
 
 
 
@@ -2965,7 +2965,7 @@ Returns
 	209	常用颜色
 	<color name="white">#ffffffff</color>
 	<color name="black">#ff000000</color>
-	<color name="transparent">#00000000</color> 
+	<color name="transparent">#00000000</color>
 
 
 
@@ -2975,25 +2975,25 @@ Returns
 		import java.lang.InterruptedException;
 		class Driver{
 
-		    public static final int N = 10; 
+		    public static final int N = 10;
 		    public static  void main(String args[]) {
 			CountDownLatch doneSignal = new CountDownLatch(N);
 
 			for (int i = 0; i < N; ++i) // create and start threads
 			    new Thread(new Worker(doneSignal, i)).start();
-				                                                                                                                                             
+
 			try{
 			    doneSignal.await();           // wait for all to finish
-				
-			}catch(InterruptedException e){ 
+
+			}catch(InterruptedException e){
 
 			}
 			doSomethingElse();
-		    }   
+		    }
 
 		    public static void doSomethingElse(){
 			System.out.println("do something else ....");
-		    }   
+		    }
 		}
 
 		class Worker implements Runnable {
@@ -3004,15 +3004,15 @@ Returns
 
 			   this.doneSignal = doneSignal;
 			   this.i = i;
-		      }   
+		      }
 		      public void run() {
 			  doWork(i);
 			  doneSignal.countDown();
-		     }   
+		     }
 
 		      void doWork(int i) {
-			  System.out.println("do some work..."+ i +"...."); 
-		      }   
+			  System.out.println("do some work..."+ i +"....");
+		      }
 		}
 
 	（2）Sample usage: Here is a pair of classes in which a group of worker threads use two countdown latches:
@@ -3030,10 +3030,10 @@ Returns
 
 		for (int i = 0; i < N; ++i) // create and start threads
 		    new Thread(new Worker(doneSignal, i)).start();
-		
+
 		try{
 		    doneSignal.await();           // wait for all to finish
-		    
+
 		}catch(InterruptedException e){
 
 		}
@@ -3060,12 +3060,12 @@ Returns
 	     }
 
 	      void doWork(int i) {
-		  System.out.println("do some work..."+ i +"...."); 
+		  System.out.println("do some work..."+ i +"....");
 	      }
 	}
 
 	211 RaidoButton 显示在右侧
-	android:button="@null"                    
+	android:button="@null"
  	android:drawableRight="@android:drawable/btn_radio"
 
 
@@ -3082,14 +3082,14 @@ Returns
 
 	image_selector.xml定义如下
 	<selector xmlns:android="http://schemas.android.com/apk/res/android">
-	    <item android:state_pressed="true" 
+	    <item android:state_pressed="true"
 		android:drawable="@drawable/insert_image_pressed" />
 	    <item android:state_enabled="true"
 		android:drawable="@drawable/insert_image_normal" />
 	    <item
 		 android:drawable="@drawable/insert_image_normal" />
 	</selector>
-	
+
 	insert_image_pressed.xml
 	<?xml version="1.0" encoding="utf-8"?>
 
@@ -3148,8 +3148,8 @@ Returns
 
               } finally {
                   // Try everything to make sure this process goes away.
-                 
-              } 
+
+              }
 
               System.exit(-1);
 
@@ -3159,18 +3159,18 @@ Returns
 
 	参考代码	base/core/java/com/android/internal/os/RuntimeInit.java
 			base/core/java/android/app/ApplicationErrorReport.java&CrashInfo
-	
+
 	213 	back键模拟home键
-	public boolean onKeyDown(int keyCode, KeyEvent event) {  
-	     if (keyCode == KeyEvent.KEYCODE_BACK) {  
-	       Intent intent = new Intent(Intent.ACTION_MAIN);  
-              intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  
-              intent.addCategory(Intent.CATEGORY_HOME);  
-              startActivity(intent);  
-              return true;  
-         }  
-          return super.onKeyDown(keyCode, event);  
-      }  
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	     if (keyCode == KeyEvent.KEYCODE_BACK) {
+	       Intent intent = new Intent(Intent.ACTION_MAIN);
+              intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+              intent.addCategory(Intent.CATEGORY_HOME);
+              startActivity(intent);
+              return true;
+         }
+          return super.onKeyDown(keyCode, event);
+      }
 
 
 
@@ -3243,9 +3243,9 @@ Returns
 		BitmapDrawable bd = new BitmapDrawable(bitmap);
 		// 因为BtimapDrawable是Drawable的子类，最终直接使用bd对象即可。
 		return bd;
-		} 
+		}
 
-	215.RGB565（2byte）转换成java RGB565(3byte)	取高位并线性补偿 
+	215.RGB565（2byte）转换成java RGB565(3byte)	取高位并线性补偿
 	public int bytesToColor(byte low,byte high){
        	int red = high & 0xf8 | high & 0xf8 >> 3 & 0x07;//linear Compensation
        	int green = (((high & 0x07) << 3 | (low & 0xe0) >>5) << 2 ) | ((low & 0xe0) >> 5 & 0x03);
@@ -3262,12 +3262,12 @@ Returns
 
 	217	java byte 转化成bit
 	public static String byteToBit(byte b) {
-		return ""  
-       		+ (byte) ((b >> 7) & 0x1) + (byte) ((b >> 6) & 0x1)  
-              	+ (byte) ((b >> 5) & 0x1) + (byte) ((b >> 4) & 0x1)  
-      			+ (byte) ((b >> 3) & 0x1) + (byte) ((b >> 2) & 0x1)  
-       		+ (byte) ((b >> 1) & 0x1) + (byte) ((b >> 0) & 0x1);  
-     }  
+		return ""
+       		+ (byte) ((b >> 7) & 0x1) + (byte) ((b >> 6) & 0x1)
+              	+ (byte) ((b >> 5) & 0x1) + (byte) ((b >> 4) & 0x1)
+      			+ (byte) ((b >> 3) & 0x1) + (byte) ((b >> 2) & 0x1)
+       		+ (byte) ((b >> 1) & 0x1) + (byte) ((b >> 0) & 0x1);
+     }
 
 
 	218	修改textsize会改变layout
@@ -3298,10 +3298,10 @@ Returns
 	(1)	requestCode < 0;不需要返回值等同于 	Acivity.startActivity(Inttent intent);
 	(2)	requsetCode >= 0;需要返回值	if the activity you are launching uses the singleTask launch mode,
 		it will not run in your task and thus you will immediately receive a cancel result（收不到activity返回结果，仅能收到一个cancel结果）
-       （3）	在onCreate()或onResume（）中调用，则会等到返回结果时，才显示当前acitivity	
+       （3）	在onCreate()或onResume（）中调用，则会等到返回结果时，才显示当前acitivity
 
 
-	222 object/String格式化	
+	222 object/String格式化
 	String.format(String format, Object object)
 
 
@@ -3327,11 +3327,11 @@ Returns
 
 
 
-	236	
+	236
 	Affinity 应用于两种情况
 		(1)launch activity with the FLAG_ACTIVITY_NEW_TASK  flag
 			FLAG_ACTIVITY_NEW_TASK 新起一个task，若已经有相同Affinity属性的task存在，则将其放进已经存在的task中
-		(2)activity has its allowTaskReparenting attribute set to "true"	
+		(2)activity has its allowTaskReparenting attribute set to "true"
 
 
 	237	模拟key事件
@@ -3345,7 +3345,7 @@ Returns
                 new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_UP, keyEventCode, 0, 0, 0, 0,
                         KeyEvent.FLAG_SOFT_KEYBOARD|KeyEvent.FLAG_KEEP_TOUCH_MODE)));
     }
-                   
+
 
 	238
 	进行系统属性设置的程序也必须有system或root权限
@@ -3363,31 +3363,31 @@ Returns
 	property_get("persist.sys.language", propLang, "en");
 	在adb shell可以通过以下的命名读取和修改
 
-	#getprop  persist.sys.language	
+	#getprop  persist.sys.language
 	#setprop  persist.sys.language  zh 	//data/property/persist.sys.language 文件
 
 
 	239	应用中执行重启reboot
-	           PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);                     
+	           PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
 	           pm.reboot("");//reboot（"recovery"）执行不同流程
 		AndroidManifest.xml 中添加权限
 		<uses-permission android:name="android.permission.REBOOT" />
 
 	240	动态的关闭开放组件
-	为什么要关闭组件？ 
-	在用到组件时，有时候我们可能暂时性的不使用组件，但又不想把组件kill掉，比如创建了一个broadcastReceiver广播监听器，用来想监听第一次开机启动后获得系统的许多相关信息，并保存在文件中，这样以后每次开机启动就不需要再去启动该服务了，也就是说如果没有把receiver关闭掉，就算是不做数据处理，但程序却还一直在后台运行会消耗电量和内存，这时候就需要把这个receiver给关闭掉。 
+	为什么要关闭组件？
+	在用到组件时，有时候我们可能暂时性的不使用组件，但又不想把组件kill掉，比如创建了一个broadcastReceiver广播监听器，用来想监听第一次开机启动后获得系统的许多相关信息，并保存在文件中，这样以后每次开机启动就不需要再去启动该服务了，也就是说如果没有把receiver关闭掉，就算是不做数据处理，但程序却还一直在后台运行会消耗电量和内存，这时候就需要把这个receiver给关闭掉。
 
-	如何关闭组件？ 
-	关闭组件其实并不难，只要创建packageManager对象和ComponentName对象，并调用packageManager对象的setComponentEnabledSetting方法。方法描述如下： 
-	1 setComponentEnabledSetting(ComponentName componentName, int newState, int flags) 
+	如何关闭组件？
+	关闭组件其实并不难，只要创建packageManager对象和ComponentName对象，并调用packageManager对象的setComponentEnabledSetting方法。方法描述如下：
+	1 setComponentEnabledSetting(ComponentName componentName, int newState, int flags)
 
-	componentName：组件名称 
-	newState：组件新的状态，可以设置三个值，分别是如下： 
-	不可用状态：COMPONENT_ENABLED_STATE_DISABLED 
-	可用状态：COMPONENT_ENABLED_STATE_ENABLED 
-	默认状态：COMPONENT_ENABLED_STATE_DEFAULT 
+	componentName：组件名称
+	newState：组件新的状态，可以设置三个值，分别是如下：
+	不可用状态：COMPONENT_ENABLED_STATE_DISABLED
+	可用状态：COMPONENT_ENABLED_STATE_ENABLED
+	默认状态：COMPONENT_ENABLED_STATE_DEFAULT
 	flags:行为标签，值可以是DONT_KILL_APP或者0。
- 
+
 	 pm.setComponentEnabledSetting(comptName,
         	PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
         	PackageManager.DONT_KILL_APP);
@@ -3403,13 +3403,13 @@ Returns
 	241 TypedArray
 	自定义view中使用
 	TypedArray a = context.obtainStyledAttributes(attrs,R.styleable.CustomView,R.attr.customViewStyle, 0);
-	
+
 	（1）attrs.xml
 		    <declare-styleable name="CustomView">
 			<attr name="bg" format="reference"  />
 			<attr name="text" format="reference"  />
 		    </declare-styleable>
-	
+
 
 	（2）tyles.xml
 		    <style name="CustomViewStyle">
@@ -3455,7 +3455,7 @@ Returns
 
 	241.dialog监听back键
 	dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
-                                               
+
                        @Override
                        public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                                if(keyCode == KeyEvent.KEYCODE_BACK){
@@ -3465,12 +3465,12 @@ Returns
                                }
                                return false;
                        }
-               });     
+               });
 
 
 
 	242.配置默认时区	RuntimeInit.java
-	
+
 	private static final void commonInit() {
         if (Config.LOGV) Slog.d(TAG, "Entered RuntimeInit!");
 
@@ -3509,13 +3509,13 @@ Returns
 
         /*
 
-	设置系统prop 
+	设置系统prop
 	./build/target/board/generic/system.prop中增加下面字段(假设改为上海时区)
        ro.default.timezone=Asia/Shanghai
 
 
 
-	243.位图Bitmap	
+	243.位图Bitmap
 	色彩深度又叫色彩位数，即位图中要用多少个二进制位来表示每个点的颜色，是分辨率的一个重要指标。常用有1位（单色），2位（4色，CGA），4位（16色，VGA），8位（256色），16位（增强色），24位和32位（真彩色）等。色深16位以上的位图还可以根据其中分别表示RGB三原色或CMYK四原色（有的还包括Alpha通道）的位数进一步分类，如16位位图图片还可分为R5G6B5，R5G5B5X1（有1位不携带信息），R5G5B5A1，R4G4B4A4等等
 	位图采用RGB颜色模型，是一个二维的像素矩阵的方法显示和存储的图象，矩阵中的每个元素代表一个像素。真彩图像为24位图，即包含多达224种颜色。真彩图片的特点：它没有调色板，直接用元素来表示像素的颜色值，每个元素(R,G,B)包含一个字节的红(R)色分量，一个字节的绿(G)色分量，和一个字节的蓝(B)色分量。可见真彩图片颜色细腻，但数据量巨大，一帧1024×768分辨率的真彩图片要占用空间：1024×768×3B＝2.25MB。256色图为8位图，它由调色板和索引数据组成。调色板保存256种颜色的色彩分量值。索引数据的每个元素由8位组成，该8位的值为调色板的上对应颜色的索引位置。256色图的特点：只能表示256种颜色，但数据量小，一帧1024×768分辨率256色图只占用空间：1024×768＋256×3=768.8kB。
 
@@ -3539,8 +3539,8 @@ Returns
 
 	Oneway methods are specified by addind the oneway keyword to the AIDL interface definition.
 
-	package com.elfylin; 
-	oneway interface IMyServiceOneway { 
+	package com.elfylin;
+	oneway interface IMyServiceOneway {
 	    String getValue();
 	}
 
@@ -3569,7 +3569,7 @@ Returns
 
 		d = 1.135;
 		System.out.println(f.format(d)); // 输出 1.14
-		
+
 		时间相关的格式化参考SimpleDateFormat
 
 	249	格式化数字
@@ -3577,14 +3577,14 @@ Returns
 		若果freq是整数则以上等价于String str = String.format(Locale.US,"%s",freq);
 		String str = String.format("%.2f",freq);等同与DecimaFormat
 
-	
+
 	250 屏幕密度
 	 	DisplayMetrics metric = new DisplayMetrics();
         	getWindowManager().getDefaultDisplay().getMetrics(metric);
         	int width = metric.widthPixels;  // 屏幕宽度（像素）
         	int height = metric.heightPixels;  // 屏幕高度（像素）
         	float density = metric.density;  // 屏幕密度（0.75 / 1.0 / 1.5）
-        	int densityDpi = metric.densityDpi;  // 屏幕密度DPI（120 / 160 / 240）		
+        	int densityDpi = metric.densityDpi;  // 屏幕密度DPI（120 / 160 / 240）
 
 
 
@@ -3609,72 +3609,85 @@ Returns
 
 
 	252 java中进行2、8、16、10进制之间的转换
-		java中进行二进制，八进制，十六进制，十进制间进行相互转换 
+		java中进行二进制，八进制，十六进制，十进制间进行相互转换
 
-		十进制转成十六进制： 
-		Integer.toHexString(int i) 
-		十进制转成八进制 
-		Integer.toOctalString(int i) 
-		十进制转成二进制 
-		Integer.toBinaryString(int i) 
-		十六进制转成十进制 
-		Integer.valueOf("FFFF",16).toString() 
-		八进制转成十进制 
-		Integer.valueOf("876",8).toString() 
-		二进制转十进制 
-		Integer.valueOf("0101",2).toString() 
+		十进制转成十六进制：
+		Integer.toHexString(int i)
+		十进制转成八进制
+		Integer.toOctalString(int i)
+		十进制转成二进制
+		Integer.toBinaryString(int i)
+		十六进制转成十进制
+		Integer.valueOf("FFFF",16).toString()
+		八进制转成十进制
+		Integer.valueOf("876",8).toString()
+		二进制转十进制
+		Integer.valueOf("0101",2).toString()
 
-		java.lang.Integer类可以直接将2,8,16进制直接转换为10进制 
-		Integer.parseInt(String s, int radix) 
+		java.lang.Integer类可以直接将2,8,16进制直接转换为10进制
+		Integer.parseInt(String s, int radix)
 
-		使用第二个参数指定的基数，将字符串参数解析为有符号的整数。 
+		使用第二个参数指定的基数，将字符串参数解析为有符号的整数。
 
-		examples 
-		parseInt("0", 10) returns 0 
-		parseInt("473", 10) returns 473 
-		parseInt("-0", 10) returns 0 
-		parseInt("-FF", 16) returns -255 
-		parseInt("1100110", 2) returns 102 
-		parseInt("2147483647", 10 ) returns 2147483647 
-		parseInt("-2147483648", 10 ) returns -2147483648 
-		parseInt("2147483648", 10 ) throws a NumberFormatException 
-		parseInt("99", 8 ) throws a NumberFormatException 
-		parseInt("Kona", 10 ) throws a NumberFormatException 
-		parseInt("Kona", 27 ) returns 411787 
+		examples
+		parseInt("0", 10) returns 0
+		parseInt("473", 10) returns 473
+		parseInt("-0", 10) returns 0
+		parseInt("-FF", 16) returns -255
+		parseInt("1100110", 2) returns 102
+		parseInt("2147483647", 10 ) returns 2147483647
+		parseInt("-2147483648", 10 ) returns -2147483648
+		parseInt("2147483648", 10 ) throws a NumberFormatException
+		parseInt("99", 8 ) throws a NumberFormatException
+		parseInt("Kona", 10 ) throws a NumberFormatException
+		parseInt("Kona", 27 ) returns 411787
 
-		进制转换如何写（二，八，十六）不用算法 
-		Integer.toBinaryString 
-		Integer.toOctalString 
+		进制转换如何写（二，八，十六）不用算法
+		Integer.toBinaryString
+		Integer.toOctalString
 		Integer.toHexString
+
 	253 android.provider.Telephony.SECRET_CODE 拨号盘启动activity
 		AndroidManifest.xml中定义
-		<receiver android:name="TestingSettingsBroadcastReceiver">  
-		    <intent-filter>  
-		         <action android:name="android.provider.Telephony.SECRET_CODE" />  
-		         <data android:scheme="android_secret_code" android:host="4636" />  
-		    </intent-filter>  
+		<receiver android:name="TestingSettingsBroadcastReceiver">
+		    <intent-filter>
+		         <action android:name="android.provider.Telephony.SECRET_CODE" />
+		         <data android:scheme="android_secret_code" android:host="4636" />
+		    </intent-filter>
 	       </receiver>
-		拨号盘中输入*#*#4636#*#* 
+		拨号盘中输入*#*#4636#*#*
 
 		TestingSettingsBroadcastReceiver.java
-		public class TestingSettingsBroadcastReceiver extends BroadcastReceiver {  
-		    
-		    public TestingSettingsBroadcastReceiver() {  
-		    }  
-		      
-		    @Override  
-		    public void onReceive(Context context, Intent intent) {  
-			if (intent.getAction().equals(SECRET_CODE_ACTION)) {  
-			    Intent i = new Intent(Intent.ACTION_MAIN);  
-			    i.setClass(context, TestingSettings.class);  
-			    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  
-			    context.startActivity(i);  
-			}  
-		    }  
-		} 
+		public class TestingSettingsBroadcastReceiver extends BroadcastReceiver {
+
+		    public TestingSettingsBroadcastReceiver() {
+		    }
+
+		    @Override
+		    public void onReceive(Context context, Intent intent) {
+			if (intent.getAction().equals(SECRET_CODE_ACTION)) {
+			    Intent i = new Intent(Intent.ACTION_MAIN);
+			    i.setClass(context, TestingSettings.class);
+			    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			    context.startActivity(i);
+			}
+		    }
+		}
 
 
 
+    254 android LineraLayout 分隔符 动态隐藏
+        android:divider="@drawable/divider"
+        android:showDividers="middle"
+
+    divider.xml
+    <?xml version= "1.0"  encoding= "utf-8" ?>
+    <shape xmlns:android= "http://schemas.android.com/apk/res/android"
+        android:shape= "rectangle" >
+        <size  android:width = "@dimen/spacing_medium"
+               android:height = "@dimen/spacing_medium"  />
+        <solid android:color= "@android:color/transparent"  />
+     </shape>
 
 
 
@@ -3698,11 +3711,11 @@ redst
 bash-3.2# ls
 last_log
 bash-3.2# echo "--upgrade_system" > upgrade_cmd
-bash-3.2# cat upgrade_cmd 
+bash-3.2# cat upgrade_cmd
 --upgrade_system
 
 
-                                        
+
 
     void sendEvent(int action, int flags) {
 	 long when = SystemClock.uptimeMillis();
@@ -3716,8 +3729,8 @@ bash-3.2# cat upgrade_cmd
             mWindowManager.injectInputEventNoWait(ev);
         } catch (RemoteException ex) {
             // System process is dead
-        }   
-    }   
+        }
+    }
 
 
 
@@ -3729,6 +3742,7 @@ com.archermind.tscalibrate/.CalibrateActivity
 	adb shell am start -a com.android.phone.CallFeaturesSetting.ADD_VOICEMAIL
 开启usb调试
 	adb shell am start -n com.android.settings/.DevelopmentSettings
+
 monkeyTest
 adb shell monkey -p com.android.contacts -v -v -v 20000\
 
@@ -3760,11 +3774,11 @@ adb shell am instrument -w com.archermind.globaltime.test/android.test.Instrumen
 
 adb shell am start -n com.android.settings/.SecuritySettings
 
-Adb shell am instrument 
+Adb shell am instrument
 -e class com.jayway.test.NotePadTest#testAddNote
 -w com.jayway.test /android.test.InstrumentationTestRunner
 -e size large(medium,small)
--e perf true -e debug true 
+-e perf true -e debug true
 robotium
 (1) button或view onclick失效,
 	在测试程序的manifest.xml中添加,<supports-screens android:anyDensity="true"/>
@@ -3784,5 +3798,5 @@ robotium
 	./frameworks/base/core/java/android/inputmethodservice/InputMethodService.java
 
 http://www.eoeandroid.com/forum.php?mod=viewthread&tid=168008
-	
-	
+
+
