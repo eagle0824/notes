@@ -355,3 +355,11 @@ android adb启动失败问题 adb server is out of date. killing... ADB server d
 获取系统porp变量以及值
 adb shell getprop
 
+
+命令行发送广播
+
+adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///mnt/hd/sdcard
+
+
+命令行起usb设置
+adb shell am start -n com.android.settings/.UsbSettings
