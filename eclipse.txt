@@ -117,3 +117,17 @@ cd android源码目录
 
 4. eclipse 查看android源码
     右击项目->java Build path -> android.jar 单击 -> Source attachment 双击-> 选择源码路径 framework/base/core 或（sdk源码包)
+
+5. eclipse 修改自同匹配时间及字符
+    window -> Preferences -> java -> Editor -> Content Assist
+    选中 Auto Activation 
+    auto activation delay 100
+    auto activation triggres for java:
+    .abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
+
+6. eclipse xml 提示
+    window -> preferences -> xml -> xml files -> Editor -> Content Assist
+    auto activation
+    delay 100
+    prompt when thest characters are inserted 
+    <=:.abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ

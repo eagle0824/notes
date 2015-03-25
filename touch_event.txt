@@ -1,0 +1,39 @@
+android touch事件
+
+1.public boolean dispatchTouchEvent(MotionEvent ev);
+2.public boolean onInterceptTouchEvent(MotionEvent ev);
+3.public boolean onTouchEvent(MotionEvent ev);
+
+先调用ViewGroup的dispacthTouchEvent(MotionEvent ev),
+调用ViewGroup的onInterceptTouchEvent() 
+	若返回true ViewGroup的onTouchEvent
+	若返回false 则				
+		调用 view.onTouchEvent(); 
+			若返回false 调用ViewGroup onTouchEvent()	若返回false 返回window的onTouchEvent()
+								  	若返回true
+			若返回true 被处理！
+
+
+这三个函数与ViewGroup、View之间的消息传递（虽然ViewGroup继承于View，但这里为了方便，ViewGroup是布局容器，View是布局内的控件）。
+      以及ACTION_DOWN、ACTION_UP、ACTION_MOVE、ACTION_CANCEL这四种消息类型。
+
+
+      触摸事件是一连串ACTION_DOWN，ACTION_MOVE..MOVE…MOVE、最后ACTION_UP。
+
+      从头说起，先看ACTION_DOWN的处理。
+
+      触摸事件总是先由最下面的ViewGroup先收到，在dispatchTouchEvent 函数中向其子控件派发ACTION_DOWN消息，子控件可能是ViewGroup也可能是View。
+
+       在派发给子控件之前要先调用ViewGroup的onInterceptTouchEvent拦截器，如果消息没有被拦截，则向其子控件派发ACTION_DOWN消息（至于向哪个子控件派发消息，在dispatchTouchEvent 源码中有命中测试）。如果子控件是ViewGroup，则由它的dispatchTouchEvent 函数再次进行消息派发，重复上面的工作（检查拦截器，命中测试，向命中的子控件派发消息）；如果子控件是View，则会由View的onTouchEvent响应ACTION_DOWN事件。
+
+       如果在ViewGroup的onInterceptTouchEvent拦截器中将消息拦截了，则后续不会再向子控件传递ACTION_DOWN消息了，会直接将消息传递给这个ViewGroup的onTouchEvent进行响应。
+
+       在控件进行onTouchEvent处理过程中，如果控件没有消费这个ACTION_DOWN事件（即返回false，消费这个词翻译过来真别扭，还是consume感觉顺一点…），则会将ACTION_DOWN传递给其父ViewGroup的onTouchEvent进行处理，直到由哪一层ViewGroup消费了ACTION_DOWN事件为止。
+
+        如果有哪一个控件的onTouchEvent消费了ACTION_DOWN事件，则后续的n个ACTION_MOVE与1个ACTION_UP都会逐层传递到这个控件的onTouchEvent进行处理。
+
+        这里要注意是逐层，也就是说每层的拦截器还是可以拦截到后续的ACTION_MOVE与ACTION_UP。如果后续的ACTION_MOVE与ACTION_UP被某层的拦截器拦截，则后续的事件将不会再传递给之前处理onTouchEvent的子控件，而是逐层传递给由拦截消息的这个控件的onTouchEvent函数进行处理，并且会向其之前接收事件的子控件发送一个ACTION_CANCEL，表示后续事件被取消了。
+
+        如果所有控件的onTouchEvent都没有消费ACTION_DOWN事件，每层dispatchTouchEvent 都会返回false，表示事件没有被派发出去，后续的ACTION_MOVE与ACTION_UP也都不会再被传递了。
+
+        这个就是整个触摸事件消息传递的流程。
