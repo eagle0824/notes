@@ -16,5 +16,14 @@ Views
 
 Animations
     5.Snappy transitions with TextSwitcher and ImageSwitcher
+        (1)Get the view using findViewById(), or construct it in your code like any normal Android view.
+        (2)Set a factory using switcher.setFactory().
+        (3)Set an in-animation using switcher.setInAnimation().
+        (4)Set an out-animation using switcher.setOutAnimation().
+
+    6.Adding eye candy to your ViewGroup’s children
+        LayoutAnimationController
+        viewgroup.setLayoutAnimation(controller);
+
 
 
