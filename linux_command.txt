@@ -58,6 +58,7 @@
 5	scp document.txt archermind@10.11.26.89:/home/archermind/	本地文件拷贝到(用户名为archermind)10.11.26.89上/home/archermind下,
 	scp archermind@archermind@10.11.26.89:/home/archermind/a.txt ./
 
+
 6	查看linux 内核版本等信息
 	umane -a
 	94:71:AC:17:8A:06
@@ -368,4 +369,52 @@
 39 dpkg --help
     dpkg -l 显示安装包信息
     dpkg -i *.deb安装deb文件
+
+40 ascii
+    打印八进制、十六进制和十进制的ASCII码表！
+
+41 cal
+    日历
+
+42 xxd
+    xxd filename.bin 十六进制文集那转化为二进制文件
+    xxd -i data.bin     十六进制转化成c数组
+
+43
+    update-alternatives是ubuntu系统中专门维护系统命令链接符的工具，通过它可以很方便的设置系统默认使用哪个命令、哪个软件版本，
+
+    Commands:
+      --install <link> <name> <path> <priority>
+          [--slave <link> <name> <path>] ...
+        add a group of alternatives to the system.
+      --remove <name> <path>   remove <path> from the <name> group alternative.
+      --remove-all <name>      remove <name> group from the alternatives system.
+      --auto <name>            switch the master link <name> to automatic mode.
+      --display <name>         display information about the <name> group.
+      --query <name>           machine parseable version of --display <name>.
+      --list <name>            display all targets of the <name> group.
+      --get-selections         list master alternative names and their status.
+      --set-selections         read alternative status from standard input.
+      --config <name>          show alternatives for the <name> group and ask the
+        user to select which one to use.
+      --set <name> <path>      set <path> as alternative for <name>.
+      --all                    call --config on all alternatives.
+
+example config java (1062 是优先级对auto时候有影响)
+
+    sudo update-alternatives --install /usr/bin/jar jar ~/jdk1.6.0_45/bin/jar 1062
+    sudo update-alternatives --install /usr/bin/java java ~/jdk1.6.0_45/bin/java 1062
+    sudo update-alternatives --install /usr/bin/javac javac ~/jdk1.6.0_45/bin/javac 1062
+    sudo update-alternatives --install /usr/bin/javap javap ~/jdk1.6.0_45/bin/javap 1062
+    sudo update-alternatives --install /usr/bin/javadoc javadoc ~/jdk1.6.0_45/bin/javadoc 1062
+
+    sudo update-alternatives --config jar
+    sudo update-alternatives --config java
+    sudo update-alternatives --config javac
+    sudo update-alternatives --config javap
+    sudo update-alternatives --config javadoc
+
+    注意：若在~/.bashrc 中配置了jdk路径，java -version 发现不起作用，有可能设置了update-alternatives
+
+
 

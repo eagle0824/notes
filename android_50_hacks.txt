@@ -1,0 +1,20 @@
+Views
+    1.Centering views using weights
+        LinearLayout’s android:weightSum
+        view's android:layout_wegith
+    
+    2.Using lazy loading and avoiding replication
+        ViewStub
+        <include layout=@layout/layout.xml/>
+
+    3.Creating a custom ViewGroup
+        onMeasure();
+        onLayout()
+
+    4.Preferences hacks
+        Custom
+
+Animations
+    5.Snappy transitions with TextSwitcher and ImageSwitcher
+
+

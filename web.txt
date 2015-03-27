@@ -5,3 +5,6 @@ http://grepcode.com/project/repository.grepcode.com/java/ext/com.google.android/
 
 常用编程语言，linux command查询
 http://overapi.com/
+
+android工具，开发教程设计规范国内网址
+http://www.androiddevtools.cn/

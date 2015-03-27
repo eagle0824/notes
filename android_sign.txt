@@ -1,3 +1,60 @@
+
+Android签名机制：生成keystore、签名、查看签名信息
+
+Android独有的安全机制，除了权限机制外，另外一个就是签名机制了。签名机制主要用在以下两个主要场合起到其作用：升级App和权限检查。
+升级App
+
+用户在升级一款已经安装过的App时，如果程序的修改来自于同一来源，则允许升级安装，否则会提示签名不一致无法安装的提示。
+权限检查
+
+我曾在Android Permission权限机制的具体使用一文中提过，对于申请权限的  protection level 为 signature 或者 signatureOrSystem 的，会检查权限申请者和权限声明者的证书是否是一致的。
+
+至于签名机制的原理及其他作用，此不详述，本文主要介绍，签名文件key的生成、用key去签名apk文件及查看签名的方法。
+生成keystore
+
+创建keystore，需要用到keytool.exe (位于jdk_xx\jre\bin目录下)，具体做法如下：
+
+    keytool -genkey -alias mykey -keyalg RSA -validity 40000 -keystore demo.keystore
+
+        #说明：
+        #    -genkey 产生密钥
+        #    -alias mykey 别名 mykey
+        #    -keyalg RSA 使用RSA算法对签名加密
+        #    -validity 40000 有效期限4000天
+        #    -keystore demo.keystore
+
+对apk进行签名
+
+使用产生的keystore对apk签名，使用到的是jarsigner.exe ，该工具位于jdk_xx\bin目录下，命令如下：
+
+    jarsigner -verbose -keystore demo.keystore -signedjar test_signed.apk test.apk mykey
+        #    test_signed.apk是签名之后的文件
+        #    test.apk是需要签名的文件
+
+另外需要注意的是，如果你的jdk版本在1.7以上，你在对apk签名时，需要加上这个参数：
+
+        -digestalg SHA1 -sigalg MD5withRSA
+
+否则同样会出现：Failure [INSTALL_PARSE_FAILED_NO_CERTIFICATES]的错误。
+
+查看签名信息
+
+1、查看keystore的信息
+
+    keytool -list -keystore demo.keystore -alias mykey -v
+
+2、查看keystore的公钥证书信息
+
+    keytool -list -keystore demo.keystore -alias mykey -rfc
+
+   （注：获取Base64格式的公钥证书，RFC 1421）
+
+3、查看apk的签名信息
+
+    jarsigner -verify -verbose -certs <your_apk_path.apk>
+
+
+ 
  Android签名详解（debug和release）
 1. 为什么要签名
 
@@ -110,7 +167,8 @@ $ signapk publickey.x509[.pem] privatekey.pk8 input.jar output.jar
 
 *.x509.pem为x509格式公钥，pk8为私钥
 
-build/target/product/security目录中有四组默认签名可选：testkey platform shared media（具体见README.txt），应用程序中Android.mk中有一个LOCAL_CERTIFICATE字段，由它指定用哪个key签名，未指定的默认用testkey.
+build/target/product/security目录中有四组默认签名可选：testkey platform shared media（具体见README.txt），应用程序中Android.mk中有一个LOCAL_CERTIFICATE字段，由它指定用哪个key签名，未指定的默认用testkey.  
+key 在源码的build/target/product/security/目录
 
 b) 在源码中自签名
 

@@ -163,6 +163,8 @@
 	git format-patch -1 -o /tmp/	最后一次提交生成一个patch到目录/tmp/下面
 	git am /tmp/patchname
 	
+    git diff > tmp.diff     git diff 生成patch
+    git apply tmp.diff      git apply 将tmp.diff 恢复
 
 	
 	回退到commit_id版本，在commid_id版本之后，最后一次提交和commit_id之间修改信息被reset
