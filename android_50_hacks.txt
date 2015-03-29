@@ -25,5 +25,39 @@ Animations
         LayoutAnimationController
         viewgroup.setLayoutAnimation(controller);
 
+    7.doing animations over the Canvas
+        Rectangle.move();
+        Rectangle.draw();
+        Rectangle.invalidate();
+
+    8.Slideshow using the Ken Burns effect
+        ObjectAnimation();
+        AnimationListener --> onAnimationEnd();
+
+View tips and tricks
+    9.Avoiding date validations with an EditText for dates
+        Button android:background="@android:drawable/edit_text"
+
+    10.Formatting a TextView’s text
+        mTextView1.setText(Html.fromHtml(text));
+        mTextView1.setMovementMethod(LinkMovementMethod.getInstance());
+        or
+        Spannable sText = new SpannableString(mTextView2.getText());
+        sText.setSpan(new BackgroundColorSpan(Color.RED), 1, 4, 0);
+        sText.setSpan(new ForegroundColorSpan(Color.BLUE), 5, 9, 0);
+        mTextView2.setText(sText);
+
+    11.Adding text glowing effects
+        LedText Typeface
+
+        
+
+
+
+
+
+
+
+
 
 
