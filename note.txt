@@ -3690,6 +3690,33 @@ Returns
      </shape>
 
 
+    255 AndroidManifest.xml中android:configChanges的简介
+
+        程序在运行时，一些设备的配置可能会改变，如：横竖屏的切换、键盘的可用性等，这样的事情一发生，Activity会重新启动，其中的过程是：在销毁之前会先 called  onSaveInstanceState()去保存你应用中的一些数据，然后called onDestroy()，最后才去called onCreate()或onRestoreInstanceState()方法去重新启动Activity。
+
+        当指定的属性发生变化时，不会去重新启动Activity，而是通知程序去调用 onConfigurationChanged()函数 例如：在进行横竖屏的切换时，会重新启动Activity，而定义了这个属性，就不会重新启动Activity了，而是去调用 onConfigurationChanged()函数
+
+        可以设置多个属性，中间用｜隔开                                                                                                                                                                                   
+        "mcc"        国际移动用户识别码所属国家代号是改变了-----  sim被侦测到了，去更新mcc    mcc是移动用户所属国家代号
+        "mnc"        国际移动用户识别码的移动网号码是改变了------ sim被侦测到了，去更新mnc    MNC是移动网号码，最多由两位数字组成，用于识别移动用户所归属的移动通信网
+        "locale"        地址改变了-----用户选择了一个新的语言会显示出来
+        "touchscreen"        触摸屏是改变了------通常是不会发生的
+        "keyboard"        键盘发生了改变----例如用户用了外部的键盘
+        "keyboardHidden"        键盘的可用性发生了改变
+        "navigation"        导航发生了变化-----通常也不会发生
+        "screenLayout"        屏幕的显示发生了变化------不同的显示被激活
+        "fontScale"        字体比例发生了变化----选择了不同的全局字体
+        "uiMode"        用户的模式发生了变化
+        "orientation"        屏幕方向改变了
+        "screenSize"        屏幕大小改变了
+        "smallestScreenSize"        屏幕的物理大小改变了，如：连接到一个外部的屏幕上
+
+        具体设置如下代码所示：
+        <activity
+            android:name="com.iflytek.voicedemo.TtsDemo"
+            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|fontScale"
+            android:screenOrientation="portrait" >
+
 
 
 
