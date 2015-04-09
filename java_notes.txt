@@ -1,0 +1,20 @@
+1.javac 编译文件class文件到bin
+javac *.java -d ./bin
+
+
+2.编译某个目录下所有java文件
+
+find ./src/ -name *.java > sourcefile
+javac @sourcefile -d ./bin
+
+3.将bin文件下所有class文件，打包成jar，并添加mainifest
+jar cvfm hello.jar ./mainifest -C bin/ .
+
+manifest 内容指定main class
+Main-Class: com.eagle.Hello
+
+若不指定main函数,可以直接用如下命令打包
+jar cvf hello.jar -C bin/ .
+    
+4.执行jar包
+java -jar hello.jar
