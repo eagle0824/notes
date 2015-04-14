@@ -3733,60 +3733,12 @@ Returns
 
 
 
-redst
-	bash-3.2# cd cache/recovery/
-bash-3.2# ls
-last_log
-bash-3.2# echo "--upgrade_system" > upgrade_cmd
-bash-3.2# cat upgrade_cmd
---upgrade_system
-
-
-
-
-    void sendEvent(int action, int flags) {
-	 long when = SystemClock.uptimeMillis();
-        final int repeatCount = (flags & KeyEvent.FLAG_LONG_PRESS) != 0 ? 1 : 0;
-        final KeyEvent ev = new KeyEvent(mDownTime, when, action, mCode, repeatCount,
-                0, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
-                flags | KeyEvent.FLAG_FROM_SYSTEM | KeyEvent.FLAG_VIRTUAL_HARD_KEY,
-                InputDevice.SOURCE_KEYBOARD);
-        try {
-            //Slog.d(TAG, "injecting event " + ev);
-            mWindowManager.injectInputEventNoWait(ev);
-        } catch (RemoteException ex) {
-            // System process is dead
-        }
-    }
-
-
-
-
-
-com.archermind.tscalibrate/.CalibrateActivity
-
-通话相关设置
-	adb shell am start -a com.android.phone.CallFeaturesSetting.ADD_VOICEMAIL
-开启usb调试
-	adb shell am start -n com.android.settings/.DevelopmentSettings
-
 monkeyTest
 adb shell monkey -p com.android.contacts -v -v -v 20000\
 
 
-mount -o remount /dev/block/mmcblk0p2 /system
-
-*#*#4636#*#*	进入车载信息，电池信息等界面
-*#*#9527#*#*	进入工厂模式
-#*#*989999#*#* +拨号键	进入开发设置界面，帮助打开USB调式等(联系人拨号时,执行)
-#*987766 + 拨号键	打开/关闭log保存在sdcard的开关
-
-
-
-124	INSTRUMENTATION_STATUS: Error=Permission Denial: starting instrumentation ComponentInfo{com.android.mms.test/	android.test.InstrumentationTestRunner} from pid=1075, uid=1075 not allowed because package com.android.mms.test does not have a signature matching the target com.android.mms
-	test  android.mk文件 以及 应用android.mk LOCAL_CERTIFICATE := shared定义不同
-
 adb shell am instrument -e class com.android.mms.tests.ConversationListTest -w com.android.mms.test/android.tests.InstrumentationTestRunner
+
 adb shell am instrument -e class com.android.mms.tests.ComposeMessageActivityTest -w com.android.mms.test/android.tests.InstrumentationTestRunner
 
 adb shell am instrument -e class com.android.mms.tests.ConversationListTest1 -w com.android.mms.tests/android.test.InstrumentationTestRunner
@@ -3798,6 +3750,7 @@ adb shell am instrument -w com.android.mms.tests/android.test.InstrumentationTes
 adb shell am instrument -w com.archermind.globaltime.test/android.test.InstrumentationTestRunner
 
 
+mount -o remount,rw /dev/block/mmcblk0p2 /system
 
 adb shell am start -n com.android.settings/.SecuritySettings
 
