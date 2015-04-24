@@ -10,6 +10,7 @@ LOCAL_PACKAGE_NAME := IPOD
 
 # Builds against the public SDK if add,can't used hide api(include res)
 #LOCAL_SDK_VERSION := current
+#LOCAL_PROGUARD_ENABLED := disabled
 
 include $(BUILD_PACKAGE)
 

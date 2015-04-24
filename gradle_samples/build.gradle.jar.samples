@@ -1,0 +1,36 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+sourceCompatibility = 1.5
+version = '1.0'
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'eagle',
+                   'Implementation-Version': version,
+                   'Created-By' : 'eagle',
+                   'Main-Class': 'com.eagle.Hello'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    //format  'packageName:name:version'
+    compile 'commons-collections:commons-collections:3.2'
+    testCompile 'junit:junit:4.+'
+}
+
+test {
+    //systemProperties 'property': 'value'
+}
+
+uploadArchives {
+    repositories {
+       flatDir {
+           //dirs 'repos'
+       }
+    }
+}
