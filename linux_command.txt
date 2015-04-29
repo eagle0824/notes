@@ -106,6 +106,25 @@
 	局域网：
 	    tar czvf - src_path | ssh username@192.168.1.x tar xzvf - -C dest_path
 
+    tar -tzvf name.tar.gz   显示文件内容
+    tar -tjvf name.tar.bz2  显示文件内容
+
+    解压特定目录或文件
+    tar -jxvf name.tar.bz2 dir/file 解压name.tar.bz2文件中的dir/file
+
+    如：Music.tar.bz2 压缩包
+    部分文件
+        Music/res/
+        Music/src/
+        Music/libs
+        Music/AndroidManifest.xml
+
+    解压src目录
+        tar -jxvf Music.tar.bz2 Music/res
+    解压AndroidManifest.xml文件
+        tar -jxvf Music.tar.bz2 Music/AndroidManifest.xml
+
+
 14	curl	从服务器获取文件
 	curl http://android.git.kernel.org/repo > repo
 

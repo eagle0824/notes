@@ -8,3 +8,8 @@ http://overapi.com/
 
 android工具，开发教程设计规范国内网址
 http://www.androiddevtools.cn/
+
+android sdk国内镜像
+http://ubuntu.buct.edu.cn/android/repository/
+http://mirrors.neusoft.edu.cn/android/repository/
+

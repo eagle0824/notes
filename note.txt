@@ -3717,6 +3717,18 @@ Returns
             android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|fontScale"
             android:screenOrientation="portrait" >
 
+    256 layout 优化
+
+        尽量多使用RelativeLayout和LinearLayout, 不要使用绝对布局AbsoluteLayout，在布局层次一样的情况下， 建议使用LinearLayout代替RelativeLayout, 因为LinearLayout性能要稍高一点，但往往RelativeLayout可以简单实现LinearLayout嵌套才能实现的布局。
+
+        将可复用的组件抽取出来并通过include标签使用；
+            You can also override all the layout parameters (any android:layout_* attributes) of the included layout's root view by specifying them in the <include/>
+
+        使用ViewStub标签来加载一些不常用的布局；
+
+        使用merge标签减少布局的嵌套层次； merge 无属性
+
+
 
 
 
@@ -3753,12 +3765,14 @@ adb shell am instrument -w com.archermind.globaltime.test/android.test.Instrumen
 mount -o remount,rw /dev/block/mmcblk0p2 /system
 
 adb shell am start -n com.android.settings/.SecuritySettings
+adb shell am start -n com.android.settings/.UsbSettings
 
 Adb shell am instrument
 -e class com.jayway.test.NotePadTest#testAddNote
 -w com.jayway.test /android.test.InstrumentationTestRunner
 -e size large(medium,small)
 -e perf true -e debug true
+
 robotium
 (1) button或view onclick失效,
 	在测试程序的manifest.xml中添加,<supports-screens android:anyDensity="true"/>
@@ -3767,16 +3781,3 @@ robotium
 	测试用例的manifest中添加读写sdcard权限
 	<uses-permission android:name="android.permission.WRITE_EXTRRNAL_SORAGE"/>
 	<uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
-
-
-
-
-输入法:framework层修改
-	./frameworks/base/core/java/android/text/method/DialerKeyListener.java
-	./frameworks/base/core/java/android/widget/TextView.java
-	./frameworks/base/core/java/android/inputmethodservice/SoftInputWindow.java
-	./frameworks/base/core/java/android/inputmethodservice/InputMethodService.java
-
-http://www.eoeandroid.com/forum.php?mod=viewthread&tid=168008
-
-
