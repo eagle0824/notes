@@ -436,4 +436,10 @@ example config java (1062 是优先级对auto时候有影响)
     注意：若在~/.bashrc 中配置了jdk路径，java -version 发现不起作用，有可能设置了update-alternatives
 
 
+44 windows下文本文件在linux下打开乱码
+    原因: 在windows环境中中文压缩一般为gbk，而在linux环境中为utf8
+    通过下面命令，即可生成utf8文件，在linux下打开就可以正查显示
+        iconv -f gbk -t utf8 ReadMe.txt > ReadMe.txt.utf8 
+
+
 
