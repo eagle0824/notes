@@ -3696,7 +3696,7 @@ Returns
 
         当指定的属性发生变化时，不会去重新启动Activity，而是通知程序去调用 onConfigurationChanged()函数 例如：在进行横竖屏的切换时，会重新启动Activity，而定义了这个属性，就不会重新启动Activity了，而是去调用 onConfigurationChanged()函数
 
-        可以设置多个属性，中间用｜隔开                                                                                                                                                                                   
+        可以设置多个属性，中间用｜隔开
         "mcc"        国际移动用户识别码所属国家代号是改变了-----  sim被侦测到了，去更新mcc    mcc是移动用户所属国家代号
         "mnc"        国际移动用户识别码的移动网号码是改变了------ sim被侦测到了，去更新mnc    MNC是移动网号码，最多由两位数字组成，用于识别移动用户所归属的移动通信网
         "locale"        地址改变了-----用户选择了一个新的语言会显示出来
@@ -3729,8 +3729,12 @@ Returns
         使用merge标签减少布局的嵌套层次； merge 无属性
 
 
+    257 LayoutInflater.inflate()
 
-
+        方法1.LayoutInflater.inflate(layoutId, null)
+        方法2.LayoutInflater.inflate(layoutId,parent,false)
+        之间的区别为
+            方法2,会将parent的LayoutParams设到inflate到的view上，而方法1的LayoutParams是null，因此在adapter的getView 或newView中最好使用方法2
 
 
 
