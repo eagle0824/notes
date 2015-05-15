@@ -3737,6 +3737,26 @@ Returns
             方法2,会将parent的LayoutParams设到inflate到的view上，而方法1的LayoutParams是null，因此在adapter的getView 或newView中最好使用方法2
 
 
+    258 Runtime.exec(cmd) demo
+
+        ///system/bin/sh -c /system/bin/lsof|/system/bin/grep /mnt/hd/sdcard
+        String cmd = "/system/bin/lsof|/system/bin/grep /mnt/hd/sdcard";
+        try {
+            Process process = Runtime.getRuntime().exec(new String[]{"/system/bin/sh","-c",cmd});
+            BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line = null;
+            String result = "";
+            while ((line = br.readLine()) != null) {
+                result = result + line;
+            }
+            int programResult = process.waitFor();
+            br.close();
+            VideoUtils.debug(1, TAG, "result "+programResult+" out : " + result);
+        } catch (IOException e) {
+            VideoUtils.debug(1, TAG, " : lsof e =======" + e.getMessage());
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
 
 
 
