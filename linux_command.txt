@@ -442,4 +442,17 @@ example config java (1062 是优先级对auto时候有影响)
         iconv -f gbk -t utf8 ReadMe.txt -o ReadMe.txt.utf8 
 
 
+45  桌面显示中文，但是终端中文件显示英文
+
+    1) export LANG=en_US
+    2) xdg-user-dirs-gtk-update
+        这时会弹出一个配置界面，将所有中文的用户目录切换到英文。选中不再提示，确定。
+        这时，会删除没有内容的用户目录，但有内容的用户目录会保持。并创建相应的英文目录：
+        Desktop/Download/Templates/Public/Documents/Music/Pictures/Videos
+        此时，在位置里看到的常用中文目录已经换成英文目录。只需将原中文目录的内容拷贝到相应英文目录，并删除中文目录即可。
+    3) 然后再执行
+        export LANG=zh_CN.UTF-8
+        以显示中文。
+    注销后重新进入系统
+
 

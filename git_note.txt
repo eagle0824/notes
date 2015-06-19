@@ -251,6 +251,12 @@
     若修改已经提交到服务器的提交记录用 git push -f origin master
 
 
+10 将已有分支移动到其它服务器分支
+    git remote add ac gitolite@192.168.0.200:autochips/packages/apps/TaskManager.git
+    git fetch ac
+    git push ac clwbase:master
+    git checkout -b master ac/master 
+
     
 
 Git 是分散式的版本控制系統, 從架設、簡易操作、設定, 此篇主要是整理 基本操作、遠端操作 等.

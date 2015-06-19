@@ -13,3 +13,12 @@ android sdk国内镜像
 http://ubuntu.buct.edu.cn/android/repository/
 http://mirrors.neusoft.edu.cn/android/repository/
 
+eclipse adk proxy settings
+
+android -> Tools -> Options
+    HTTP Proxy Server ubuntu.buct.edu.cn
+    HTTP Proxy Port 80
+
+and select others Force https://...sources to be fetched using http://...
+
+
