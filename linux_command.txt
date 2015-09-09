@@ -486,5 +486,14 @@ example config java (1062 是优先级对auto时候有影响)
     解压
     cat backcar.tar.gz.* | tar -jxv
 
+50 修改ubuntu 系统启动顺序
+    sudo vim /boot/grub/grub.cfg
+    修改 set default="0"
+    0 代表第一个menuentry
+    把0 改成对应的系统内核的index
+
+    或者直接修改menuentry
+    把linux和initrd改成对应的旧的版本就可以了
+
     
     
