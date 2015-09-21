@@ -3760,8 +3760,25 @@ Returns
 
 
 
+    2   如果你想通过Service把home到后台的Activity启动到前台来，你有两种办法：
 
+    1)、startActivity(i)的方法
 
+    Intent i = new Intent(mActivity,MyActivity.class);i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);startActivity(i);
+
+    2)、moveTaskToFront的方法：
+
+    ActivityManager am = (ActivityManager) getSystemService(Activity.ACTIVITY_SERVICE);am.moveTaskToFront(mActivity.getTaskId(), 0);
+
+    但同时有两个问题：
+
+    1)、第一种方法：等几秒钟Activity才显示出来
+
+    2)、第二种方法：根本不起左右
+
+    这是你需要在AndroidManifest.xml中添加"android.permission.STOP_APP_SWITCHES"用户权限，前提是必须是系统应用才可以.
+
+    原因是，android系统设计如此，避免后台启动activity影响用户的前台操作，android推荐的做法是通过Notification提示用户，通过用户自己点击显示activity！
 
 
 
