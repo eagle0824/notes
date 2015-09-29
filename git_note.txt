@@ -1,14 +1,14 @@
 1	ubuntu git安装
-	
+
 	linux下软件的安装方式有多种，最简单的莫过于从软件中心直接安装了或者用命令行直接安装
 		sudo apt-get install git
 
 	       但是这样的安装却使我们体会不到最新版本的功能，如果我们想要体验最新的，或者修改源代码，就必须编译安装了。我们可以直接在git 的官网
 	上下载并安装。
 	编译之前，我们必须首先安装以下软件，否则会编译不通过。
-		sudo apt-get install libcurl4-openssl-dev  libexpat1-dev 
+		sudo apt-get install libcurl4-openssl-dev  libexpat1-dev
 		安装完后我们边可以编译了，当然编译之前我们必须进入源码所在的目录，至于怎么进，大家就自己解决吧，进入后执行下面命令进行编译：
-		make prefix=/usr/local all    
+		make prefix=/usr/local all
 		最后执行
 		sudo make prefix=/usr/local install
 		进行安装。
@@ -16,21 +16,21 @@
 		首先进入你要存放的目录，当然也可以不进入，git clone 默认的第二个参数就是你的路径，省略的话就是你当前的路径：
 		git clone git://git.kernel.org/pub/scm/git/git.git
 		克隆后默认会检出（checkout）当前最新的代码当然你也可以装以往的版本,执行下面命令可以检查出历史所有的版本
-		git tag 
+		git tag
 		比如我当下想检出v1.7.8.2，这个版本，我只需执行以下命令就行：
 		git checkout v1.7.8.2
 		检出后我们就可以使用上面介绍的方法进行编译了　　
 
 
 2	git配置
-	
+
 	//查看当前配置
-	git config -l 
-	git config --list 	
+	git config -l
+	git config --list
 
 	//设置用户名
 	git config --global user.name "your name"
-	//设置用户邮箱	
+	//设置用户邮箱
 	git config --global user.email xxxx@163.com
 
 	//打开.git/config文件编辑
@@ -44,9 +44,9 @@
  	git config --global -e	打开~/.gitconfig文件并编辑
 
     git 颜色设置
-    git config --global color.status auto  
-    git config --global color.diff auto  
-    git config --global color.branch auto  
+    git config --global color.status auto
+    git config --global color.diff auto
+    git config --global color.branch auto
     git config --global color.interactive auto
 
 1	git常用命令
@@ -58,14 +58,14 @@
 	git reset <file>	将文件从暂存区,移除
 
 	git commit 		将暂存区提交到本地仓库
-	
+
 
 	git commit -a -m "messge"	-a将缓存区修改或删除的文件,但新建的文件不会自动,直接存储(相当于执行git add/rm)
 	git commit --amend -m "覆盖上一次提交"
 	git remote -v 查看远程服务器详情
 	git log -p --stat -n 查看最近n次提交的详情,并统计修改行数(stat)
 	git log --pretty=oneline	以单行显示每次提交记录
-	
+
 	git checkout file	撤销本地修改	git add	添加本地修改到暂存区域
 	git reset file	撤销暂存区域修改	git commit	暂存区修改提交到本地代码仓库
 	git push		本地代码仓库提交到远程代码仓库
@@ -84,10 +84,10 @@
 	默认情况下git clone 命令本质上就是自动创建了本地的master 分支用于跟踪远程仓库中的master 分支
 	git clone git....... -b branch	将远程分支branch中的内容创建本地分支
 	git pull	自动将远程master分支与本地分支合并
-	
-	别名 git config --global alias.last 'log -1 HEAD'	
+
+	别名 git config --global alias.last 'log -1 HEAD'
 	则 git log -1 等价于	git last
-	
+
 	git config --global alias.co checkout
 	git config --global alias.br branch
 	git config --global alias.ci commit
@@ -135,7 +135,7 @@
 	git stash drop stash@{0}    将0号stash删除
 
 
-2	git做patch	
+2	git做patch
 	(1)	根据提交做patch
 		git format-patch -s -99999 -o path		获取所有patch
 		git format-patch -s -1 -o path		获取最后一次提交的patch
@@ -143,13 +143,13 @@
 		git format-patch -n 3b7fd25c71877b287251a3336b398b72f6b4503d   包含3b7fd25c71877b287251a3336b398b72f6b4503d提交之前的n次提交
 
 		git format-patch -s 3b7fd25c71877b287251a3336b398b72f6b4503d   3b7fd25c71877b287251a3336b398b72f6b4503d此次提交之后的patch
-	
 
-	(2)	根据tag差异做patch	
+
+	(2)	根据tag差异做patch
 		git tag -l
 		git diff android-sdk-2.2_r2 android-sdk-2.3.4_r1 >path
 
-	(3)	根据commit差异做patch	
+	(3)	根据commit差异做patch
 		git log
 		git diff 0c34b8e3a25173c8c4542e034d602d96a0c8eb68  d60ae78a0c217ef764f0a3775459fae30a97f7ea > ~/patch/0001112.patch
 
@@ -162,18 +162,24 @@
 
 	git format-patch -1 -o /tmp/	最后一次提交生成一个patch到目录/tmp/下面
 	git am /tmp/patchname
-	
+
     git diff > tmp.diff     git diff 生成patch
     git apply tmp.diff      git apply 将tmp.diff 恢复
 
-	
+
 	回退到commit_id版本，在commid_id版本之后，最后一次提交和commit_id之间修改信息被reset
 	git reset --hard 1347c07eb6e615383225557f9f8fdb67c3354196
-	
+
 	回退到commit_id版本，在commid_id版本之后，最后一次提交和commit_id之间修改信息保存到暂存区
 	git reset 1347c07eb6e615383225557f9f8fdb67c3354196
 
 	git revert
+
+    最后一次提交文件压缩
+    git archive -o ../updated.zip HEAD $(git diff --name-only HEAD^)
+
+    两次提交之间修改的文件压缩
+    git archive -o ../latest.zip NEW_COMMIT_ID_HERE $(git diff --name-only OLD_COMMIT_ID_HERE NEW_COMMIT_ID_HERE)
 
 3	git .gitignore 文件示例
 	# 此为注释– 将被Git 忽略
@@ -241,7 +247,7 @@
 
 8	git push origin localbranch:newbranch 用本地分支localbranch在服务器上创建新的分支newbranch
     git push origin :newbranch    删除服务器上的分支newbranch，本地分支仍旧存在
-    
+
 9   git filter-branch
 
     git filter-branch -f --env-filter "GIT_AUTHOR_NAME='eagle'; GIT_AUTHOR_EMAIL='l22k77@163.com'; GIT_COMMITTER_NAME='eagle'; GIT_COMMITTER_EMAIL='l22k77@163.com';"
@@ -255,13 +261,13 @@
     git remote add ac gitolite@192.168.0.200:autochips/packages/apps/TaskManager.git
     git fetch ac
     git push ac clwbase:master
-    git checkout -b master ac/master 
+    git checkout -b master ac/master
 
-    
+
 
 Git 是分散式的版本控制系統, 從架設、簡易操作、設定, 此篇主要是整理 基本操作、遠端操作 等.
 
-註: Git 的範圍太廣了, 把這篇當作是初學入門就好了. 
+註: Git 的範圍太廣了, 把這篇當作是初學入門就好了.
 
 
 注意事項
@@ -269,7 +275,7 @@ Git 是分散式的版本控制系統, 從架設、簡易操作、設定, 此篇
 
 origin(remote) 是 Repository 的版本
       * master(branch) 是 local 端, 正在修改的版本
-      * 
+      *
 平常沒事不要去動到 origin, 如果動到, 可用 git reset --hard 回覆到沒修改的狀態.
 
 Git 新增檔案
@@ -330,7 +336,7 @@ Git Tag
 
       对之前某次提交添加标签
       git tag -a v1.1 commitid
-      
+
       tag push 到服务器
       git push --tags
 
@@ -398,9 +404,9 @@ Git merge 合併
               * Squashed commit 壓縮成只有一個 merge-commit，不會有被合併的 log。SVN 的 merge 即是如此。
               * cherry-pick 只合併指定的 commit
               * rebase 變更 branch 的分支點：找到要合併的兩個 branch 的共同的祖先，然後先只用要被 merge 的 branch 來 commit 一遍，然後再用目前 branch 再 commit 上去。這方式僅適合還沒分享給別人的 local branch，因為等於砍掉重練 commit log。
-              * 
+              *
         指令操作
-        
+
         git merge <branch_name> # 合併另一個 branch，若沒有 conflict 衝突會直接 commit。若需要解決衝突則會再多一個 commit。
               * git merge --squash <branch_name> # 將另一個 branch 的 commit 合併為一筆，特別適合需要做實驗的 fixes bug 或 new feature，最後只留結果。合併完不會幫你先 commit。
               * git cherry-pick 321d76f # 只合併特定其中一個 commit。如果要合併多個，可以加上 -n 指令就不會先幫你 commit，這樣可以多 pick幾個要合併的 commit，最後再 git commit 即可。
@@ -421,7 +427,7 @@ git revert HEAD # 回到前一次 commit 的狀態
 git reset --soft HEAD^
       * 編輯 + git add filename
       * git commit -m 'rollback'
-      * 
+      *
 以下與 遠端 Repository 相關
 
 
@@ -437,5 +443,5 @@ git fetch origin
       * git checkout --track -b reps-branch origin/reps-branch # 抓取 reps-branch, 並將此 branch 建立於 local 的 reps-branch
       * 刪除 Repository 的 branch
 git push origin :heads/reps-branch
-      * 
+      *
 

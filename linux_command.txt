@@ -495,5 +495,6 @@ example config java (1062 是优先级对auto时候有影响)
     或者直接修改menuentry
     把linux和initrd改成对应的旧的版本就可以了
 
-    
+51 strings command
+    strings命令能能够打印出给定文件中的可打印字符序列长度为4（或者参数中制定长度）字符串
     
