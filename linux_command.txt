@@ -497,4 +497,9 @@ example config java (1062 是优先级对auto时候有影响)
 
 51 strings command
     strings命令能能够打印出给定文件中的可打印字符序列长度为4（或者参数中制定长度）字符串
+
+52 linux 桌面中文变英文
+    export LANG=en_US
+    xdg-user-dirs-gtk-update
+    export LANG=zh_CN.UTF-8
     
