@@ -40,7 +40,7 @@
 	//定义别名co为checkout,执行git co branch1相当与git checkout branch1
 	git config alias.co checkout
 
-
+    git config --global core.editor vim  用vim作为编辑gitconfig的默认工具
  	git config --global -e	打开~/.gitconfig文件并编辑
 
     git 颜色设置
