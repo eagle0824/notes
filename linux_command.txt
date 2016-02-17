@@ -502,4 +502,17 @@ example config java (1062 是优先级对auto时候有影响)
     export LANG=en_US
     xdg-user-dirs-gtk-update
     export LANG=zh_CN.UTF-8
-    
+
+53 linux 修改用户名
+    sudo -s 输入当前帐号密码进入root
+    passwd 创建你的root密码
+
+    passwd 原名字 # 此步应该是修改密码，会提示输入新密码
+
+    在grub界面进入recovery mode 
+    命令行执行mount -o remount,rw / 让根目录拥有读写权限
+
+    chfn -f 新名字 原名字 # 修改用户名
+    usermod -l 新名字 -d /home/新名字 -m 原名字 # 修改登录名
+    groupmod -n 新名字 原名字 # 修改用户组
+
