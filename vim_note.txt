@@ -1,6 +1,6 @@
 	ubuntu安装vim
 	sudo apt-get install vim
-	
+
 	安装vim中文帮助文档vimcdoc-1.8.0.tar.gz
 	./vimcdoc.sh -i
 
@@ -8,7 +8,7 @@
 	:help @cn	打开中文帮助
 	:help usr_toc	打开帮助文档
 
-	vim tutor 
+	vim tutor
 		: vimtutor
 
 
@@ -29,7 +29,7 @@
 	ctrl + I	切换到下一次的位置
 	set number	设置显示行号
 	set nonumber	设置不显示行号
-	Ctrl + U	向上滚动一屏	
+	Ctrl + U	向上滚动一屏
 	Ctrl + D	向下滚动一屏
 	H		当前屏幕顶部Home
 	M		当前屏幕中部Middle
@@ -43,7 +43,7 @@
 	"\>"	结尾"\<" 开头
 	:set hlsearch	设置搜索结果高亮显示
 	:set nohlsearch设置搜索结果非高亮显示
-	
+
 	vim编辑文件
 	edit path/filename	关闭当前文件,打开新文件
 	edit! path/filename	强制关闭当前文件,打开新文件
@@ -59,11 +59,11 @@
 	进入normal模式后
 	p		粘贴在当前位置之后
 	P		粘贴在当前位置之前
-	
+
 	split filename 分屏显示文件(水平)
 	vsplit filename 垂直分割文件
 	only		通过分屏打开多个文件后,only命令只编辑当前窗口文件
-	
+
 
 	:sp filename 令打开一个文件/分屏显示文件
 	ctrl +wj ,ctrl+wk,上下屏幕切换或者ctrl+w+w两个窗口切换
@@ -72,7 +72,7 @@
 
 	ctrl shift +	放大teminal字体
 	ctrl w -	缩小terminal字体
-	
+
 	:wq		保存退出
 	:q!		放弃修改退出
 	i		光标当前位置插入
@@ -111,7 +111,7 @@
 
 	//复制相关
 	nyy		从当前行开始复制n行
-	yy            复制当前行整行的内容到vi 缓冲区 
+	yy            复制当前行整行的内容到vi 缓冲区
 	yw            复制当前光标到单词尾字符的内容到vi 缓冲区
 	y$            复制当前光标到行尾的内容到vi 缓冲区
 	y^            复制当前光标到行首的内容到vi 缓冲区
@@ -132,6 +132,17 @@
 	:%s/1/2/g     在整个文档中将1 替换为2     100 ％（全部）
 	:s/1/2/c      每次替换都给出提示确认        cue 提示
 
+    行末：$
+    行首：^
+    空格：\s
+
+    行末空格：\s\+$
+    行首空格：^\s\+
+
+    删除行首空格
+    :%s/^\s\+//g
+    删除行尾空格
+    :%s/\s\+$//g
 
 
 	vim 注释多行
@@ -152,7 +163,7 @@
 
 
 	.vimrc是给vim使用
-	修该.vimrc使之生效	
+	修该.vimrc使之生效
 	:so %
 	so 为source % 代表当前文件名
 	在shell中执行 source .vimrc表示把.vimrc当成shell脚本执行,故是错误的
@@ -174,22 +185,22 @@
 	unmap 后面加组合键,表示删除这个映射
 	:unmap c
 	mapclear 清除所有映射
-	
+
 	添加java自动补全
 
 	vim中添加	下载javacomplemete.zip
-	1. Unzip javacomplete.zip to a directory of 'runtimepath', e.g. 
-	$HOME/.vim (unix/linux), $VIM/vimfiles (windows). 
-	> unzip javacomplete.zip -d ~/.vim 
+	1. Unzip javacomplete.zip to a directory of 'runtimepath', e.g.
+	$HOME/.vim (unix/linux), $VIM/vimfiles (windows).
+	> unzip javacomplete.zip -d ~/.vim
 
-	    To update Vim help tags, run vim and run command: 
-	:helptags $HOME/.vim/doc 
-	    or 
-	:helptags $VIM/vimfiles/doc 
+	    To update Vim help tags, run vim and run command:
+	:helptags $HOME/.vim/doc
+	    or
+	:helptags $VIM/vimfiles/doc
 
-	NOTE: javacomplete.vim, java_parser.vim and Reflection.java should be in one 
-	autoload directory of 'runtimepath'. 
-	javacomplete.txt should be in one doc directory of 'runtimepath'. 
+	NOTE: javacomplete.vim, java_parser.vim and Reflection.java should be in one
+	autoload directory of 'runtimepath'.
+	javacomplete.txt should be in one doc directory of 'runtimepath'.
 	vimrc中添加一下代码
 	filetype plugin indent on
 	autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
@@ -205,7 +216,7 @@
 	  \ setlocal omnifunc=syntaxcomplete#Complete |
 	  \ endif
 	endif
-	
+
 
 ctag安装
 
@@ -318,7 +329,7 @@ gvim是自己编译的7.0, 如果你还没有安装gvim, 请看我的这篇文�
 大家看看我的中文帮助界面吧:
 
 (--- 图2 ---)
-安装方法:  
+安装方法:
 在下面的网站下载中文帮助的文件包:
 http://vimcdoc.sf.net       (English)
 http://vcd.gro.clinux.org    (中文)
@@ -345,7 +356,7 @@ mx 	设置书签,x只能是a-z的26 个字母
 `x 	跳转到书签处("`"是1左边的键)
 > 	增加缩进,"x>"表示增加以下x行的缩进
 < 	减少缩进,"x<"表示减少以下x行的缩进
-    
+
 4 	语法高亮
 
 	写程序没有语法高亮将是一件多么痛苦的事情啊, 幸亏vim的作者是个程序员(如果不是, 那可NB大了), 提供了语法高亮功能, 在上面的图片中大家也可以看到那些注释, 关键字, 字符串等, 都用不同颜色显示出来了, 要做到这样, 首先要在你的 ~/.vimrc 文件中增加下面几句话:
@@ -417,7 +428,7 @@ Homepage 	: http://blog.csdn.net/wooin
 7.
 	文件浏览器和窗口管理器 -- 插件: WinManager
 
-	
+
 下载地址 	http://www.vim.org/scripts/script.php?script_id=95
 版本 	2.x
 安装 	在 ~/.vim 目录下解压winmanager.zip
@@ -593,7 +604,7 @@ nmap <F7> :cp<cr>
 10.
 	快速浏览和操作Buffer -- 插件: MiniBufExplorer
 
-	
+
 下载地址 	http://www.vim.org/scripts/script.php?script_id=159
 版本 	6.3.2
 安装 	将下载的 minibufexpl.vim文件丢到 ~/.vim/plugin 文件夹中即可
@@ -629,10 +640,10 @@ let g:miniBufExplMapWindowNavArrows = 1
 是用<C-箭头键>切换到上下左右窗口中去
 11. 	c/h文件间相互切换 -- 插件: A
 
-	
+
 下载地址 	http://www.vim.org/scripts/script.php?script_id=31
 版本
-	
+
 安装
 	将a.vim 放到 ~/.vim/plugin 文件夹中
 手册
@@ -652,7 +663,7 @@ nnoremap <silent> <F12> :A<CR>
 意思是按F12时在一个新的buffer中打开c/h文件, 这样在写程序的时候就可以不假思索地在c/h文件间进行切换, 减少了按键的次数, 思路也就更流畅了, 阿弥陀佛....
 12. 	在工程中查找 -- 插件: Grep
 
-	
+
 下载地址 	http://www.vim.org/scripts/script.php?script_id=311
 版本 	1.8
 安装 	把grep.vim 文件丢到 ~/.vim/plugin 文件夹就好了
@@ -710,10 +721,10 @@ Search in files: *.c *.h
 13.
 	高亮的书签 -- 插件: VisualMark
 
-	
+
 下载地址 	http://www.vim.org/scripts/script.php?script_id=1026
 版本
-	
+
 安装 	把visualmark.vim 文件丢到 ~/.vim/plugin 文件夹就好了
 手册
 	无
@@ -795,7 +806,7 @@ Ctrl+X Ctrl+S 	拼写建议
 15.
 	加速你的补全 -- 插件: SuperTab
 
-	
+
 下载地址 	http://www.vim.org/scripts/script.php?script_id=1643
 版本 	0.43
 安装 	把supertab.vim 文件丢到 ~/.vim/plugin 文件夹就好了
