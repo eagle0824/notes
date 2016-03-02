@@ -304,6 +304,8 @@
 		输入之前用户密码，输入两次新密码
 	（2）root用户
 	passwd
+     (3) 修改root用户密码
+    sudo passwd root
 
 31	alias 设置别名
 	alias ls=‘ls -l’
