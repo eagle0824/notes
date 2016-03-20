@@ -518,3 +518,10 @@ example config java (1062 是优先级对auto时候有影响)
     usermod -l 新名字 -d /home/新名字 -m 原名字 # 修改登录名
     groupmod -n 新名字 原名字 # 修改用户组
 
+54 查看系统中所有PCI总线设备或连接到该总线上的所有设备的工具(如网卡型号等等)
+    lspci
+
+55 安装无线网卡驱动
+    sudo apt-get update
+    sudo apt-get install --reinstall bcmwl-kernel-source 
+
