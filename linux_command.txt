@@ -525,3 +525,24 @@ example config java (1062 是优先级对auto时候有影响)
     sudo apt-get update
     sudo apt-get install --reinstall bcmwl-kernel-source 
 
+56 minicom
+
+    1) sudo minicom -s 进入设置界面
+    2) 选择 Serial port setup
+    3)   A - Serial Device 路径设置为  /dev/ttyUSB0
+         E - Bps/Par/Bits  波特率设置为 921600 8N1
+         F - Hardware Flow Control 波特率设置为 No
+         G - Software Flow Control 波特率设置为 No
+    4) 选择 
+        Save setup as dfl 设为默认设置
+   
+
+    ctrl+a+l 保存log到本地当前路径mincap.log文件
+
+57 hexedit
+    man hexedit 查看帮助
+    enter --> 跳转到制定位置
+    ctrl + w ---> 保存
+    ctrl + x ---> 退出
+    Backspace ---> 撤销修改
+    Tab ---> 切换内容
