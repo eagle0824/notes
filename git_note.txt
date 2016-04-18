@@ -68,7 +68,9 @@
 
 	git checkout file	撤销本地修改	git add	添加本地修改到暂存区域
 	git reset file	撤销暂存区域修改	git commit	暂存区修改提交到本地代码仓库
-	git push		本地代码仓库提交到远程代码仓库
+
+    git push <远程主机名> <本地分支名>:<远程分支名>
+	git push 本地代码仓库提交到远程代码仓库
 	git push orign branchname	提交到指定仓库
 
 	git revert	撤销某次操作，此次操作之前和之后的commit和history都会保留，并且把这次撤销作为一次最新的提交
@@ -84,6 +86,7 @@
 	默认情况下git clone 命令本质上就是自动创建了本地的master 分支用于跟踪远程仓库中的master 分支
 	git clone git....... -b branch	将远程分支branch中的内容创建本地分支
 	git pull	自动将远程master分支与本地分支合并
+    git pull <远程主机名> <远程分支名>:<本地分支名>
 
 	别名 git config --global alias.last 'log -1 HEAD'
 	则 git log -1 等价于	git last
@@ -247,6 +250,7 @@
 
 8	git push origin localbranch:newbranch 用本地分支localbranch在服务器上创建新的分支newbranch
     git push origin :newbranch    删除服务器上的分支newbranch，本地分支仍旧存在
+
 
 9   git filter-branch
 

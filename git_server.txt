@@ -1,0 +1,141 @@
+Git是非常著名的分布式版本控制系统。
+Gitosis则是方便通过Git与ssh架设中央服务器的软件。这篇文章的安装流程写得很明了，但使用中还是遇到了些许问题，本文算是该流程的补充。如果打算通过Gitosis架设服务器通过本文或许可以少走不少弯路。
+
+一、架设步骤
+1. 下载并安装python setuptools
+    sudo apt-get install python-setuptools
+2. 下载并安装gitosis
+    cd ~/src
+    git clone git://eagain.net/gitosis.git
+    cd gitosis
+    python setup.py install
+3. 添加用户git
+
+    sudo adduser \
+             --system \
+             --shell /bin/sh \
+             --gecos 'git version control' \
+             --group \
+             --disabled-password \
+             --home /home/git \
+             git
+
+4. 生成本机密钥
+    切换到个人机，如果已有~/.ssh/id_rsa.pub略过此步
+    ssh-keygen -t rsa
+5. 上传密钥到服务器临时目录
+    scp ~/.ssh/id_rsa.pub 用户名@主机:/tmp
+6. 初使化gitosis
+    切回到服务器
+    sudo -H -u git gitosis-init < /tmp/id_rsa.pub
+7. 修改post-update权限
+    sudo chmod 755 /home/git/repositories/gitosis-admin.git/hooks/post-update
+8. clone gitosis管理平台
+    git clone git@主机名:gitosis-admin.git
+    cd gitosis-admin
+9. 安装完成
+    通过修改gitosis-admin管理gitosis用户权限
+    添加公密到keydir，添加用户
+    修改完后commit，push到中服务器即可完成仓库权限的相关操作。
+
+二、实例
+目标：添加用户 john 和仓库 foo 到gitosis，并和管理员miao合作管理
+1. 用户john添加并发送id_rsa.pub给miao
+
+    john:~$ ssh-keygen -t rsa
+        Generating public/private rsa key pair.
+        Enter file in which to save the key (/home/john/.ssh/id_rsa):
+        Created directory '/home/john/.ssh'.
+        Enter passphrase (empty for no passphrase):
+        Enter same passphrase again:
+        Your identification has been saved in /home/john/.ssh/id_rsa.
+        Your public key has been saved in /home/john/.ssh/id_rsa.pub.
+        john:~$ cp /home/john/.ssh/id_rsa.pub /tmp
+
+2. gitosis管理员miao分配john权限
+
+    miao:~$ cd ~/projects
+    git clone git@192.168.1.115:gitosis-admin
+    cd gitosis-admin
+    cat gitosis.conf
+
+        [gitosis]
+
+        [group gitosis-admin]
+        writable = gitosis-admin
+        members = miao@u32-192-168-1-110
+
+    ls keydir/
+    miao@u32-192-168-1-110.pub
+    cp /tmp/id_rsa.pub keydir/john.pub
+    vi gitosis.conf
+
+        [gitosis]
+
+        [group gitosis-admin]
+        writable = gitosis-admin
+        members = miao@u32-192-168-1-110
+
+        [group foo]
+        writable = foo
+        members = miao@u32-192-168-1-110 john
+
+
+    git add .
+    git commit -am "add member john and project foo"
+    git push
+
+3. 用户 miao 添加项目foo
+
+    miao:~$ cd ~/projects
+        mkdir foo
+        cd foo
+        git init
+        touch hello.txt
+        git add hello.txt
+        git commit -am 'first commit'
+        git remote add origin git@192.168.1.115:foo.git
+        git push origin master
+
+4. 用户 john clone Foo并修改hello.txt
+
+    john:~$ git clone git@192.168.1.115:foo.git
+        cd foo
+        ls
+        date > hello.txt
+        git commit -am 'add time to hello.txt' && git push
+
+5. 用户 miao pull Foo
+
+    miao:~/projects/foo$ vi .git/config
+
+        [core]
+            repositoryformatversion = 0
+            filemode = true
+            bare = false
+            logallrefupdates = true
+        [remote "origin"]
+            url = git@192.168.1.115:foo.git
+            fetch = +refs/heads/*:refs/remotes/origin/*
+        [branch "master"]
+            remote = origin
+            merge = refs/heads/master
+
+    git pull
+
+三、常见问题
+首先确定 /home/git/repositories/gitosis-admin.git/hooks/post-update 为可执行即属性为 0755
+1. git操作需要输入密码
+
+    原因
+    公密未找到
+    解决
+    上传id_pub.rsa到keydir并改为'gitosis帐号.pub'形式，如miao.pub。扩展名.pub不可省略
+
+2. ERROR:gitosis.serve.main:Repository read access denied
+
+    原因
+    gitosis.conf中的members与keydir中的用户名不一致，如gitosis中的members = foo@bar，但keydir中的公密名却叫foo.pub
+    解决
+    使keydir的名称与gitosis中members所指的名称一致。
+    改为members = foo 或 公密名称改为foo@bar.pub
