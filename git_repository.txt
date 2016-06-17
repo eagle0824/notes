@@ -1,67 +1,136 @@
-tHub就是一个免费托管开源代码的远程仓库。但是对于某些视源代码如生命的商业公司来说，既不想公开源代码，又舍不得给GitHub交保护费，那就只能自己搭建一台Git服务器作为私有仓库使用。
 
-搭建Git服务器需要准备一台运行Linux的机器，强烈推荐用Ubuntu或Debian，这样，通过几条简单的apt命令就可以完成安装。
+一、安装git服务器所需软件
 
-假设你已经有sudo权限的用户账号，下面，正式开始安装。
+    打开终端输入以下命令：
 
-第一步，安装git：
+        sudo apt-get install git-core openssh-server openssh-client  
 
-$ sudo apt-get install git
+    git-core是git版本控制核心软件
 
-第二步，创建一个git用户，用来运行git服务：
+    安装openssh-server和openssh-client是由于git需要通过ssh协议来在服务器与客户端之间传输文件
 
-$ sudo adduser git
+    然后中间有个确认操作，输入Y后等待系统自动从镜像服务器中下载软件安装，安装完后会回到用户当前目录。如果
 
-第三步，创建证书登录：
+    安装提示失败，可能是因为系统软件库的索引文件太旧了，先更新一下就可以了，更新命令如下：
 
-收集所有需要登录的用户的公钥，就是他们自己的id_rsa.pub文件，把所有公钥导入到/home/git/.ssh/authorized_keys文件里，一行一个。
+        sudo apt-get update  
 
-第四步，初始化Git仓库：
+    更新完软件库索引后继续执行上面的安装命令即可。
 
-先选定一个目录作为Git仓库，假定是/srv/sample.git，在/srv目录下输入命令：
+    安装Python的setuptools和gitosis，由于gitosis的安装需要依赖于python的一些工具，所以我们需要先安装python的setuptools。
 
-$ sudo git init --bare sample.git
+    执行下面的命令：
 
-Git就会创建一个裸仓库，裸仓库没有工作区，因为服务器上的Git仓库纯粹是为了共享，所以不让用户直接登录到服务器上去改工作区，并且服务器上的Git仓库通常都以.git结尾。然后，把owner改为git：
+        sudo apt-get install python-setuptools  
 
-$ sudo chown -R git:git sample.git
+    这个工具比较小，安装也比较快，接下来准备安装gitosis，安装gitosis之前需要初始化一下服务器的git用户信息,这个随便填。
 
-第五步，禁用shell登录：
+        git config --global user.name "myname"   
+        git config --global user.email "******@gmail.com"  
 
-出于安全考虑，第二步创建的git用户不允许登录shell，这可以通过编辑/etc/passwd文件完成。找到类似下面的一行：
+    初始化服务器用户信息后，就可以安装gitosis了，gitosis主要是用于给用户授权，设置权限也算是很方便的。可以通过以下命令获取gitosis版本文件
 
-git:x:1001:1001:,,,:/home/git:/bin/bash
+        git clone https://github.com/res0nat0r/gitosis.git  
 
-改为：
+    注意：中间有两个是数字零
 
-git:x:1001:1001:,,,:/home/git:/usr/bin/git-shell
+    获取gitosis文件后，进入到文件目录下面
 
-这样，git用户可以正常通过ssh使用git，但无法登录shell，因为我们为git用户指定的git-shell每次一登录就自动退出。
+        cd gitosis/  
 
-第六步，克隆远程仓库：
+    接着使用python命令安装目录下的setup.py的python脚本进行安装
 
-现在，可以通过git clone命令克隆远程仓库了，在各自的电脑上运行：
+        sudo python setup.py install  
 
-$ git clone git@server:/srv/sample.git
-Cloning into 'sample'...
-warning: You appear to have cloned an empty repository.
+    到这里，整个安装步骤就完成了，下面就开始对git进行一些基本的配置。
 
-剩下的推送就简单了。
-管理公钥
 
-如果团队很小，把每个人的公钥收集起来放到服务器的/home/git/.ssh/authorized_keys文件里就是可行的。如果团队有几百号人，就没法这么玩了，这时，可以用Gitosis来管理公钥。
+二、创建git管理员账户、配置git
 
-这里我们不介绍怎么玩Gitosis了，几百号人的团队基本都在500强了，相信找个高水平的Linux管理员问题不大。
-管理权限
 
-有很多不但视源代码如生命，而且视员工为窃贼的公司，会在版本控制系统里设置一套完善的权限控制，每个人是否有读写权限会精确到每个分支甚至每个目录下。因为Git是为Linux源代码托管而开发的，所以Git也继承了开源社区的精神，不支持权限控制。不过，因为Git支持钩子（hook），所以，可以在服务器端编写一系列脚本来控制提交等操作，达到权限控制的目的。Gitolite就是这个工具。
+    创建一个账户（git）作为git服务器的管理员，可以管理其他用户的项目权限。
 
-这里我们也不介绍Gitolite了，不要把有限的生命浪费到权限斗争中。
-小结
+        sudo useradd -m git  
+        sudo passwd git  
 
-    搭建Git服务器非常简单，通常10分钟即可完成；
+    然后再/home目录下创建一个项目仓库存储点，并设置只有git用户拥有所有权限，其他用户没有任何权限。
+
+        sudo mkdir /home/git/repositories/
+        sudo chown git:git /home/git/repositories/  
+        sudo chmod 700 /home/git/repositories/  
+
+
+    这里我将在服务器端生成ssh公钥，如果想在其他机器上管理也可以在其他机器上生成一个ssh的公钥。
+
+        ssh-keygen -t rsa  
+
+    这里会提示输入密码，我们不输入直接回车即可。
+
+    然后用刚生成公钥id_rsa.pub来对gitosis进行初始化。
+        cp .ssh/id_rsa.pub /tmp 
+        sudo chmod a+r /tmp/id_rsa.pub
+        sudo -H -u git gitosis-init < /tmp/id_rsa.pub
+
+    Initialized empty Git repository in /home/repo/gitosis-admin.git/
+    Reinitialized existing Git repository in /home/repo/gitosis-admin.git/
+
+    出现如上信息说明gitosis已经初始化成功。
+
+    gitosis主要是通过gitosis-admin.git仓库来管理一些配置文件的，如用户权限的管理。这里我们需要对其中的一个post-update文件添加可执行的权限。
+
+        sudo chmod 755 /home/gitrepository/gitosis-admin.git/hooks/post-update  
+
+
+三、服务器上创建项目仓库
+
+
+    使用git账户在服务器上创建一个目录（project.git）并初始化成git项目仓库。
+
+        cd /home/git/repositories
+        sudo git init --bare project.git
+
+    Git就会创建一个裸仓库，裸仓库没有工作区，因为服务器上的Git仓库纯粹是为了共享，所以不让用户直接登录到服务器上去改工作区，并且服务器上的Git仓库通常都以.git结尾。然后，把owner改为git：
+
+        sudo chown -R git:git project.git
+
+    新建的这个仓库暂时还是空的，不能被客户端clone，还需要对gitosis进行一些配置操作。
+
+
+四、使用gitosis管理用户操作项目的权限
+
+    首先需要在前面生成ssh公钥（用来初始化gitosis）的机器上将gitosis-admin.git的仓库clone下来。
+
+    在客户端机器上新建一个目录用于存放gitosis-admin.git仓库
+
+    git clone git@192.168.1.106:gitosis-admin.git  
+
+    gitosis-admin目录结构如下
+        .
+        ├── gitosis.conf
+        └── keydir
+    keydir 目录放client端的公钥 如添加user1.pub 只需把user1.pub放到keydir目录
+
+    gitosis.conf 文件内容如下:
+
+        [gitosis]
+
+        [group gitosis-admin]
+        memebers = ***@***
+        wirtable = gitosis-admin 
     
-        要方便管理公钥，用Gitosis；
-        
-            要像SVN那样变态地控制权限，用Gitolite。
-            ''
+    memeter 添加keydir中的pub key，如user1.pub 在member 中添加user1 
+    wirtable 是仓库的权限，若要添加上面project.git仓库，则只需要在 wirtable中添加 project
+    修改过后，通过下面命令提交到服务器
+        git add .
+        git commit -m "commit info"
+        git push origin master
+
+五. 客户端访问仓库
+
+    若user1 已经添加，仓库project.git已经增加，且修改了gitosis-admin, 已经提交。则可以通过一下命令访问服务器仓库
+
+        git clone git@192.168.1.106:project.git
+
+    至此仓库搭建已经完成
+
+
