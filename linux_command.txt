@@ -550,3 +550,16 @@ example config java (1062 是优先级对auto时候有影响)
 58 linux删除用户(username)
     sudo userdel -r username
 
+59 linux下非root 用户获得/dev/ttyUSB0权限
+
+    ls -al /dev/ttyUSB0
+
+    crw-rw---- 1 root dialout 188, 0  6月 18 09:57 /dev/ttyUSB0
+
+    临时生效
+    sudo chmod 666 /det/ttyUSB0
+
+    永久生效
+    sudo usermod -aG dialout username
+    (将当前用户username添加的dialout组中, 执行完之后需要logout一次)
+
