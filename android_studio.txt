@@ -1,0 +1,30 @@
+1 用android studio 查看android源码
+
+    准备工作:
+        源码编译通过.
+
+    1) 生成IDE工具文件
+
+        mmm ./development/tools/idegen
+
+        运行完将生成idegen.jar文件
+
+    2) 生成android studio配置文件
+        生成android.ipr,android.iml,这几个文件是Android Studio项目的关键文件,主要就是列出项目由模块组成,依赖关系,目录结构.
+        
+        sh ./development/tools/idegen/idegen.sh 
+
+    3) 导入工程
+
+        打开Android Studio,选择打开一个现有的Android Studio项目,选择Android源码的根目录,导入即可(起作用的是android.irp文件).
+            配置sdk版本之后就可以查看Android 源码了.
+
+        或者
+
+        打开Android Studio, File-Open->源码根目录android.ipr, Android Studio 会自动导入工程所有代码!
+        
+        过程:index中会弹出framework的config提示,点击config,然后确认,会继续indexingu一段时间.
+        结束:index结束之后,选择project视图,就可以看到清晰的目录结构.
+
+        注意:
+            Android Studio导入源码时也慢，所以建议修改android.iml文件（将自己不用的代码去掉），然后再导入Studio.
