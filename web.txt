@@ -22,3 +22,6 @@ android -> Tools -> Options
 and select others Force https://...sources to be fetched using http://...
 
 
+清华大学开源镜像资源
+https://mirrors.tuna.tsinghua.edu.cn/help/AOSP/
+
