@@ -567,3 +567,8 @@ example config java (1062 是优先级对auto时候有影响)
     ctrl-alt-F7 ubuntu进入可视化模式
 
 
+61 安装新版本git
+    sudo add-apt-repository ppa:git-core/ppa
+    sudo apt-get update
+    sudo apt-get install git
+
