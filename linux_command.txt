@@ -563,3 +563,7 @@ example config java (1062 是优先级对auto时候有影响)
     sudo usermod -aG dialout username
     (将当前用户username添加的dialout组中, 执行完之后需要logout一次)
 
+60  ctrl-alt-F1 ubuntu进入命令行模式
+    ctrl-alt-F7 ubuntu进入可视化模式
+
+
