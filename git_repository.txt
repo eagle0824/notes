@@ -70,8 +70,8 @@
         sudo chmod a+r /tmp/id_rsa.pub
         sudo -H -u git gitosis-init < /tmp/id_rsa.pub
 
-    Initialized empty Git repository in /home/repo/gitosis-admin.git/
-    Reinitialized existing Git repository in /home/repo/gitosis-admin.git/
+    Initialized empty Git repository in /home/git/gitosis-admin.git/
+    Reinitialized existing Git repository in /home/git/gitosis-admin.git/
 
     出现如上信息说明gitosis已经初始化成功。
 

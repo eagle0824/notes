@@ -15,6 +15,13 @@
         sh ./development/tools/idegen/idegen.sh 
 
     3) 导入工程
+        根据内存大小适当修改bin/studio64.vmoptions和studio.vmoptions中
+            -Xms512m
+            -Xmx1280m
+            -XX:MaxPermSize=350m
+            -XX:ReservedCodeCacheSize=240m
+            大小
+
 
         打开Android Studio,选择打开一个现有的Android Studio项目,选择Android源码的根目录,导入即可(起作用的是android.irp文件).
             配置sdk版本之后就可以查看Android 源码了.
