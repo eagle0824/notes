@@ -1,0 +1,31 @@
+详见网址:
+    https://mirrors.tuna.tsinghua.edu.cn/help/AOSP/
+
+1.下载repo
+
+    mkdir ~/bin
+    PATH=~/bin:$PATH
+    curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+    ## 如果上述 URL 不可访问，可以用下面的：
+    ## curl https://storage-googleapis.lug.ustc.edu.cn/git-repo-downloads/repo > ~/bin/repo
+    chmod a+x ~/bin/repo
+
+2.下载 https://mirrors.tuna.tsinghua.edu.cn/aosp-monthly/aosp-latest.tar，下载完成后记得根据 checksum.txt 的内容校验一下。
+
+
+    wget https://mirrors.tuna.tsinghua.edu.cn/aosp-monthly/aosp-latest.tar # 下载初始化包
+
+    md5sum aosp-latest.tar 计算checksum,跟下载下来的checksume.txt对比下!
+
+    tar xf aosp-latest.tar
+    cd AOSP   # 解压得到的 AOSP 工程目录
+    # 这时 ls 的话什么也看不到，因为只有一个隐藏的 .repo 目录
+    repo sync # 正常同步一遍即可得到完整目录
+    # 或 repo sync -l 仅checkout代码
+
+    注意:本地git版本要>1.9+
+    若为12.04gitb版本为1.7.9.5 可以用一下方式更系
+        sudo add-apt-repository ppa:git-core/ppa
+        sudo apt-get update
+        sudo apt-get install git
+        
