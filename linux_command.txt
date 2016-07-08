@@ -572,3 +572,19 @@ example config java (1062 是优先级对auto时候有影响)
     sudo apt-get update
     sudo apt-get install git
 
+62 安装最新版Oracle JDK
+    sudo add-apt-repository ppa:webupd8team/java
+    sudo apt-get update
+    sudo apt-get install oracle-java8-installer
+
+63 安装最新版OpenJDK
+    ppa 网站 https://launchpad.net/ppas
+
+    search openjdk
+
+    sudo apt-get-repository ppa:openjdk-r/ppa
+    sudo apt-get update
+    sudo apt-get intall openjdk-8-jdk
+
+    查询安装包
+    sudo apt-cache search OpenJDK
