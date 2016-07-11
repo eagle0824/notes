@@ -96,9 +96,18 @@
 	lsattr	查看文件属性
 
 13	解压命令
+
+    参数 -z filter the archive through gzip
+         -j filter the archive through bzip2
+         -c create archive
+         -x extract files from an archive
+
 	tar -xzvf httpd-2.0.48.tar.gz	z表示.tar.gz文件
 	tar -xjvf httpd-2.0.52.tar.bz2   j表示.tar.bz2文件
 	其中bz2格式的压缩比例要高于gz
+
+     tar -zxvf Test.tar.gz -C DIR 解压文件到制定目录
+     tar -f Test.tar.gz --list 显示压缩文件内容
 
 	管道边压缩边传输：
 	本地：
@@ -319,13 +328,6 @@
 
 34 xclip
     xclip -sel clip < file 将file文件中的内容复制到剪切板上，Ctrl+V 复制
-
-35 管道边压缩边传输：
-
-    本地：
-    tar czvf - src_path | tar xzvf - -C dest_path
-    局域网：
-    tar czvf - src_path | ssh username@192.168.1.x tar xzvf - -C dest_path
 
 36 find 命令
     -prune 参数 排除某个目录  -o 或者
