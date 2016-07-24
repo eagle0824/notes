@@ -133,3 +133,107 @@
     至此仓库搭建已经完成
 
 
+后续:
+
+    在Git服务管理工具这个领域，主要有三种流行的方案，它们分别是 
+
+        Gitosis - 轻量级， 开源项目，使用SSH公钥认证，只能做到库级的权限控制。目前项目已经停止开发，不再维护。
+        Gitolite - 轻量级，开源项目，使用SSH公钥认证，能做到分支级的权限控制。
+        Git + Repo + Gerrit - 超级重量级，集版本控制，库管理和代码审核为一身。可管理大型及超大型项目。
+
+     大名鼎鼎的Android平台就是使用的 Git + Repo + Gerrit。对于个人，中小型企业及一些开源项目而言，如果没有特殊的要求，其实没有必要去架设上面第三种方案Git服务器。Gitolite提供的服务已经足够用。下面将详细讲解怎么搭建Gitolite服务器。
+
+    安装Gitolite
+
+1 客户端操作
+
+    1)  安装git
+        sudo apt-get install git
+
+    2)  生成SSH key客户端
+        ssh-keygen -t rsa -C HF
+
+    3)  将生成的SSH public key拷贝到服务器
+        id_rsa.pub 重命名为username
+        cp /home/xxx/.ssh/id_rsa.pub /tmp/username.pub
+        scp /tmp/username.pub server_name@ip:/tmp
+
+2 服务器端操作
+
+    1) 创建git用户
+
+    sudo adduser \
+        --system \
+        --shell /bin/bash \
+        --gecos 'Git SCM User' \
+        --group \
+        --disabled-password \
+        --home /home/git git
+   
+    2) 下载Gitolite源码
+        sudo su git
+        cd $HOME
+        git clone http://github.com/sitaramc/gitolite
+         
+    3) 安装Gitolite
+        mkdir -p $HOME/bin
+        $HOME/gitolite/install -to $HOME/bin
+
+    4) 设置SSH public key
+        $HOME/bin/gitolite setup -pk /tmp/username.pub
+
+    如果对SSH的权限做了限制,若之有sshusers用户组才可以SSH到服务器,则需要把git用户以及以后的Gitolite用户加到sshusers用户组,否则克隆项目时候,将被提示输入密码.
+    添加git到sshusers用户组
+    sudo adduser git sshusers
+ 
+3 克隆Gitolite管理库(客户端)
+    git clone git@ip:gitolite-admin.git
+
+    目录 
+    config/gitolite.conf 用于git项目配置,访问权限设置
+    keydir/ 用于存储用户的SSH public key 
+
+    git项目的配置和访问权限设置请看Gitolite的README.TXT文档
+
+4 配置git项目(客户端)
+
+    添加一个新的项目 foo
+    在gitolite.conf中添加一下内容
+    repo foo
+    RW+ = @all
+    提交这部分内容,并push到远程服务器
+
+5 设置git项目(客户端)
+
+    1) 提交一个空仓库
+
+        mkdir foo
+        cd foo
+        git init
+        git remote add origin server_name@ip:foo.git
+        touch README
+        git add README
+        git commit -m "Initial commit"
+        git push origin master
+
+        则就用户就可以从服务器上克隆foo
+        git clone server_name@ipd:foo.git
+
+    2)  添加一个存在的仓库
+              
+        cd foo
+        git remote rm orign
+        git remote add orign server_name@ip:foo.git
+        git push orign master
+
+        或者
+        cd foo
+        git remote add tmp server_name@ip:foo.git
+        git push tmp master:master
+
+        如果有多个分支,则切换到那个branch,执行
+        git push orign <branch-name>
+
+
+
+

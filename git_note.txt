@@ -267,6 +267,14 @@
     git push ac clwbase:master
     git checkout -b master ac/master
 
+    将已有仓库移动到另一仓库
+    cd repository
+    git remote rm origin
+    git remote add origin gitolite@aaaaaa:repository.git
+    git push origin master
+
+    如果有多个分支,要将某一个分支,提交到服务器
+    git push origin <branch-name>
 
 
 Git 是分散式的版本控制系統, 從架設、簡易操作、設定, 此篇主要是整理 基本操作、遠端操作 等.
