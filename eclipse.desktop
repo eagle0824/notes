@@ -1,31 +1,11 @@
-安装了eclipse，为了使用起来方便，需要将eclipse图标添加到Dash，类似于Windows下创建桌面快捷方式，通用方法如下：
-
-1.终端下，敲下如下命令：
-
-    cd /usr/share/applications
-
-2.编辑文件：
-
-    sudo vim eclipse.desktop
-
-    文件内容如下：
-
-        [Desktop Entry]
-        Name=eclipse
-        Name[zh_CN]=eclipse
-        Comment=eclipse Client
-        Exec=/work/tool/adt-bundle-linux-x86_64-20140624/eclipse/eclipse
-        Icon=/work/tool/adt-bundle-linux-x86_64-20140624/eclipse/icon.xpm
-        Terminal=false
-        Type=Application
-        Categories=Application;
-        Encoding=UTF-8
-        StartupNotify=true
-
-3.保存文件，赋予文件可执行的权限：
-
-    sudo chmod 777 eclipse.desktop
-
-4.此时，在/usr/share/applications目录下，能看到一个大大的eclipse图标。
-
-5.点击Dash，找到eclipse，将它拖到启动器上即可。
+[Desktop Entry]
+Name=eclipse
+Name[zh_CN]=eclipse
+Comment=eclipse Client
+Exec=/work/tools/adt-bundle-linux-x86_64-20140702/eclipse/eclipse
+Icon=/work/tools/adt-bundle-linux-x86_64-20140702/eclipse/icon.xpm
+Terminal=false
+Type=Application
+Categories=Application;
+Encoding=UTF-8
+StartupNotify=true
