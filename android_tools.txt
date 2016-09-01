@@ -12,6 +12,11 @@
         签名算法名称:MD5withRSA
         版本: 3
 
+    源码路径下build/target/product/security
+    platform 查看   keytool -printcert -v -file platform.x509.pem
+    share 查看      keytool -printcert -v -file share.x509.pem
+
+
 
 2.android create project
 
