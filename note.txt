@@ -3760,7 +3760,7 @@ Returns
 
 
 
-    2   如果你想通过Service把home到后台的Activity启动到前台来，你有两种办法：
+    259   如果你想通过Service把home到后台的Activity启动到前台来，你有两种办法：
 
     1)、startActivity(i)的方法
 
@@ -3780,7 +3780,17 @@ Returns
 
     原因是，android系统设计如此，避免后台启动activity影响用户的前台操作，android推荐的做法是通过Notification提示用户，通过用户自己点击显示activity！
 
+    260 adb no permissions
 
+    sudo cp 70-android.rules /etc/udev/rules.d/
+    sudo chmod a+x /etc/udev/rules.d/70-android.rules
+
+    sudo /etc/init.d/udev restart
+
+    最后再重启下adb服务，就可以了(没配置环境变量的请进入Android SDK tools目录执行sudo ./adb kill-server ./adb devices)
+
+    sudo adb kill-server
+    sudo adb devices
 
 
 

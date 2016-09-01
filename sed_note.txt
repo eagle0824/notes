@@ -244,5 +244,4 @@ sed -i 's/old/new/g' filename 将filename文件中所有old替换成new
 sed -i 's/IPOD/iPod/' `find ./ -name strings.xml` 当前目录下所有strings.xml文件中的所有字符串IPOD替换成iPod
 注意 sed pattern 用''用单引号 而后面find符号为`数字1前面的按键+shift
 
-
-
+sed -i "s/android.view.KeyEvent/com.clw.vehicle.constants.KeyEvent/g" `grep "android.view.KeyEvent" -rl ./`

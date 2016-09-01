@@ -570,12 +570,12 @@ example config java (1062 是优先级对auto时候有影响)
 
 
 61 安装新版本git
-    sudo add-apt-repository ppa:git-core/ppa
+    sudo apt-add-repository ppa:git-core/ppa
     sudo apt-get update
     sudo apt-get install git
 
 62 安装最新版Oracle JDK
-    sudo add-apt-repository ppa:webupd8team/java
+    sudo apt-add-repository ppa:webupd8team/java
     sudo apt-get update
     sudo apt-get install oracle-java8-installer
 
@@ -584,16 +584,16 @@ example config java (1062 是优先级对auto时候有影响)
 
     search openjdk
 
-    sudo apt-get-repository ppa:openjdk-r/ppa
+    sudo apt-add-repository ppa:openjdk-r/ppa
     sudo apt-get update
-    sudo apt-get intall openjdk-8-jdk
+    sudo apt-get install openjdk-8-jdk
 
     查询安装包
     sudo apt-cache search OpenJDK
 
 64 安装搜狗输入法
 
-    1)  sudo add-apt-repository ppa:fcitx-team/nightly
+    1)  sudo apt-add-repository ppa:fcitx-team/nightly
         sudo apt-get update
     2) 接下来就是在终端中输入im-config，这时会出现一个对话框，点击OK，有一个对话框，点击Yes,如果上面是fcitx，就不用管，直接关闭；如果不是，就修改上面的ibus为fcitx.点击OK即可。又会出现一个对话框，接着就是OK，最后重启电脑。 
     3)  fcitx-config-gtk3出现对话框。点击对话框左下角的（+）按钮. 然后，取消Only Show Current Language（很重要，否则不能找到刚安装过的搜狗输入法!）最后，在输入框中输入sogou，选中点击OK即可。

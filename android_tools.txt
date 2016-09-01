@@ -2,6 +2,17 @@
 
 	keytool -genkey -alias archermind.keystore -keyalg RSA -validity 20000 -keystore archermind.keystore
 
+    查看apk的签名，解压apk
+    keytool -printcert -file CERT.RSA
+
+    会看到,下面信息
+        证书指纹:
+        MD5:8D:DB:34:2F:2D:A5:40:84:02:D7:56:8A:F2:1E:29:F9
+        SHA1:27:19:6E:38:6B:87:5E:76:AD:F7:00:E7:EA:84:E4:C6:EE:E3:3D:FA
+        签名算法名称:MD5withRSA
+        版本: 3
+
+
 2.android create project
 
   Creates a new Android project.
