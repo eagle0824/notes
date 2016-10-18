@@ -28,4 +28,14 @@
         sudo add-apt-repository ppa:git-core/ppa
         sudo apt-get update
         sudo apt-get install git
-        
+
+
+3 repo 
+    1) 下载repo工具
+        mkdir ~/bin
+        PATH=~/bin:$PATH
+        curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+        chmod a+x ~/bin/repo
+
+    2) repo init -u git://git.omapzoom.org/platform/manifest.git -b branch
+    3) repo sync 更新同步代码

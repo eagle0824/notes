@@ -245,3 +245,8 @@ sed -i 's/IPOD/iPod/' `find ./ -name strings.xml` 当前目录下所有strings.x
 注意 sed pattern 用''用单引号 而后面find符号为`数字1前面的按键+shift
 
 sed -i "s/android.view.KeyEvent/com.clw.vehicle.constants.KeyEvent/g" `grep "android.view.KeyEvent" -rl ./`
+sed -i "s/com.clw.vehicle.constants.KeyEvent/android.view.KeyEvent/g" `grep "com.clw.vehicle.constants.KeyEvent" -rl ./`
+
+sed -i "s/com.clw.vehicleinfos.VehicleConfig/com.clw.vehicle.VehicleConfig/g" `grep "com.clw.vehicleinfos.VehicleConfig" -rl ./`
+sed -i "s/com.clw.vehicle.VehicleConfig/com.clw.vehicleinfos.VehicleConfig/g" `grep "com.clw.vehicle.VehicleConfig" -rl ./`
+sed -i "s/old/new/g" `grep "old" -rl ./`

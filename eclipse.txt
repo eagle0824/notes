@@ -1,3 +1,20 @@
+基本设置
+    1 把android-formatting.xml和android.importorder导入eclipse
+        android-formatting.xml、.classpath和android.importorder都放在 源码根目录/development/ide/eclipse/下
+
+        android-formatting.xml用来配置eclipse编辑器的代码风格；
+        android.importorder用来配置eclipse的import的顺序和结构。
+
+    具体设置
+    在window->preferences->java->Code style->Formatter中导入android-formatting.xml
+    在window->preferences->java->Code style->Organize Imports中导入android.importorder
+
+    2 设置tab键为4个空格
+    在 window->preference-,依次选择 General->Editors->Text Editors,选中右侧的 insert space for tabs 保存。
+
+
+
+
 怎样使用Eclipse来开发Android源码
 
 今天找到关于怎样使用eclipse来开发android源码的官方文档：
@@ -31,19 +48,6 @@ chmod u+w .classpath  # Make the copy writable
 -Xmx512m
 
 -XX:MaxPermSize=256m
-
-2）、把android-formatting.xml和android.importorder导入eclipse
-
-android-formatting.xml、.classpath和android.importorder都放在development/ide/eclipse/下
-
-android-formatting.xml用来配置eclipse编辑器的代码风格；
-android.importorder用来配置eclipse的import的顺序和结构。
-
-eclipse
-
-在window->preferences->java->Code style->Formatter中导入android-formatting.xml
-在window->preferences->java->Code style->Organize Imports中导入android.importorder
-
 
 3）、安装anyedit插件（可选）
 

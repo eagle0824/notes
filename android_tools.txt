@@ -141,3 +141,9 @@
 6. aapt
     aapt d badging file
     查看apk的包名和主activity名等基本信息
+
+7. 获取当前系统应用app可获取内存的大小
+    adb shell  getprop | grep dalvik.vm.heapgrowthlimit
+
+8. 给apk签名
+    java -jar ./out/host/linux-x86/framework/signapk.jar ./build/target/product/security/platform.x509.pem ./build/target/product/security/platform.pk8 DMClient.apk.unsigned DMClient.apk.signed

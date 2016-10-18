@@ -1,0 +1,629 @@
+2.0 build简介
+
+Android的build系统基于GNU Make 和shell 构建的一套编译环境。这套系统定义了大量的变量和函数，无论编写一个产品的配置文件还是一个模块的Android.mk文件，都不用直接和GNU Make打交道，只需要理解Android提供的编译变量和函数，就能够方便的将我们开发的模块加入到Android的build体系中。
+Android系统build分类：
+1、build/core 目录下的文件，这是Android Build的系统框架核心；
+2、device目录下的文件，存放的是具体的产品配置文件；
+3、各个模块的编译文件：Android.mk，位于模块的原文件目录下。
+
+2.1 Android Build系统核心
+
+Android Build系统核心在目录buil/core，这个目录中有mk文件、shell脚本和per脚本，他们构成Android Build系统的基础和架构。
+编译Android系统常用命令：
+
+$source build/envsetup.sh
+$lunch
+$make
+
+2.1.1 编译环境的建立
+1. envsetup.sh 文件的作用
+
+执行Android系统的编译，必须先执行envsetup.sh脚本，这个脚本会建立Android的编译环境。其具体执行的是建立shell命令以及调用add_lunch_combo命令，这个命令的将调用该命令的所传递的参数存放到一个全局的数组变量LUNCH_MENU_CHOICES中。执行lunch时打印的正是这个数组的内容。
+envsetup.sh脚本中定义的常用shell命令：
+命令    说明
+lunch   指定当前编译的产品
+croot   快速切换到源码的根目录，方便开始编译
+m   编译整个源码，但不用讲当前的目录切换到源码的根目录
+mm  编译当前目录下的所有模块，但是不编译他们的依赖项
+cgrep   对系统中所有的C/C++文件执行grep命令
+sgrep   对系统中所有的源文件执行grep命令
+2 lunch命令的功能
+
+lunch命令如果没有参数，系统会打印出产品的列表供选择
+lunch的参数格式如下：
+“product_name”必须是系统中已经定义的产品名称
+“build_variant”必须是“eng”、“user”和“userdebug”三者之一
+
+“<product_name>-<build_variant>”
+
+1
+
+lunch命令主要作用是根据用户输入或选择的产品来设置与具体产品相关的环境变量
+这些相关的环境变量有：
+TARGET_PRODUCT：对应“product_name”
+TARGET_BUILD_VARIANT：对应“build_variant”
+TARGET_BUILD_TYPE：一般是“release”
+
+2.1.2 build相关的环境变量
+
+执行完lunch之后，系统会打印出当前配置所生成的环境变量，这些环境变量将影响编译过程
+
+环境变量的意义：
+PLATFORM_VERSION_CODENAME：平台版本名称，通常是AOSP
+PLATFORM_VERSION：Android平台的版本号
+TARGET_PRODUCT：所编译产品的名称
+TARGET_BUILD_VARIANT：表示编译产品的类型，可能的值有eng、user和userdebug
+TARGET_BULD_TYPE：表示编译的类型，可选的值是release和debug
+TARGET_BUILD_APPS：编译Android系统时，这个变量为NULL。使用build系统编译单个模块时为所编译模块的路径
+TARGET_ARCH：编译目标的CPU架构
+TARGET_ARCH_VARIANT： 编译目标的CPU架构版本
+TARGET_CPU_VARIANT：编译目标的CPU代号
+TARGET_2ND_ARCH：编译目标的第二CPU架构
+HOST_ARCH：编译平台架构
+HOST_OS：编译平台使用的操作系统
+HOST_OS_EXTRA：编译平台操作系统的一些额外信息，可包括内核版本号、产品名称、公司特有的标志等
+BUILD_ID：BUILD_ID的值会出现在编译的版本信息中，可以利用这个环境变量来定义公司的特有标志
+OUT_DIR：指定编译结果的输出目录
+
+对环境变量的修改可以放到产品的定义文件中，后面讲解
+若只是临时改变这些变量的值，可以通过make命令中加入参数的方式完成，如下例子
+
+make BUILD_ID="Android L"
+
+1
+
+2.1.3 Build系统的层次关系
+
+设置好环境变量后，make命令就会开始执行编译过程了
+
+编译产品的目的是生成用于“刷机”的各种image文件
+这些image文件时由一个个小小的文件组成的
+有些是从源码中编译产生的，有些是简单的复制就可以了，此外编译过程中也会产生一些配置文件
+
+build系统的主要工作：
+生成image文件
+收集并编译模块、复制二进制文件、产生配置文件
+管理并执行这些产品配置文件
+
+执行make命令会调用build目录下的Makefile文件，其内容如下：
+main.mk文件是Android Build系统的主控文件，从main.mk开始，将通过include命令将其余所有需要的.mk文件包含进来，最终在内存中形成一个包括所有编译脚本的集合
+
+include build/core/main.mk
+
+1
+
+Android Build系统的编译文件的包含关系：
+Android Build系统会在以下三个文件中引入具体产品的配置文件和各个模块编译文件
+AndroidProduct.mk、BoardConfig.mk和Android.mk
+config.mk文件中，会有4出引入combo目录下的select.mk文件，目前通常第二个编译平台未定义，一般只包含3次select.mk
+clang 目录下的config.mk和seleck.mk文件一样按照同样的规则包含进3个不同的mk文件
+combo目录下额这些mk文件定义了GCC编译器的版本和参数
+clang目录下的mk文件则定义了LLVM编译器clang的路径和参数
+图 4. 主要的 Make 文件及其包含关系
+
+Build系统的主要编译脚本简介
+产品的配置文件实际上就是对这些编译变量赋值的脚本文件
+
+文件名     说明
+main.mk     Build系统的主控文件，主要作用是包含进其他的.mk文件，以及定义几个最重要的编译目标，如sdk、ndk等，同时检查编译器版本，如make、gcc、javac等
+config.mk   Build系统的配置文件，主要定义了许多常量来负责不同类型模块的编译，定义编译器参数并引入产品的BoardCongfig.mk文件来配置产品参数，同时定义了一些编译工具的路径，如aapt、mkbootimage等
+pathmap.mk  给一些头文件所在的目录定义别名，将firmware下的一些源码目录按类别组合在一起并定义了别名，方便引用
+buildspec.mk    放在build目录下，定义产品的编译参数，一般很少用
+envsetup.mk     包含进produc_config.mk文件并根据其内容定设置编译产品所需的环境变量，如TARGET_BUILD_VARIANT等，并检查这些环境变量的合法性，同时指定各个编译结果的输出路径
+version_defaults.mk     定义系统版本的相关变量
+build_id.mk     定义了 环境变量BUILD_ID
+product_config.mk   包含进系统所有AndriodProduct.mk文件，并根据当前的产品的配置文件来设置产品编译相关的变量
+product.mk  定义了product_config文件中使用的各种函数
+combo/select.mk     根据环境变量的设置，指定对应的系统和架构中所使用的编译工具路径
+clang/config.mk     定义了LLVM编译器clang在不同架构下的路径和参数
+dumpvar.mk  打印输出本次编译的配置信息
+cleanbuild.mk   包含了源码中所有的 CleanSpec.mk，定义了编译目标datclean和installclean
+definitions.mk  定义了打了Build系统中使用的函数。如果熟悉这些环境，编写产品配置文件将得心应手
+dex_preopt.mk   定义与dex优化相关的路径和参数
+pdk_config,mk   编译pdk的配置文件
+post_clean.mk   比较当前系统的overlay目录与上一次Build时是否有变化，有则重新生成受影响模块的资源定义文件R.java
+legacy_prebuilts.mk     定义系统prebuild模块列表
+Makefile    定义系统最终编译完成所需的各种目录和规则
+2.1.4 分析main.mk文件
+
+检查gun make的版本号是否大于或等于3.81，否则报错并停止编译
+定义缺省的编译目标为“droid”。因此”make” 相当于”make droid“
+引入几个make文件。“-include”和“include”的区别是：前者包含文件如果不存在不会报错，后者将会报错并停止编译
+检查java版本
+将变量VERSIONS_CHECKED和BUILD_EMULATOR写入文件
+再包含进3个mk文件
+如果变量ONE_SHOT_MAKEFILE的值不为空，将它定义的文件包含进来。当编译一个单独的模块时，ONE_SHOT_MAKEFILE的值会设为模块的make文件路径。如果值为空，说明正在编译整个系统，因此，调用findleayes.py脚本搜索系统里所有Android.mk文件并将它们包含进来
+根据编译类型来设置属性ro.secure的值
+包含进post_clean.mk和legacypre_builts.mk脚本。根据legacypre_builts.mk定义的变量GRANDFATHERED_ALL_PREBUILT检查是否有不在这个列表中的prebuilt模块，有则报错
+计算哪些模块应该在本次编译中引入
+包含Makefile文件。至此，所有编译文件都包含进来了
+文件系统的编译目标
+
+2.1.5 Build系统的编译目标
+
+Build系统的缺省编译目标是droid，droid目标会依赖其它目标，这些目标组成了最终的产品
+下面是droid目标的定义
+droidcore、files和prebuilt是中间目标
+
+    droid: droidcore dist_files
+    droidcore:      files \
+        systemimage \
+        $(INSTALLED_BOOTIMAGE_TARGET) \
+        $(INSTALLED_RECOVERYIMAGE_TARGET) \
+        $(INSTALLED_USERDATAIMAGE_TARGET) \
+        $(INSTALLED_CACHEIMAGE_TARGET) \
+        $(INSTALLED_VENDORIMAGE_TARGET) \
+        $(INSTALLED_FILES_TARGET) 
+        files:             prebuilt \
+            $(modules_to_install) \
+    $(INSTALLED_ANDROID_INFO_TXT_TARGET)
+    prebuilt:         $(ALL_PREBUILT)
+
+    Build中和Droid相关的编译目标
+
+    目标    说明
+    dist_file   复制文件到/out/dist目录
+    systemimage     产生system.img
+    $(INSTALLED_XXXIMAGE_TARGET)    产生XXX.img
+    $(INSTALLED_FILES_FILE)     用来产生名为installed-files.txt文件，该文件放在/out/target/product/下。这些文件的内容是当前产品配置要安装的所有文件列表
+    $(modules_to_install)   modules_to_install变量是当前产品配置下所有将要安装的模块的列表
+    $(INSTALLED_ANDROID_INFO_TXT_TARGET)    用来产生名为android-info.txt文件，该文件将会放在out/target/product/下，文件的内容是当前产品的设备信息
+    $(ALL_PREBUILT)     用来产生所有在变量GARNDFATHERED_ALL_PREBYILT中的文件
+
+    - Build中独立目标
+    目标    说明
+    make clean  清除所有的编译结果
+    make snod   重新生成最终的image，但不重新编译模块
+    make sdk    生成Android SDK
+    make libandroid_runtime     编译出所有framework的JNI库
+    make framework  编译出所有framework的jar包
+    make service    编译出系统服务及相关的模块
+    2.1.6 分析config.mk文件
+
+    定义表示文档、头文件、系统库的源码目录等的变量，方便其他编译脚本使用
+    包含pathmap.mk
+    定义模块编译变量名，这里的模块是指编译出的apk文件、静态java库、共享java库等
+    定义C/C++代码编译时的参数以及系统常用包的后缀名
+    如果源码根目录下有buildspec.mk文件，包含进来
+    包含envsetup.mk文件
+    包含select.mk文件，共包含4次
+    包含javac.mk文件，这个文件定义了java编译工具的路径
+    定义Build系统使用的一些工具的路径
+    定义host平台和target平台各自编译，链接C/C++使用参数
+    包含进clang/config.mk文件
+    定义Android SDK的版本
+    包含dumpvar.mk文件，打印出本次配置产品的配置信息
+
+    2.1.7 分析product_config.mk文件
+
+    解析make命令的参数$(MAKECMDGOALS)，格式是：PRODUCT--，相当于设置了变量TARGET_PRODUCT为，变量TARGET_BUILD_VARIANT为
+    如果make命令的参数格式是APP-，则相当于设置变量TARGET_BUILD_APPS为，这将导致系统编译某个APP而不是某个产品
+    包含进3个文件：node_fns.mk、product.mk和device.mk
+    执行$(get-all-product-makefiles)函数
+    对all-product-makefiles和current-product-makefiles两个变量赋值
+    如果make跟有参数“product-graph”或者“dump-products”，就会调用(callimport−products,(all-product-makefiles))，否则只会执行(callimport−product,(current_product-makefile))
+    上一步import的结果是产生形如RODCUT$(TARGET_PRODUCT).xxx的一系列内部变量，然后将它们的值赋予产品的相关变量
+
+    2.2 Android产品的配置文件
+
+    产品配置文件的作用：按照Build系统的要求，将生成产品的各种image文件所需要的配置信息（如版本号、各种参数）、资源（图片、字体、铃声等）、二进制文件（apk、jar包、so库等）有机的组织起来，同时进行裁剪，加入或去掉一些模块。
+
+    配置文件的存放在以下的目录中，这两个目录没有太大的区别，Build系统在搜索产品配置相关的文件时会同时在这两个目录中进行
+    位于源码的的device目录下
+    也可以放在vendor目录下
+    实际使用中，上述两个目录配合使用—-产品的配置文件一般放在device目录下，而vendor目录下则存放一些硬件的HAL库
+
+    分许hammerhead的配置文件
+
+    通常device目录下有几个目录：
+    common：存放各个产品的通用配置脚本、文件等
+    sample：一个产品的配置的例子，写一个新产品的配置时可以使用sample目录下的文件做为模板
+    google：几个简单的模块，用途不详
+    lge、intel、samsung：分别代表LG、因特尔、三星等3家公司。各家公司的产品放在对应的目录下
+    如果需要添加新的产品，可以在device目录下新建新的目录
+
+    hammerhead手机又LG代工的产品，其产品配置文件位于lge目录下，具体内容如下：
+    hammerhead：存放Google nexus5的产品配置文件，也是下面分析的重点
+    hammerhead-kernel：存放的时hammerhead kernel的二进制文件
+    mako：存放的是Google nexus4的产品配置文件
+    mako-kernel：存放的是Google nexus4 kernel的image
+
+    几个与产品配置相关的重要文件
+
+    Build系统会包含产品配置中的几个文件，这些文件和Build系统关系最紧密，也是产品配置的关键文件，整个产品目录的组织就是围绕着这几个文件展开的
+
+    vendorsetup.sh
+    该文件会在初始化编译的时候被envsetup.sh文件包含进去
+    作用：调用add_lunch_combo命令来添加产品名称串
+    eg：hammerhead目录下的vendorsetup.sh文件
+    产品名称串的格式：-，前半部分是产品名称，后半部分是产品的编译类型
+
+    add_lunch_combo aosp_hammerhead-userdebug
+
+    1
+
+    AndroidProduct.mk
+    该文件会在Build系统的ProductConfig.mk文件中被包含进去
+    作用：定义了一个变量PRODUCT_MAKEFILES，它定义了本配置目录中所有编译入口文件，但是，每种产品编译时只会使用其中之一
+    eg：hammerhead目录下的AndroidProduct.mk文件：
+    vendor文件加入“选择列表”的是aosp_hammerhead，因此，实际能选用的文件只有aosp_hammerhead.mk
+    如果希望full_hammerhead.mk也能被选用，可以在vendorsetup.sh文件中再加入一行：add_lunch_combo full_hammerhead-userdebug
+
+    PRODUCT_MAKEFILES := \
+        $(LOCAL_DIR)/aosp_hammerhead.mk \
+        $(LOCAL_DIR)/full_hammerhead.mk \
+        $(LOCAL_DIR)/car_hammerhead.mk
+
+    BoardConfig.mk
+    该文件会被Build系统的envsetup.sh文件包含进去
+    作用：定义了和设备硬件（包括CPU、WiFi、GPS等）相关的一些参数
+    看懂这个文件的关键时理解文件中使用的编译变量：
+    TARGET_CPU_ABI：CPU编程界面，ABI是application binary interface的缩写
+    TARGET_CPU_ABI2：CPU的编程界面
+    TARGET_CPU_SMP：CPU是否为多核CPU
+    TARGET_ARCH：定义CPU的架构
+    TARGET_ARCH_VARIANT：定义CPU的架构的版本
+    TARGET_CPU_VARIANT：定义CPU的代号
+    TARGET_NO_BOOTLOADER：如果该变量为true，表示编译出的image文件中不包含bootloader
+    BOARD_KERNEL_BASE：卸载kernel镜像时的基址
+    BOARD_KERNEL_PAGE：kernel镜像的分页大小
+    BOARD_KERNEL_CMDLINE：卸载kernel时传给kernel的命令行参数
+    BOARD_MKBOOTIMG_ARGS：使用mkbootimg工具生成的boot.img时的参数
+    BOARD_USES_ALSA_AUDIO：值为true，表示主板的声音系统使用的ALSA架构
+    BOARD_HAVE_BLUETOOTH：值为true，表示主板支持蓝牙
+    BOARD_HAVE_BOUETOOTH_BMC：值为true，表示主板使用的时broadcom的蓝牙芯片
+    WPA_SUPPLICANT_VERSION：定义WIFI WPA的版本
+    BOARD_WLAN-DEVICE：定义了WiFi设备的额名称
+    BOARD_WPA_SUPPLICANT_DRIVER：指定一种WAP_SUPPLICANT的驱动
+    BOARD_HOSTAPD_DIRVER：指定WiFi热点的驱动
+    WIFI_DRIVER_FW_PATH_PARAM：指定WiFi驱动的参数路径
+    WIFI_DRIVER_FW_PATH_AP：定义WiFi热点firmware文件的路径
+    TARGET_NO_RADIOIMAGE：值为true，表示编译的镜像中没有射频部分
+    TARGET_BOARD_PALTFORM：表示主板平台的型号
+    TARGET_USERIMAGES_USE_EXIT4：值为true，表示目标文件系统采用ext4格式
+
+    在hammerhead目录下其他几个与Build相关的文件
+
+    aosp_hammerhead,mk
+    产品配置的编译入口文件，包含了产品的其他配置文件
+
+    $(call inherit-product, device/lge/hammerhead/full_hammerhead.mk)
+    PRODUCT_NAME := aosp_hammerhead  #修改产品名称为aosp_hammerhead
+    PRODUCT_PACKAGES += launcher3      #增加了一个模块launcher到目标系统中
+
+    full_hammerhead.mk
+    产品配置的另一个编译入口文件。包含其他配置文件，也定义了一些和产品相关的编译变量
+
+    # 复制APN的配置文件到目标系统的/system/etc目录
+    PRODUCT_COPY_FILES :=device/lge/hammerhead/apns-full-conf.xml:system/etc/apns-conf.xml
+
+    $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
+    PRODUCT_NAME := full_hammerhead  #修改产品名称为full_hammerhead
+    PRODUCT_DEVICE := hammerhead     #产品设备名称，非常关键
+    PRODUCT_BRAND := Android             #产品品牌，一般为Android
+    PRODUCT_MODEL := AOSP on Hammerhead   #产品型号
+    PRODUCT_MANUFACTURER := LGE   #产品制造商
+    ...
+    $(call inherit-product, device/lge/hammerhead/device.mk) #这里开始包含vendor下的文件，vendor下存放的时从手机中提取的HAL库和驱动
+    ...
+
+    device.mk
+    该文件时产品配置中常需要修改的文件。产品定义中需要包含进的模块、文件以及各种环境变量的定义一般都放在这个文件里
+    该文件主要的作用：
+    将kernel的镜像复制到目标系统里
+    将Linux系统的初识化文件和分区表等复制到目标系统里
+    定义系统支持的分辨率
+    指定系统overlay的目录
+    添加模块进系统
+    设置系统属性值
+    包含进更多的配置文件
+    device.mk中一些重要的编译环境变量
+    PRODUCT_COPY_FILE：一个格式为“原文件路径：目标文件路径”字串的合集，使用该变量能方便的将编译目录下的文件复制到目标文件系统中
+    PRODUCT_PACKAGES：用来定义产品的模块列表，所有的模块列表中的模块的定义都会被执行
+    PRODUCT_AAPT_CONFIG：指定系统中能够支持的屏幕密度类型（dip）。
+    所谓支持是指编译时，会将相应的资源添加到framework_res.apk文件中
+    PRODUCT_AAPT_PREF_CONFIG：指定系统实际的屏幕密度类型
+    DEVICE_PACKAGE_OVERLAYS：重要的变量，指定了系统的overlay目录。
+    编译时会使用overlay目录下存放的资源文件替换系统或模块原有的资源文件
+    在不覆盖原生文件的情况下，就能实现产品的个性化
+    overlay目录可有多个，按照变量中的先后顺序替换资源，因而可以定义公共的或产品私有的overlay目录，以重用系统资源文件
+    PRODUCT_PROPERTY_OVERRIDES：定义系统的属性值
+    如果属性名称以“ro.”开头，该属性为只读属性。一旦设置，属性值将不能改变
+    如果属性名为“persist.”开头，它的值将写入文件/data/property
+
+    2.2.2 编译类型eng、user和userdebug
+
+    eng
+    缺省的编译类型。执行make 相当于“make eng”
+    编译时会将一些模块安装进系统
+    在Android.mk中用LOCAL_MODULE_TAGS变量定义了标签：eng、debug、shell_$(TARGET_SHELL)、user和development的模块
+    非apk模块并且不带任何标签的模块
+    所有产品配置文件中指定的apk模块
+    编译的系统带有一些属性：
+    ro.secure=0
+    ro.debuggable=1
+    ro.kernel.android.checkjni=1
+    编译系统中缺省情况下adb时可用的
+    user
+    编译时会将一些模块安装进系统
+    在Android.mk中用LOCAL_MODULE_TAGS变量定义了标签：shell_$(TARGET_SHELL)和user的模块
+    非apk模块并且不带任何标签的模块
+    所有产品配置文件中指定的apk模块，同时忽略其标签属性
+    编译的系统带有一些属性：
+    ro.secure=1
+    ro.debuggable=0
+    编译系统中缺省情况下adb时不可用的，需要在系统设置中手动打开
+    userdebug
+    编译时会将一些模块安装进系统
+    在Android.mk中用LOCAL_MODULE_TAGS变量定义了标签：shell_$(TARGET_SHELL)、debug和user的模块
+    非apk模块并且不带任何标签的模块
+    所有产品配置文件中指定的apk模块，同时忽略其标签属性
+    编译的系统带有一些属性：
+    ro.secure=1
+    ro.debuggable=1
+    编译系统中缺省情况下adb时不可用的，需要在系统设置中手动打开
+
+    2.2.3 产品的image文件
+
+    Android编译完成之后生成的几个image文件，包含：boot.img、system.img、recovery.img和userdata.img
+
+    1. boot.img
+
+    boot.img是Android自定义的文件格式，包含一些部分
+    一个2*1024大小的头文件
+    用gzip压缩过的kernel映像
+    ramdisk映像
+    最后是一个载入器程序，可选
+
+    组成部分    大小
+    boot header     1 page
+    kernel  n page
+    ramdisk     m page
+    second stage    o page
+
+    注意：各个部分大小时page的整数倍，page值在BoardConfig.mk中通过编译变量BOARD_KERNEL_PAGESIZE定义，通常是2048
+    ramdisk是小型的文件系统，包括初始化Linux系统所需的全部核心文件
+
+    2. recovery.img
+
+    recovery.img相当于一个小型文本界面的Linux系统，他有自己的内核和文件系统
+    作用：恢复或升级系统，因此在sbin目录下会有一个recovery程序
+    组成：adbd和系统配置文件init.rc
+
+    3. system.img
+
+    system.img就是设备中system目录的镜像，里面包含了Android系统的主要的目录和文件
+    app目录：存放一般的apk文件
+    bin目录：一些Linux的工具，大多是toolbox的链接
+    etc目录：系统配置文件
+    fonts目录：系统字体文件
+    framework目录：系统平台所有jar包和资源文件包
+    lib目录：系统共享库
+    media目录：多媒体资源，只要是铃声
+    priv-app目录：系统核心apk文件
+    tts目录：系统语音合成文件
+    usr目录：各种键盘布局、时间区域文件
+    vendor目录：第三方厂商的配置文件、firmware以及动态库
+    xbin目录：系统管理工具，这个文件夹的作用相当于标准Linux系统中的sbin
+    buil.prop文件：系统属性定义文件
+
+    4. userdata.img
+
+    userdata.img是设备中data目录的镜像，初始时一般不包括任何文件
+    2.3 编译Android模块
+
+    每个模块的源码目录下，都有一个Android.mk文件，里面包含了模块的代码的位置、模块快的名称、需要链接的动态库等一系列的定义
+
+    分析package/apps/Settings目录下的Android.mk文件
+
+    #设置LOCAL_PATH为当前目录
+    LOCAL_PATH:= $(call my-dir)
+    #包含进clear_vars.mk文件，该文件里将会清空除LOCAL_PATH外所有“LOCAL_”变量
+    include $(CLEAR_VARS)
+    #指定依赖的共享库java类库
+    LOCAL_JAVA_LIBRARIES := bouncycastle conscrypt telephony-common ims-common
+    #指定依赖的静态java类库
+    LOCAL_STATIC_JAVA_LIBRARIES := android-support-v4 android-support-v13 jsr305
+    #指定模块的标签为optional
+    LOCAL_MODULE_TAGS := optional
+    #定义源文件列表
+    LOCAL_SRC_FILES := \
+        $(call all-java-files-under, src) \
+        src/com/android/settings/EventLogTags.logtags
+    #可选定义，不推荐定义
+    LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/res
+    #定义模块的名称
+    LOCAL_PACKAGE_NAME := Settings
+    #指定模块签名使用platform签名
+    LOCAL_CERTIFICATE := platform
+    #为true表示此apk将安装到priv-app目录
+    LOCAL_PRIVILEGED_MODULE := true
+    #指定混淆的标志
+    LOCAL_PROGUARD_FLAG_FILES := proguard.flags
+    ifneq ($(INCREMENTAL_BUILDS),)
+    LOCAL_PROGUARD_ENABLED := disabled
+    LOCAL_JACK_ENABLED := incremental
+    endif
+    #包含几个目录下的common.mk文件
+    include frameworks/opt/setupwizard/navigationbar/common.mk
+    include frameworks/opt/setupwizard/library/common.mk
+    include frameworks/base/packages/SettingsLib/common.mk
+    #指定编译模块类型为apk
+    include $(BUILD_PACKAGE)
+    # Use the following include to make our test apk.
+    ifeq (,$(ONE_SHOT_MAKEFILE))
+    #将源码目录下其余的Android.mk都包含进来
+    include $(call all-makefiles-under,$(LOCAL_PATH))
+    endif
+
+    2.3.1 模块编译变量简介
+
+    Android,mk文件能编译出不同的模块，是通过包含某个模块编译文件实现的，如上述代码中“include $(BUILD_PACKAGE)”。
+    Android的Build系统定义了很多模块编译变量，如下列表：
+    这些模块编译文件规模都很小，注意时定义模块的目标和依赖关系
+
+    模块编译变量    说明
+    BUILD_HOST_STATIC_LIBRARY   对应文件是host_static_library.mk。用来产生编译平台使用的本地静态库
+    BUILD_HOST_SHARED_LIBRARY   用来产生编译平台使用的本地共享库
+    BUILD_STATIC_LIBTARAY   产生目标系统使用的本地静态库
+    BUILD_RAW_STATIC_LIBRARY    暂时未知用途
+    BUILD_SHARED_LIBRARY    产生编译平台使用的本地共享库
+    BUILD_EXECUTABLE    产生目标系统使用的Linux可执行文件
+    BUILD_RAW_EXECUTABLE    暂时未知
+    BUILD_HOST_EXECUTABLE   产生编译平台下使用的可执行文件
+    BUILD_PACKAGE   产生apk文件
+    BUILD_PHONY_PACKAGE     暂时未知
+    BUILD_HOST_PROBUILT     定义编译平台下的预编译模块目标
+    BUILD_PREBUILT  定义预编译的模块目标，作用是将这些预编译的模块引入系统
+    BUILD_MULTI_PREBUILT    定义多个预编译模块目标
+    BUILD_JAVA_LIBRARY  产生java共享库
+    BUILD_STATIC_JAVA_LIBRARY   产生ｊａｖａ静态库
+    BUILD_HOST_JAVA_LIBRARY     产生用于编译平台的java共享库
+    BUILD_DROIDDOC  暂时未知
+    BUILD_COPY_HEADERS  将LOCAL_COPY_HEADERS变量定义的文件复制到LOCAL_COPY_HEADERS_TO变量定义的路径中
+    BUILD_NATIVE_TEST   产生一个目标系统的可执行程序，相比较BUILD_EXECUTABLE只是多了测试相关的库路径和头文件路径
+    BUILD_HOST_NATIVE_TEST  产生一个编译平台下的可执行程序，相比较BUILD_HOST_EXECUTABLE只是多了定义了测试相关库的路径和头文件路径
+    2.3.2 常用模块定义实例
+
+    编写一个apk文件
+
+    LOCAL_PATH:= $(call my-dir)         #设置LOCAL_PATH为当前目录
+    include $(CLEAR_VARS)               #包含进clear_vars.mk文件，该文件里将会清空除LOCAL_PATH外所有“LOCAL_”变量
+
+    LOCAL_JAVA_LIBRARIES :=             #指定依赖的共享库java类库
+    LOCAL_STATIC_JAVA_LIBRARIES :=      #指定依赖的静态java类库
+
+    LOCAL_SRC_FILES := $(call all-java-files-under, src)#定义源文件列表
+
+    LOCAL_MODULE_TAGS := optional       #指定模块的标签为optional
+    LOCAL_CERTIFICATE := shared         #指定模块签名方式
+    LOCAL_PACKAGE_NAME := testapk       #定义模块的名称
+include $(BUILD_PACKAGE)            
+
+    编写一个java共享库
+
+    LOCAL_PATH:= $(call my-dir)         #设置LOCAL_PATH为当前目录
+    include $(CLEAR_VARS)               #包含进clear_vars.mk文件，该文件里将会清空除LOCAL_PATH外所有“LOCAL_”变量
+    LOCAL_SRC_FILES := $(call all-java-files-under, src)#定义源文件列表
+    LOCAL_MODULE_TAGS := optional       #指定模块的标签为optional
+    LOCAL_MODULE := javadynamiclib      #定义模块名称
+    include $(BUILD_JAVA_LIBRARY)   
+
+    编写一个java静态库
+
+    LOCAL_PATH:= $(call my-dir)         #设置LOCAL_PATH为当前目录
+    include $(CLEAR_VARS)               #包含进clear_vars.mk文件，该文件里将会清空除LOCAL_PATH外所有“LOCAL_”变量
+    LOCAL_SRC_FILES := $(call all-java-files-under, src)#定义源文件列表
+    LOCAL_MODULE := javastaticlib      #定义模块名称
+    include $(BUILD_STATIC_JAVA_LIBRARY )   
+
+    编写一个可执行文件
+
+    LOCAL_PATH:= $(call my-dir)         #设置LOCAL_PATH为当前目录
+    include $(CLEAR_VARS)               #包含进clear_vars.mk文件，该文件里将会清空除LOCAL_PATH外所有“LOCAL_”变量
+    LOCAL_SRC_FILES:= service.cpp       
+    LOCAL_SHARED_LIBRARIES := libbutils libbinder #指定模块需要链接的动态库
+    ifeq ($(TARGET_OS),linux)
+    LOCAL_CFLAGS += -DXP_UNIX
+    endif
+    LOCAL_MODULE := service     #定义模块名称
+    include $(BUILD_EXECUTABLE)   
+
+    2.3.3 预编译模块的目标定义
+
+    在实际的系统开发中，有很多apk包、jar包都是预编译好的，编译系统时只需要将这些二进制文件复制到image文件中
+
+    常用的复制方法
+    通过PRODUCT_COPY_TILES变量
+    问题1：有些apk包或jar包需要使用系统签名文件才能正常运行，这样复制方式行不通
+    问题2：一些动态库可能是源码中有些模块所依赖的，这种方法无法建立依赖关系，导致这些模块编译失败
+
+    解决方法：定义一个预编译模块
+    LOCAL_SRC_FILES变量指定二进制文件的路径，通过LOCAL_MODULE_CLASS来指定模块类型，include的是BUILD_PREBUILT变量定义的编译文件
+
+    常见模块写法
+    定义apk文件目标
+
+    include $(CLEAR_VARS)
+    LOCAL_MODULE := ThemeManager.apk
+    LOCAL_SRC_FILES := App/$(LACAL_MODULE)
+    LOCAL_MODULE_TAGE := optional
+    LOCAL_MODULE_CLASS :=APPS
+    LOCAL_CERTIFICATE := platform
+    include $(BUILT_PREBUILT)
+
+    定义静态jar包目标
+
+    include $(CLEAR_VARS)
+    LOCAL_MODULE := libfirewall.jar
+    LOCAL_SRC_FILES := App/$(LACAL_MODULE)
+    LOCAL_MODULE_TAGE := optional
+    LOCAL_MODULE_CLASS :=JAVA_LIBRARIES
+    LOCAL_CERTIFICATE := platform
+    include $(BUILT_PREBUILT)
+
+    定义可执行文件
+
+    include $(CLEAR_VARS)
+    LOCAL_MODULE :=bootanimation
+    LOCAL_SRC_FILES := bin/bootanimation
+    LOCAL_MODULE_TAGE := optional
+    LOCAL_MODULE_CLASS :=EXECUTABLES
+    LOCAL_CERTIFICATE :=$(TARGET_OUT)/bin
+    include $(BUILT_PREBUILT)
+
+    定义host平台下的jar包
+
+    这个例子是将系统编译时用到的sigapk.jar预编译，然后复制到out目录中，这样Build系统将能够使用这个文件夹来给其他的文件签名
+    例子中除了使用“BUILD_HOST_PREBUILT”表示目标定义是针对编译平台而不是设备平台的，还给出了定义预编译jar包模块的另外一种定义方式：
+    使用变量LOCAL_PREBUILT_JAVA_LIBRARIES来定义
+
+    include $(CLEAR_VARS)
+    LOCAL_MODULE :=signapk
+    LOCAL_PREBUILT_JAVA_LIBRARIES := lib/$(LOCAL_MODULE).jar
+    include $(BUILT_HOST_PREBUILT)
+
+    2.3.4 常用”LOCAL_”变量
+
+    编写模块的编译文件，实际就是定义一系列以“LOCAL_”开头的编译变量
+
+    变量名  说明
+LOCAL_ASSET_FILES   编译apk时用来指定资源列表，通常写成：LOCAL_ASSET_FILES+=$(call find-subdir-assets)
+    LOCAL_CC    自定义C编译器代替缺省的编译器
+    LOCAL_CXX   自定义C++编译器来代替缺省的编译器
+    LOCAL_CFLAGS    定义额外的C/C++编译器的参数
+    LOCAL_CPPFLAGE  仅定义额外C++编译器参数，不用再C编译器中
+    LOCAL_CPP_EXTENSION     自定义C++源文件的后缀。例如：LOCAL_CPP_EXTENSION:=.cc，note：一旦定义，模块中其他的源文件都要使用该后缀，暂不支持混用
+    LOCAL_C_INCLUDES    指定头文件的搜索路径
+    LOCAL_FORCE_STATIC_EXECUTABLE   编译时需要链接的库有共享和静态两者共存的情况，该值设为true=》优先链接静态库。此情况只会在编译/root/sbin时用到
+    LOCAL_GENERTED_SOURCES  
+    LOCAL_MODULE_TAGS   定义模块标签，Build系统根据标签来决定哪些模块也将安装
+    LOCAL_REQUIRED_MODULED  指定依赖的模块，一旦本模块被安装，通过此变量指定的模块也将安装
+    LOCAL_JAVACFLAGS    定义额外的javac编译器的参数
+    LOCAL_JAVALIBRARIES     指定模块指定的java库
+    LOCAL_LDFLAGS   定义链接器ld的参数
+    LOCAL_LDLIBS    自定模块链接四依赖的库，如果这些库文件不存在，并不会引起对它们的编译，这是此变量与LOCAL_SHARED_LIBRARIES的主要区别
+    LOCAL_NO_MANIFEST   在一个apk资源中可以指定此变量为true，表示此apk文件没有AndroidManifest.xml文件
+    LOCAL_PACKAGE_NAME  指定APP应用
+    LOCAL_PATH  指定Android.mk文件所在的目录
+    LOCAL_POST_PROCESS_COMMAND  在编译host相关的模块时，可以用此变量定义一天命令在link完成后执行
+    LOCAL_PREBUILT_LIB  指定预编译C/C++动态和静态库列表。用于预编译模块定义中
+    LOCAL_PREBUILT_JAVA_LIBRARIES   指定预编译java库列表。用于预编译模块定义中
+    LOCAL_SHARED_LIBRARIES  指定模块依赖的C/C++共享库列表
+    LOCAL_SRC_FILES     指定源文件列表
+    LOCAL_STATIC_LIBRARIES  指定依赖的C/C++静态库列表
+    LOCAL_MODULE    除应用（apk）以LOCAL_PACKAGE_NAME指定模块名以外，其余的模块都以LOCAL_MODULE指定模块名
+    LOCAL_MODULE_PATH   指定模块在目标系统的按照路径
+    LOCAL_UNSTRIPPED_PATH   指定模块的unstripped版本在out目录下的保存路径
+    LOCAL_WHOLE_STATIC_LIBRARIES    这变量也定义了模块依赖的静态库列表，和LOCAL_STATIC_LIBRARIES类似，但链接器不会将静态库中无人调用的代码去掉
+    LOCAL_YACCFLAGS     指定yacc参数
+    LOCAL_ADDITIONAL_DEPENDENCIES   指定本模块的依赖。用在不方便使用别的方法来指定依赖关系时
+    LOCAL_BUILT_MODULE  指定编译时存放中间文件的目录
+    LOCAL_INSTALLED_MODULE  指定模块的安装路径
+    LOCAL_MODULE_CLASS  定义模块的分类。根据分类，生成的模块会被按照到目标系统相应的目录下，但是如果同时使用了LOCAL_MODULE_PATH定义了路径，则安装到该目录下
+    LOCAL_MODULE_NAME   指定模块名称
+    LOCAL_MODULE_SUFFIX     指定当前模块的后缀。一旦指定，系统会在产生目标文件时，会以模块名加后缀来创建目标文件
+    LOCAL_STRIP_MODULE  指定模块是否需要strip，该模块是可执行文件或动态库时才能使用该变量
+    LOCAL_STRIPPABLE_MODULE     通常由Build系统设置，一般编译可执行文件和动态库时设置true
+    LOCAL_SYSTEM_SHARED_LIBRARIES   此变量在编译系统的基本库，如libc、libm等时，用来定义这些库的依赖库。通常在应用模块定义中不使用该变量
+    LOCAL_PRELINK_MODULE    编译.so模块时，定义是否需要prelink。prelink通过预链接的方式加快程序启动速度""
