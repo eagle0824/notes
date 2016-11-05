@@ -627,3 +627,13 @@ LOCAL_ASSET_FILES   编译apk时用来指定资源列表，通常写成：LOCAL_
     LOCAL_STRIPPABLE_MODULE     通常由Build系统设置，一般编译可执行文件和动态库时设置true
     LOCAL_SYSTEM_SHARED_LIBRARIES   此变量在编译系统的基本库，如libc、libm等时，用来定义这些库的依赖库。通常在应用模块定义中不使用该变量
     LOCAL_PRELINK_MODULE    编译.so模块时，定义是否需要prelink。prelink通过预链接的方式加快程序启动速度""
+
+
+1 system/build.prop 生成
+   通过build.prop生成过程的分析，可知哪里可以修改原有的属性或加入自己定义属性，那就是
+   1) buildinfo.sh;
+
+   2) system.prop;
+
+   3) ADDITIONAL_BUILD_PROPERTIES或PRODUCT_PROPERTY_OVERRIDES。
+

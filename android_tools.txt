@@ -16,6 +16,27 @@
     platform 查看   keytool -printcert -v -file platform.x509.pem
     share 查看      keytool -printcert -v -file share.x509.pem
 
+    给apk用系统签名
+    java -jar ./out/host/linux-x86/framework/signapk.jar ./build/target/product/security/platform.x509.pem ./build/target/product/security/platform.pk8 DMClient.apk.unsigned DMClient.apk.signed
+
+    或用下面Android.mk
+
+    LOCAL_PATH := $(call my-dir)
+    include $(CLEAR_VARS)
+
+    # Module name should match apk name to be installed
+    LOCAL_MODULE := CarDvr_kfl
+    LOCAL_MODULE_TAGS := optional
+    LOCAL_SRC_FILES := $(LOCAL_MODULE).apk
+    LOCAL_MODULE_CLASS := APPS
+    LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
+    LOCAL_CERTIFICATE := PRESIGNED
+    LOCAL_MODULE_PATH := $(TARGET_OUT)/vendor/operator/app
+    #LOCAL_CERTIFICATE := platform
+    #LOCAL_PRIVILEGED_MODULE := true
+    LOCAL_MULTILIB := 32
+    include $(BUILD_PREBUILT)
+
 
 
 2.android create project
@@ -145,5 +166,9 @@
 7. 获取当前系统应用app可获取内存的大小
     adb shell  getprop | grep dalvik.vm.heapgrowthlimit
 
-8. 给apk签名
-    java -jar ./out/host/linux-x86/framework/signapk.jar ./build/target/product/security/platform.x509.pem ./build/target/product/security/platform.pk8 DMClient.apk.unsigned DMClient.apk.signed
+9. adb wifi
+    1) 先usb adb root
+    2) 车机连接wifi，查看IP，保证电脑跟车机在同一个网段
+    3) 车机的usb可以做host。
+        adb tcpip 5555
+        adb connect ip 
