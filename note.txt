@@ -3792,7 +3792,9 @@ Returns
     sudo adb kill-server
     sudo adb devices
 
-
+    
+    261
+        WindowManager.addView() 收不到key事件，flag添加FLAG_NOT_TOUCH_MODAL
 
 
 
