@@ -39,3 +39,14 @@
 
     2) repo init -u git://git.omapzoom.org/platform/manifest.git -b branch
     3) repo sync 更新同步代码
+
+4 android7.0 编译
+    1) sudo apt-get install openjdk-7-jdk
+
+    2) sudo apt-get install bison g++-multilib git gperf libxml2-utils make python-networkx zlib1g-dev:i386 zip
+
+    3) zlib 
+        下载源码　http://www.zlib.net/
+        1) tar -xzvf zlib-1.2.8.tar.gz
+        2) cd zlib-1.2.8/
+        3) ./configure && make && sudo make install
