@@ -1,0 +1,113 @@
+与水印相关的源文件在这里: frameworks/base/services/core/java/com/android/server/wm/Watermark.java
+
+参数包括：
+
+    －要显示的字串（只能显示ASCII字符)
+－字符大小(dpi)
+    －x轴偏移
+    －y轴偏移
+    －字体阴影颜色
+    －字体颜色
+    －字体阴影半径
+    －字体阴影x轴偏移量
+    －字体阴影y轴偏移量
+
+    class Watermark {
+
+        Watermark(Display display, DisplayMetrics dm, SurfaceSession session, String[] tokens) {
+
+            if (false) {
+
+                Log.i(WindowManagerService.TAG, "*********************** WATERMARK");
+                for (int i=0; i<tokens.length; i++) {
+
+                    Log.i(WindowManagerService.TAG, "  TOKEN #" + i + ": " + tokens[i]);
+                }
+            }
+
+            mDisplay = display;
+            mTokens = tokens;
+
+            StringBuilder builder = new StringBuilder(32);
+            int len = mTokens[0].length();
+            len = len & ~1;
+            for (int i=0; i<len; i+=2) {
+
+                int c1 = mTokens[0].charAt(i);
+                int c2 = mTokens[0].charAt(i+1);
+                if (c1 >= 'a' && c1 <= 'f') c1 = c1 - 'a' + 10;
+                else if (c1 >= 'A' && c1 <= 'F') c1 = c1 - 'A' + 10;
+                else c1 -= '0';
+                if (c2 >= 'a' && c2 <= 'f') c2 = c2 - 'a' + 10;
+                else if (c2 >= 'A' && c2 <= 'F') c2 = c2 - 'A' + 10;
+                else c2 -= '0';
+                builder.append((char)(255-((c1*16)+c2)));
+            }
+            mText = builder.toString();
+            if (false) {
+
+                Log.i(WindowManagerService.TAG, "Final text: " + mText);
+            }
+
+            int fontSize = WindowManagerService.getPropertyInt(tokens, 1,
+                    TypedValue.COMPLEX_UNIT_DIP, 20, dm);
+
+            mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mTextPaint.setTextSize(fontSize);
+            mTextPaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
+
+            FontMetricsInt fm = mTextPaint.getFontMetricsInt();
+            mTextWidth = (int)mTextPaint.measureText(mText);
+            mTextHeight = fm.descent - fm.ascent;
+
+            mDeltaX = WindowManagerService.getPropertyInt(tokens, 2,
+                    TypedValue.COMPLEX_UNIT_PX, mTextWidth*2, dm);
+            mDeltaY = WindowManagerService.getPropertyInt(tokens, 3,
+                    TypedValue.COMPLEX_UNIT_PX, mTextHeight*3, dm);
+            int shadowColor = WindowManagerService.getPropertyInt(tokens, 4,
+                    TypedValue.COMPLEX_UNIT_PX, 0xb0000000, dm);
+            int color = WindowManagerService.getPropertyInt(tokens, 5,
+                    TypedValue.COMPLEX_UNIT_PX, 0x60ffffff, dm);
+            int shadowRadius = WindowManagerService.getPropertyInt(tokens, 6,
+                    TypedValue.COMPLEX_UNIT_PX, 7, dm);
+            int shadowDx = WindowManagerService.getPropertyInt(tokens, 8,
+                    TypedValue.COMPLEX_UNIT_PX, 0, dm);
+            int shadowDy = WindowManagerService.getPropertyInt(tokens, 9,
+                    TypedValue.COMPLEX_UNIT_PX, 0, dm);
+            // ...
+        }
+        // ...
+    }
+
+由于水印的文件字是用16字制表示，不好直接写出来。下面提供一个简单的c代码用于生成我们所需要的水印配置文件：
+
+$ cat > create_watermark.c << EOF
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+int main(int argc, char *argv[])
+{
+
+    char *msg = "Hello, world!";
+    char *hex = "0123456789abcdef";
+    int i;
+
+    for (i = 0; i < strlen(msg); i++) {
+
+        int ch = 255 - msg[i];
+        printf("%c%c", hex[ch >> 4], hex[ch & 0xf]);
+    }
+    printf("%%%d", 40);
+    return 0;
+}
+
+编译代码：
+
+$ gcc -o create_watermark create_watermark.c
+
+创建system/etc/setup.conf:
+
+$ ./create_watermark > system/etc/setup.conf
