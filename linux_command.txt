@@ -608,3 +608,16 @@ example config java (1062 是优先级对auto时候有影响)
    2) cd zlib-1.2.8/
    3) ./configure && make && sudo make install
 
+67 simg2img工具使用
+    1)simg2img 解包
+    2)mount loop
+    3)替换 /bootlogo/ReLoginCode.csv
+    4)make_ext4fs -s -l 45M bootlogo.img.ext4 ./bootlogo
+
+68 更新gcc/g++
+    sudo add-apt-repository ppa:h-rayflood/gcc-upper
+    sudo apt-get update
+
+69 更新python
+    sudo add-apt-repository ppa:fkrull/deadsnakes
+    sudo apt-get update

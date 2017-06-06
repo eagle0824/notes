@@ -1,0 +1,17 @@
+double Shift    搜索文件
+Ctrl+Shift+N    查找文件
+
+
+Ctrl+E          最近文件
+Ctrl+D          复制本行到下一行
+Ctrl+X          删除本行
+Ctrl+F          查找文本
+Ctrl+R          查找替换
+Ctrl+Alt+O      优化导入的类和包
+Ctrl+/ 或 Ctrl+Shift+/ 注释(//或者/**/)
+Ctrl+B          快速打开光标处的类或方法
+Ctrl+O          最近文件
+
+
+Alt+Home        导航条
+Alt+Insert      生成代码(如get,set方法,构造函数等)

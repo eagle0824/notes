@@ -171,4 +171,28 @@
     2) 车机连接wifi，查看IP，保证电脑跟车机在同一个网段
     3) 车机的usb可以做host。
         adb tcpip 5555
-        adb connect ip 
+        adb connect ip
+
+10. 更新ramdisk.gz
+        ramdisk解压替换打包
+
+        1) gunzip ramdisk.gz
+
+        2) mkdir /tmp/rootfs
+
+        3) mount –o loop -t ext4 ramdisk /tmp/rootfs
+
+        4) cd /tmp/rootfs 替换修改内容
+
+        5) genext2fs -b 2048 -i 1024 -d /tmp/rootfs ramdisk
+
+        6) gzip -9 -f ramdisk
+
+
+11. 替换update.zip内容
+
+    修改update之后压缩
+    zip ../update_unsigned.zip -qry ./*
+
+    java -Xmx1024m -jar ./out/host/linux-x86/framework/signapk.jar -w ./build/target/product/security/testkey.x509.pem ./build/target/product/security/testkey.pk8 update_unsigned.zip update.zip
+
