@@ -196,3 +196,13 @@
 
     java -Xmx1024m -jar ./out/host/linux-x86/framework/signapk.jar -w ./build/target/product/security/testkey.x509.pem ./build/target/product/security/testkey.pk8 update_unsigned.zip update.zip
 
+
+11 解压system.img.ext4
+    1) simg2img ~/Desktop/system.img.ext4 /tmp/system.img
+    将system.img.ext4 解压到/tmp/system.img
+    2) mkdir /tmp/img
+    3) sudo mount –o loop -t ext4 /tmp/system.img /tmp/img
+    system.img挂载到img
+    4) 修改/tmp/img/内容后从新打包
+    ./make_ext4fs -s -l 45M bootlogo.img.ext4 /tmp/img/
+

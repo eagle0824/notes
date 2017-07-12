@@ -610,7 +610,10 @@ example config java (1062 是优先级对auto时候有影响)
 
 67 simg2img工具使用
     1)simg2img 解包
+        simg2img ./bootlogo.img.ext4 /tmp/boologo.img
     2)mount loop
+        mkdir /tmp/img
+        sudo mount -t ext4 -o loop /tmp/bootlogo.img /tmp/img
     3)替换 /bootlogo/ReLoginCode.csv
     4)make_ext4fs -s -l 45M bootlogo.img.ext4 ./bootlogo
 
