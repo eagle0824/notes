@@ -624,3 +624,9 @@ example config java (1062 是优先级对auto时候有影响)
 69 更新python
     sudo add-apt-repository ppa:fkrull/deadsnakes
     sudo apt-get update
+
+70 删除file文件中的'\r'字符(解决window下编辑的脚本文件到linux运行出问题)
+    sed -i 's/\r$//' filename
+
+80 android查看cup使用率
+adb shell top -m 10 -s cpu（-m显示最大数量，-s 按指定行排序）

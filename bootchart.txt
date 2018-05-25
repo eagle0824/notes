@@ -15,6 +15,25 @@ bootchart是一个对Linux启动流程进行分析得开源软件工具。Androi
     替换ramdisk.gz中的init
     替换系统的ramdisk.gz
 
+{
+    更新ramdisk.gz
+        ramdisk解压替换打包
+
+        1) gunzip ramdisk.gz
+
+        2) mkdir /tmp/rootfs
+
+        3) mount -t ext4 -o loop ramdisk /tmp/rootfs
+
+        4) cd /tmp/rootfs 替换修改内容
+
+        5) genext2fs -b 2048 -i 1024 -d /tmp/rootfs ramdisk
+        //genext2fs 在目录out/host/linux-x86/bin下面
+
+        6) gzip -9 -f ramdisk
+
+}
+
 
 3.重启设备，
     adb shell mkdir /data/bootchart     创建目录bootchart

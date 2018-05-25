@@ -180,7 +180,7 @@
 
         2) mkdir /tmp/rootfs
 
-        3) mount –o loop -t ext4 ramdisk /tmp/rootfs
+        3) mount -t ext4 -o loop ramdisk /tmp/rootfs
 
         4) cd /tmp/rootfs 替换修改内容
 
@@ -205,4 +205,10 @@
     system.img挂载到img
     4) 修改/tmp/img/内容后从新打包
     ./make_ext4fs -s -l 45M bootlogo.img.ext4 /tmp/img/
+
+12  查看应用内存使用情况
+    adb shell procrank > /tmp/log.txt
+
+13 查看应用打开文件情况
+    adb shell lsof > /tmp/log.txt
 
