@@ -81,3 +81,18 @@ include $(CLEAR_VARS)
 LOCAL_MODULE_TAGS := optional
 LOCAL_PREBUILT_LIBS := sdfapk.so sdffff.so
 include $(BUILD_MULTI_PREBUILT)
+
+
+
+#aar Android Archive
+#创建libs/aaa.arr文件，修改Android.mk如下
+LOCAL_AAPT_FLAGS += --auto-add-overlay \
+				   --extra-packages aaa
+LOCAL_STATIC_JAVA_AAR_LIBRARIES:=aaa
+
+....
+include $(CLEAR_VARS)
+LOCAL_MODULE_TAGS:=optional
+LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES:=aaa:libs/aaa.aar
+include $(BUILD_MULTI_PREBUILT)
+

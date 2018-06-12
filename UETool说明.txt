@@ -1,0 +1,48 @@
+UETools
+
+简单说明，UETool是一款可视化的界面调整工具，可以在不重新编译安装apk的情况下，进行界面调节看效果。
+主要功能
+1) 调整某个控件的位置，字体大小等属性实时查看效果，另外,还支持自定义控件属性(捕捉控件)
+2) 检测两个控件之间的间距(相对位置)
+3) 检测控件是否对齐(网格栅栏)
+
+https://github.com/eleme/UETool.git
+
+在studio中引用参考官方文档
+
+在编译系统中添加参考下说明
+1 将UETools中文件uetool-release.aar和uetool-base-release.aar 放在XXX-app/libs/目录下面
+2 修改Android manifest  添加<uses-sdk android:minSdkVersion='14'/> uetool中指定了minsdkversion是14所以,app的manifest中也要加入此定义
+3 修改 code 在要测试的activity中添加显示隐藏浮窗接口
+onCreate 添加 UETool.showUETMenu(10);
+onDestroy 添加 UETool.dismissUETMenu();
+4 修改Andoid.mk
+UETool用到了v7包,而且有部分资源在aar中,所以Androd.mk需要做相应的修改
+添加如下
+
+LOCAL_RESOURCE_DIR += frameworks/support/v7/appcompat/res
+
+LOCAL_STATIC_JAVA_LIBRARIES := \
+	android-support-v7-appcompat \
+	android-support-v7-recyclerview \
+	android-support-v7-vectordrawable \
+	
+LOCAL_STATIC_JAVA_AAR_LIBRARIES := \
+	uetool \
+	uetool-base
+
+LOCAL_AAPT_FLAGS := --auto-add-overlay
+LOCAL_AAPT_FLAGS += --extra-packages android.support.v7.appcompat \
+	--extra-packages me.ele.uetool.base \
+	--extra-packages me.ele.uetool \
+	--extra-packages android.support.v7.recyclerview \
+
+.....
+
+include $(CLEAR_VARS)
+LOCAL_MODULE_TAGS:=optional
+LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := \
+	uetool:libs/uetool-release.aar \
+	uetool-base:libs/uetool-base-release.aar \
+
+include $(BUILD_MULTI_PREBUILT)

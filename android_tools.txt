@@ -212,3 +212,13 @@
 13 查看应用打开文件情况
     adb shell lsof > /tmp/log.txt
 
+14 fastboot烧录
+    烧录kernel
+    sudo fastboot flash kernel uImage
+    或
+    dd if=/data/uImage of=/dev/block/kernel
+
+    烧录ramdisk
+    sudo fastboot flash ramdisk.gz rootfs 
+    或
+    dd if=/data/ramdisk.gz of=/dev/block/rootfs

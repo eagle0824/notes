@@ -630,3 +630,11 @@ example config java (1062 是优先级对auto时候有影响)
 
 80 android查看cup使用率
 adb shell top -m 10 -s cpu（-m显示最大数量，-s 按指定行排序）
+
+81 实时读取minicom.cap
+tail -f ./minicom.cap
+
+82 cut 过滤文件显示
+    cut -d \ -f 3
+    -d  分隔符, 默认是TAB
+    -f  filed  3 表示第三列
