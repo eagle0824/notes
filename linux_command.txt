@@ -638,3 +638,6 @@ tail -f ./minicom.cap
     cut -d \ -f 3
     -d  分隔符, 默认是TAB
     -f  filed  3 表示第三列
+
+83 搜索Android.mk中的LOCAL_MODULE
+find ./ -name Android.mk | xargs grep "LOCAL_MODULE := xxx"

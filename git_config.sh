@@ -26,3 +26,8 @@ git config --global color.status auto
 git config --global color.diff auto
 git config --global color.branch auto
 git config --global color.interactive auto
+
+#不自动修改换行符
+#linux为\n
+#windows为\r\n
+git config --global core.autocrlf false
