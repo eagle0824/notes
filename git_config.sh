@@ -16,6 +16,7 @@ git config --global alias.co checkout
 git config --global alias.st status
 git config --global alias.br "branch -a"
 git config --global alias.cm commit
+#git config --global alias.cm "commit -s"
 git config --global alias.df diff
 
 #diff ignore ^M
