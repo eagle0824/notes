@@ -3797,6 +3797,19 @@ Returns
         WindowManager.addView() 收不到key事件，flag添加FLAG_NOT_TOUCH_MODAL
 
 
+    262 android部分说明
+    1) android 默认log等级是 DEBUG, 可以通过设置persist.log.tag这个prop来调整
+    adb shell setprop persist.log.tag V //设置debug的等级为VERBOSE
+
+    2) 部分系统log是通过Log.isLoggable(TAG, level)来判断是否有log输出，如果是这样的可以通过设置属性来打开log；
+    比如AudioService中 DEBUG_VOLUE是如下定义的
+    public static final String TAG= AuidoService;
+    public static final boolean DEBUG_VOL = Log.isLoggable(TAG + ".VOL", Log.DEBUG) || LOGD;
+    那么设置下面属性
+    adb shell setprop log.tag.AudioService.VOL D //就可以打开DEBUG_VOL的log
+
+
+
 
 monkeyTest
 adb shell monkey -p com.android.contacts -v -v -v 20000\

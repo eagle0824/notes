@@ -1,4 +1,25 @@
-1 用android studio 查看android源码
+1 studio 快捷键
+
+double Shift    搜索文件
+Ctrl+Shift+N    查找文件
+
+
+Ctrl+E          最近文件
+Ctrl+D          复制本行到下一行
+Ctrl+X          删除本行
+Ctrl+F          查找文本
+Ctrl+R          查找替换
+Ctrl+Alt+O      优化导入的类和包
+Ctrl+/ 或 Ctrl+Shift+/ 注释(//或者/**/)
+Ctrl+B          快速打开光标处的类或方法
+Ctrl+O          最近文件
+
+
+Alt+Home        导航条
+Alt+Insert      生成代码(如get,set方法,构造函数等)
+
+
+2 用android studio 查看android源码
 
     准备工作:
         源码编译通过.
@@ -35,3 +56,13 @@
 
         注意:
             Android Studio导入源码时也慢，所以建议修改android.iml文件（将自己不用的代码去掉），然后再导入Studio.
+
+
+3 studio 安装uml插件
+
+https://blog.csdn.net/whatnamecaniuse/article/details/78247252
+
+1) File->Settings-> Plugins
+2) 选择Browse repositories -> 搜索 plantUML ->点击安装
+3) 右击 new的时候在列表里面会看到 UML Activity/UML Class等
+

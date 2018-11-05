@@ -214,9 +214,9 @@
 
 14 fastboot烧录
     烧录kernel
-    sudo fastboot flash kernel uImage
+    sudo fastboot flash kernel Image
     或
-    dd if=/data/uImage of=/dev/block/kernel
+    dd if=/data/Image of=/dev/block/kernel
 
     烧录ramdisk
     sudo fastboot flash ramdisk.gz rootfs 

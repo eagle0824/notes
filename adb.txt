@@ -363,3 +363,18 @@ adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:
 
 命令行起usb设置
 adb shell am start -n com.android.settings/.UsbSettings
+
+
+dump系统信息
+adb shell dumpsys
+
+查看当前有哪些service在运行
+adb shell service list
+
+查看service_name的运行信息
+adb shell dumpsys service_name
+
+
+读取或设置数据库里面的值
+adb shell settings get global bluetooth_on
+adb shell settings put global bluetooth_on 1
