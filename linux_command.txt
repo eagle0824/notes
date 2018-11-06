@@ -641,3 +641,10 @@ tail -f ./minicom.cap
 
 83 搜索Android.mk中的LOCAL_MODULE
 find ./ -name Android.mk | xargs grep "LOCAL_MODULE := xxx"
+
+84 更新电脑名称
+sudo vim /etc/hostname 修改电脑名称
+sudo vim /etc/hosts  修改127.0.1.1对应的主机名 
+重启生效
+Ubuntu16.04  通过右上角设置->关于电脑->设备名称修改
+不需要重启
