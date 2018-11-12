@@ -114,6 +114,7 @@
 	    tar czvf - src_path | tar xzvf - -C dest_path
 	局域网：
 	    tar czvf - src_path | ssh username@192.168.1.x tar xzvf - -C dest_path
+	    time tar czvf - src_path | pv | ssh username@192.168.1.x tar xzvf - -C dest_path
 
     tar -tzvf name.tar.gz   显示文件内容
     tar -tjvf name.tar.bz2  显示文件内容
@@ -590,6 +591,10 @@ example config java (1062 是优先级对auto时候有影响)
 
     查询安装包
     sudo apt-cache search OpenJDK
+
+    删除ppa
+    cd /etc/apt/sources.list.d
+    rm 相关的ppa即可
 
 64 安装搜狗输入法
 
