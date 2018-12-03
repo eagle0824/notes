@@ -1,0 +1,3 @@
+1 keyboard F1，FN切换
+thinkpad：在BIOS中有相应调整开关。开机时进入BIOS----CONFIG----Keyboard/Mouse----Change to "f1-f12 keys"选项设置为Legacy，完成后保存重启就可以了。
+ideapad：在BIOS设置界面，进入 “Configuration” 菜单，将“Hotkey mode”的设置由Enable更改为Disable，然后按F10保存后退出即可。
