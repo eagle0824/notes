@@ -652,4 +652,5 @@ sudo vim /etc/hostname 修改电脑名称
 sudo vim /etc/hosts  修改127.0.1.1对应的主机名 
 重启生效
 Ubuntu16.04  通过右上角设置->关于电脑->设备名称修改
+sudo vim /etc/hosts  修改127.0.1.1对应的主机名 
 不需要重启

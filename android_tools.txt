@@ -155,6 +155,10 @@
     查看dumpsys 支持的参数
     adb shell dumpsys | grep "DUMP OF SERVICE"
 
+    打印audiopolicy相关配置
+    adb shell dumpsys media.audio_policy
+    adb shell dumpsys media.audio_flinger
+
     example:
         dumpsys activty  打印系统activity信息
         dumpsys meminfo  打印内存信息
@@ -222,3 +226,6 @@
     sudo fastboot flash ramdisk.gz rootfs 
     或
     dd if=/data/ramdisk.gz of=/dev/block/rootfs
+
+15 显示当前有哪些服务在运行 
+    adb shell service list
