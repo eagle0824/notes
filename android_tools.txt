@@ -229,3 +229,10 @@
 
 15 显示当前有哪些服务在运行 
     adb shell service list
+
+16 adb shell dumpsys media.audio_policy
+Output refcount可以确认当前音频的stream类型 
+
+17 gradle 安装
+curl -s "https://get.sdkman.io" | bash
+sdk install gradle 5.0

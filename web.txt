@@ -25,3 +25,17 @@ and select others Force https://...sources to be fetched using http://...
 清华大学开源镜像资源
 https://mirrors.tuna.tsinghua.edu.cn/help/AOSP/
 
+android官方
+https://developer.android.google.cn/
+
+android源码在线访问
+http://androidxref.com/
+
+sdk源码(部分工具被移动到base/tools 或tools/swt)
+git clone https://android.googlesource.com/platform/sdk
+
+git clone https://android.googlesource.com/platform/tools/base
+
+android monkeyrunner等工具
+chimpchat ddms hierarchyviewer2 monkeyrunner sdkmanager sdkstats swtmenubar traceview uiautomatorviewer
+git clone https://android.googlesource.com/platform/tools/swt
