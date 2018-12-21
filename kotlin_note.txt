@@ -1,0 +1,12 @@
+官方
+https://kotlinlang.org/
+
+command line 安装
+1 Ubuntu16.04以及之后
+sudo snap install --classic kotlin
+
+其它版本
+curl -s https://get.sdkman.io | bash
+sdk install kotlin
+
+

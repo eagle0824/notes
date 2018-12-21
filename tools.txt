@@ -1,0 +1,3 @@
+usb connect device
+
+https://github.com/Genymobile/scrcpy/
