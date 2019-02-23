@@ -35,7 +35,11 @@ sdk源码(部分工具被移动到base/tools 或tools/swt)
 git clone https://android.googlesource.com/platform/sdk
 
 git clone https://android.googlesource.com/platform/tools/base
+清华
+https://aosp.tuna.tsinghua.edu.cn/platform/tools/base
 
 android monkeyrunner等工具
 chimpchat ddms hierarchyviewer2 monkeyrunner sdkmanager sdkstats swtmenubar traceview uiautomatorviewer
 git clone https://android.googlesource.com/platform/tools/swt
+清华
+https://aosp.tuna.tsinghua.edu.cn/platform/tools/swt
