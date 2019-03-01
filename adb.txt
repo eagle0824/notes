@@ -378,3 +378,7 @@ adb shell dumpsys service_name
 读取或设置数据库里面的值
 adb shell settings get global bluetooth_on
 adb shell settings put global bluetooth_on 1
+
+打印系统内存占用情况
+adb shell dumpsys meminfo
+adb shell procrank
