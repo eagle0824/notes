@@ -41,5 +41,9 @@ https://aosp.tuna.tsinghua.edu.cn/platform/tools/base
 android monkeyrunner等工具
 chimpchat ddms hierarchyviewer2 monkeyrunner sdkmanager sdkstats swtmenubar traceview uiautomatorviewer
 git clone https://android.googlesource.com/platform/tools/swt
+
 清华
 https://aosp.tuna.tsinghua.edu.cn/platform/tools/swt
+
+脑图工具
+https://github.com/NaoTu/DesktopNaotu
