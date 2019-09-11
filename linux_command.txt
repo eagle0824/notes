@@ -134,6 +134,11 @@
     解压AndroidManifest.xml文件
         tar -jxvf Music.tar.bz2 Music/AndroidManifest.xml
 
+    文件分包压缩
+    tar -jcf - out | split -b 10000M - out.tar.bz2.
+
+    分包文件解压
+    cat out.tar.bz2.a* | tar -jx
 
 14	curl	从服务器获取文件
 	curl http://android.git.kernel.org/repo > repo

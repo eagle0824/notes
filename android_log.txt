@@ -1,0 +1,18 @@
+1 Log.isLoggable(TAG, Log.DEBUG);
+
+private static final String TAG = "Em.InCallService"
+
+//log判断条件
+if (Log.isLoggable(TAG, Log.DEBUG)) {
+    表示 log.tag.Em.InCallService log level如果是Log.DEBUG 则log就会输出
+    //log
+}
+
+即设置prop如下值，就会有log输出
+adb shell setprop log.tag.Em.InCallService D
+
+2 android 默认log level是Log.DEBUG
+
+通过下面prop可以修改log等级
+adb shell setprop persist.log.tag D
+

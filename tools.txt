@@ -1,3 +1,5 @@
-usb connect device
+1  scrcpy
+
+Display and control your Android device
 
 https://github.com/Genymobile/scrcpy/

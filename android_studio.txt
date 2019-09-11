@@ -66,3 +66,14 @@ https://blog.csdn.net/whatnamecaniuse/article/details/78247252
 2) 选择Browse repositories -> 搜索 plantUML ->点击安装
 3) 右击 new的时候在列表里面会看到 UML Activity/UML Class等
 
+proxy
+设置proxy需要关闭重启studio生效
+~/.gradle/gradle.properties
+
+
+
+编译错误
+“Error: ' ' is not a valid resource name character” after updating to Android Gradle 3.0.0
+字符串命名后面有空格,可以通过下面指令查找
+
+egrep 'name="[^"]* [^"]*"' -n file
