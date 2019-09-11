@@ -859,5 +859,6 @@ bash函数
 
 
 
+    for i in `ls`;do echo -e "\t"vendor/imotor/3rd-party/Amap/system/app/Amap/lib/arm/$i:system/app/Amap/lib/arm/$i" \\" ; done > /tmp/1.txt
 
 

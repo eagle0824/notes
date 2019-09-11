@@ -380,5 +380,21 @@ adb shell settings get global bluetooth_on
 adb shell settings put global bluetooth_on 1
 
 打印系统内存占用情况
+adb shell dumpsys meminfo com.imotor.dialer
 adb shell dumpsys meminfo
 adb shell procrank
+
+adb 无线调试
+1.将手机和电脑置于同一个局域网下，保证电脑和手机能相互ping通。
+:w
+:w
+:q!
+:q
+2.adb shell netstat | grep 5555  查看5555是否被占用
+3.如果没有被占用继续保持手机与电脑是有线连接，在dos命令下执行：adb tcpip 5555。该步骤表示重启手机端tcpip，并监听5555端口号
+  如果5555被占用,换一个端口, 首先利用有线连接手机，在adb shell 的root下执行如下命令（这一步是需要root权限的）：
+        setprop service.adb.tcp.port 8888
+        adb tcpip 8888
+4.在电脑端dos命令下执行：adb connect ip:5555。其中ip表示手机的ip地址。
+5.断开连接时执行如下命令：adb disconnect ip:5555。
+

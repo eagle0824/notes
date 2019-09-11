@@ -3809,6 +3809,10 @@ Returns
     adb shell setprop log.tag.AudioService.VOL D //就可以打开DEBUG_VOL的log
 
 
+    263 seekbar thumb图片有透明,背景会不画, 可以通过下面配置处理  
+    <!-- 是否设置一个间隙,让滑块与底部图片分隔 -->
+    android:splitTrack="false"
+
 
 
 monkeyTest

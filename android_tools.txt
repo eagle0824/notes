@@ -2,7 +2,7 @@
 
 	keytool -genkey -alias archermind.keystore -keyalg RSA -validity 20000 -keystore archermind.keystore
 
-    查看apk的签名，解压apk
+    查看apk的签名，解压apk, META-INF 目录中的CERT.RSA存放签名信息
     keytool -printcert -file CERT.RSA
 
     会看到,下面信息
@@ -236,3 +236,103 @@ Output refcount可以确认当前音频的stream类型
 17 gradle 安装
 curl -s "https://get.sdkman.io" | bash
 sdk install gradle 5.0
+
+
+18 idmap
+源码 frameworks/base/cmds/idmap
+adb shell idmap --help
+
+NAME
+      idmap - create or display idmap files
+
+SYNOPSIS 
+      idmap --help 
+      idmap --fd target overlay fd 
+      idmap --path target overlay idmap 
+      idmap --scan target-package-name-to-look-for path-to-target-apk dir-to-hold-idmaps \                   dir-to-scan [additional-dir-to-scan [additional-dir-to-scan [...]]]
+      idmap --inspect idmap 
+      idmap --verify target overlay fd 
+
+DESCRIPTION 
+      Idmap files play an integral part in the runtime resource overlay framework. An idmap 
+      file contains a mapping of resource identifiers between overlay package and its target 
+      package; this mapping is used during resource lookup. Idmap files also act as control 
+      files by their existence: if not present, the corresponding overlay package is ignored 
+      when the resource context is created. 
+
+      Idmap files are stored in /data/resource-cache. For each pair (target package, overlay 
+      package), there exists exactly one idmap file, or none if the overlay should not be used. 
+
+NOMENCLATURE 
+      target: the original, non-overlay, package. Each target package may be associated with 
+              any number of overlay packages. 
+
+      overlay: an overlay package. Each overlay package is associated with exactly one target 
+               package, specified in the overlay's manifest using the <overlay target="..."/> 
+               tag. 
+
+OPTIONS 
+      --help: display this help 
+
+      --fd: create idmap for target package 'target' (path to apk) and overlay package 'overlay' 
+            (path to apk); write results to file descriptor 'fd' (integer). This invocation 
+            version is intended to be used by a parent process with higher privileges to call 
+            idmap in a controlled way: the parent will open a suitable file descriptor, fork, 
+            drop its privileges and exec. This tool will continue execution without the extra 
+            privileges, but still have write access to a file it could not have opened on its 
+            own. 
+
+      --path: create idmap for target package 'target' (path to apk) and overlay package 
+              'overlay' (path to apk); write results to 'idmap' (path). 
+
+      --scan: non-recursively search directory 'dir-to-scan' (path) for static overlay packages 
+              with target package 'target-package-name-to-look-for' (package name) present at
+              'path-to-target-apk' (path to apk). For each overlay package found, create an
+              idmap file in 'dir-to-hold-idmaps' (path). 
+
+      --inspect: decode the binary format of 'idmap' (path) and display the contents in a 
+                 debug-friendly format. 
+
+      --verify: verify if idmap corresponding to file descriptor 'fd' (integer) is made from 
+                target package 'target' (path to apk) and overlay package 'overlay'. 
+
+EXAMPLES 
+      Create an idmap file: 
+
+      $ adb shell idmap --path /system/app/target.apk \ 
+                               /vendor/overlay/overlay.apk \ 
+                               /data/resource-cache/vendor@overlay@overlay.apk@idmap 
+
+      Display an idmap file: 
+
+      $ adb shell idmap --inspect /data/resource-cache/vendor@overlay@overlay.apk@idmap 
+      SECTION      ENTRY        VALUE      COMMENT 
+      IDMAP HEADER magic        0x706d6469 
+                   base crc     0xb65a383f 
+                   overlay crc  0x7b9675e8 
+                   base path    .......... /path/to/target.apk 
+                   overlay path .......... /path/to/overlay.apk 
+      DATA HEADER  target pkg   0x0000007f 
+                   types count  0x00000003 
+      DATA BLOCK   target type  0x00000002 
+                   overlay type 0x00000002 
+                   entry count  0x00000001 
+                   entry offset 0x00000000 
+                   entry        0x00000000 drawable/drawable 
+      DATA BLOCK   target type  0x00000003 
+                   overlay type 0x00000003 
+                   entry count  0x00000001 
+                   entry offset 0x00000000 
+                   entry        0x00000000 xml/integer 
+      DATA BLOCK   target type  0x00000004 
+                   overlay type 0x00000004 
+                   entry count  0x00000001 
+                   entry offset 0x00000000 
+                   entry        0x00000000 raw/lorem_ipsum 
+
+      In this example, the overlay package provides three alternative resource values:
+      drawable/drawable, xml/integer, and raw/lorem_ipsum 
+
+NOTES 
+      This tool and its expected invocation from installd is modelled on dexopt.
+
