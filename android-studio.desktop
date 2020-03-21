@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Android Studio
+Comment=Android Cross-platform buildsystem
+Exec=/home/eagle/work/tools/android-studio/bin/studio.sh
+Icon=/home/eagle/work/tools/android-studio/bin/studio.png
+Terminal=false
+X-MultipleArgs=false
+Type=Application
+Categories=Development;
+
+#copy this file to /user/share/applications 目录下

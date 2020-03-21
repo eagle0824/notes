@@ -659,3 +659,18 @@ sudo vim /etc/hosts  修改127.0.1.1对应的主机名
 Ubuntu16.04  通过右上角设置->关于电脑->设备名称修改
 sudo vim /etc/hosts  修改127.0.1.1对应的主机名 
 不需要重启
+
+85 linux下vim中文乱码
+vim ~/.vimrc
+添加下面内容
+set encoding=utf-8
+set fileencodings=utf-8,ucs-bom,gb18030,gbk,bg2312,cp936
+set termencoding=utf-8 
+
+86 ubuntu桌面等目录显示英文
+终端中输入
+export LANG=en_US
+执行
+xdg-user-dirs-gtk-update
+
+
