@@ -336,3 +336,13 @@ EXAMPLES
 NOTES 
       This tool and its expected invocation from installd is modelled on dexopt.
 
+
+android 加快编译,但mk修改之后还是需要用mm编译
+./prebuilts/build-tools/linux-x86/bin/ninja
+ninja -f ./out/combined-car_mt2712.ninja Launcher3
+或者 (缺省-f参数时,用的是当前目录的build.ninja)
+# ln -s ./out/combined-car_mt2712.ninja build.ninja
+# ninja Settings
+
+make编译完一个项目后，如果再执行make，会花费较长时间重新编译部分内容，
+而使用Ninja以后，增量编译做得比较完善
