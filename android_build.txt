@@ -178,6 +178,16 @@ droidcore、files和prebuilt是中间目标
     make libandroid_runtime     编译出所有framework的JNI库
     make framework  编译出所有framework的jar包
     make service    编译出系统服务及相关的模块
+    0.make update-api //修改framework公共api后，更新api
+    1.make bootimage
+    – boot.img
+    2.make systemimage
+    – system.img (这个system.img 是 从 out/target/product/xxxx/system 制作打包的)
+    3.make userdataimage
+    – userdata.img
+    make ramdisk
+    – ramdisk.img
+
     2.1.6 分析config.mk文件
 
     定义表示文档、头文件、系统库的源码目录等的变量，方便其他编译脚本使用

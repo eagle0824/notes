@@ -36,15 +36,45 @@ Alt+Insert      生成代码(如get,set方法,构造函数等)
         sh ./development/tools/idegen/idegen.sh 
 
     3) 导入工程
-        根据内存大小适当修改bin/studio64.vmoptions和studio.vmoptions中
-            -Xms512m
-            -Xmx1280m
-            -XX:MaxPermSize=350m
-            -XX:ReservedCodeCacheSize=240m
-            大小
+    根据内存大小适当修改bin/studio64.vmoptions和studio.vmoptions中
+    -Xms4096m
+    -Xmx4096m
+    -XX:MaxPermSize=4096m
+    -XX:ReservedCodeCacheSize=2048m
+    大小
+
+    备注 查看设置是否生效
+    imotor@imotor-pc-145:/work/eagle/notes$ jps -lvm
+    10066 org.gradle.launcher.daemon.bootstrap.GradleDaemon 4.10.1 -Xmx1536m -Dfile.encoding=UTF-8 -Duser.country=CN -Duser.language=zh -Duser.variant
+    9669 com.intellij.idea.Main -Xms256m -Xmx1280m -XX:ReservedCodeCacheSize=240m -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -Djdk.http.auth.tunneling.disabledSchemes="" -Djna.nosys=true -Djna.boot.library.path= -da -Dawt.useSystemAAFontSettings=lcd -Dsun.java2d.renderer=sun.java2d.marlin.MarlinRenderingEngine -XX:ErrorFile=/home/imotor/java_error_in_STUDIO_%p.log -XX:HeapDumpPath=/home/imotor/java_error_in_STUDIO.hprof -Didea.paths.selector=AndroidStudio3.4 -Djb.vmOptionsFile=/work/tools/android-studio/bin/studio64.vmoptions -Didea.platform.prefix=AndroidStudio -Didea.jre.check=true
+    10185 sun.tools.jps.Jps -lvm -Dapplication.home=/home/imotor/.sdkman/candidates/java/8.0.212-zulu -Xms8m
 
 
-        打开Android Studio,选择打开一个现有的Android Studio项目,选择Android源码的根目录,导入即可(起作用的是android.irp文件).
+大家都知道使用Eclipse倒入源码很慢，Android Studio导入源码时也慢，所以建议修改android.iml文件（将自己不用的代码去掉），然后再导入Studio。
+
+就像下面摘取的android.iml文件1887行开始的这些一样：
+
+<sourceFolder url="file://$MODULE_DIR$/./sdk/testapps/userLibTest/src" isTestSource="true"/>
+<sourceFolder url="file://$MODULE_DIR$/./tools/external/fat32lib/src/main/java" isTestSource="false"/>
+<excludeFolder url="file://$MODULE_DIR$/out/eclipse"/>
+<excludeFolder url="file://$MODULE_DIR$/.repo"/>
+<excludeFolder url="file://$MODULE_DIR$/external/bluetooth"/>
+<excludeFolder url="file://$MODULE_DIR$/external/chromium"/>
+<excludeFolder url="file://$MODULE_DIR$/external/icu4c"/>
+<excludeFolder url="file://$MODULE_DIR$/external/webkit"/>
+<excludeFolder url="file://$MODULE_DIR$/frameworks/base/docs"/>
+<excludeFolder url="file://$MODULE_DIR$/out/host"/>
+<excludeFolder url="file://$MODULE_DIR$/out/target/common/docs"/>
+<excludeFolder url="file://$MODULE_DIR$/out/target/common/obj/JAVA_LIBRARIES/android_stubs_current_intermediates"/>
+<excludeFolder url="file://$MODULE_DIR$/out/target/product"/>
+<excludeFolder url="file://$MODULE_DIR$/prebuilt"/>
+
+
+我们可以仿照上面这段代码的<excludeFolder url="file://$MODULE_DIR$/.repo"/>写法一样过滤掉不需要的内容，这样在导入时就会快很多。
+
+
+
+        打开Android Studio,选择打开一个现有的Android Studio项目,选择Android源码的根目录android.ipr,导入即可(起作用的是android.irp文件).
             配置sdk版本之后就可以查看Android 源码了.
 
         或者
