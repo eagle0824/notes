@@ -461,3 +461,6 @@ git fetch origin
 git push origin :heads/reps-branch
       *
 
+获取所有分支以及所有提交记录
+git fetch --unshallow
+
