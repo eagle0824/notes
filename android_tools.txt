@@ -336,8 +336,32 @@ EXAMPLES
 NOTES 
       This tool and its expected invocation from installd is modelled on dexopt.
 
+19 getevent
 
-android 加快编译,但mk修改之后还是需要用mm编译
+adb shell getevent -l
+查看input事件
+得到的是这样一组信息
+EV_KEY       BTN_TOUCH            DOWN                
+EV_ABS       ABS_MT_TOUCH_MAJOR   000000ff            
+EV_ABS       ABS_MT_POSITION_X    00000262            
+EV_ABS       ABS_MT_POSITION_Y    00000546            
+EV_ABS       ABS_MT_TRACKING_ID   00000011            
+EV_SYN       SYN_MT_REPORT        00000000            
+EV_SYN       SYN_REPORT           00000000            
+EV_KEY       BTN_TOUCH            UP                  
+EV_SYN       SYN_MT_REPORT        00000000            
+EV_SYN       SYN_REPORT           00000000
+
+格式是event type、event code、event value 
+具体含义查看kernel/include/linux/input.h
+或着kernel/include/uapi/linux/input-event-codes.h
+
+event type 常用的有
+EV_REL表示相对坐标类型、EV_ABS表示绝对坐标类型、EV_KEY表示物理键盘事件类型，EV_SYN表示同步事件类型等等
+
+event code 
+
+20 android 加快编译,但mk修改之后还是需要用mm编译
 ./prebuilts/build-tools/linux-x86/bin/ninja
 ninja -f ./out/combined-car_mt2712.ninja Launcher3
 或者 (缺省-f参数时,用的是当前目录的build.ninja)
@@ -346,3 +370,24 @@ ninja -f ./out/combined-car_mt2712.ninja Launcher3
 
 make编译完一个项目后，如果再执行make，会花费较长时间重新编译部分内容，
 而使用Ninja以后，增量编译做得比较完善
+
+
+21  制造app crash
+adb shell am crash packagname
+比如音乐的crash
+adb shell am crash com.imotor.music
+app会crash且log中会有如下log
+
+--------- beginning of crash
+04-26 00:59:06.901  4253  4253 E AndroidRuntime: FATAL EXCEPTION: main 
+04-26 00:59:06.901  4253  4253 E AndroidRuntime: Process: com.imotor.music, PID: 4253 
+04-26 00:59:06.901  4253  4253 E AndroidRuntime: android.app.RemoteServiceException: shell-induced crash
+04-26 00:59:06.901  4253  4253 E AndroidRuntime:    at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1737)
+04-26 00:59:06.901  4253  4253 E AndroidRuntime:    at android.os.Handler.dispatchMessage(Handler.java:106)
+04-26 00:59:06.901  4253  4253 E AndroidRuntime:    at android.os.Looper.loop(Looper.java:193)
+04-26 00:59:06.901  4253  4253 E AndroidRuntime:    at android.app.ActivityThread.main(ActivityThread.java:6669)
+04-26 00:59:06.901  4253  4253 E AndroidRuntime:    at java.lang.reflect.Method.invoke(Native Method)
+04-26 00:59:06.901  4253  4253 E AndroidRuntime:    at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:493)
+04-26 00:59:06.901  4253  4253 E AndroidRuntime:    at com.android.internal.os.ZygoteInit.main(ZygoteInit.java
+
+
