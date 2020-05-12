@@ -23,19 +23,33 @@ Alt+Insert      生成代码(如get,set方法,构造函数等)
 
     准备工作:
         源码编译通过.
+         a) "source build/envsetup.sh" (source可以用 . 代替，即". build/envsetup.sh")
+         b) "lunch"，并选择要编译的项目
 
     1) 生成IDE工具文件
-
-        mmm ./development/tools/idegen
-
-        运行完将生成idegen.jar文件
+         make idegen -j4 (这里的 -j4 表示用4线程来编译，可以不加)
 
     2) 生成android studio配置文件
-        生成android.ipr,android.iml,这几个文件是Android Studio项目的关键文件,主要就是列出项目由模块组成,依赖关系,目录结构.
-        
-        sh ./development/tools/idegen/idegen.sh 
+
+        sh development/tools/idegen/idegen.sh (如果执行不成功 前面加上"sudo")
+
+        执行之后会生成下面三个文件
+                1. android.iml (记录项目所包含的module、依赖关系、SDK版本等等，类似一个XML文件)
+                2. android.ipr (工程的具体配置，代码以及依赖的lib等信息，类似于Visual Studio的sln文件)
+                3. android.iws (主要包含一些个人的配置信息，也有可能在执行上述操作后没有生成，这个没关系，在打开过一次项目之后就会自动生成了)
+
+        注意:
+            "android.iml"和"android.ipr"一般是"只读"的属性，我们这里建议大家，把这两个文件改成可读可写，否则，在更改一些项目配置的时候可能会出现无法保存的情况，执行如下两条命令即可。
+            sudo chmod 777 android.iml
+            sudo chmod 777 android.ipr
+
 
     3) 导入工程
+        那么可以直接打开Android Studio，点击"Open an existing Android Studio project"选项，找到并选中刚刚生成的"android.ipr"文件，点击OK，就可以开始导入项目了。 第一次导入，这个过程可能会持续很久，几十分钟或者超过一个小时。不过成功之后，以后再打开项目就会快很多了。
+
+
+    其它事项
+
     根据内存大小适当修改bin/studio64.vmoptions和studio.vmoptions中
     -Xms4096m
     -Xmx4096m
@@ -50,42 +64,56 @@ Alt+Insert      生成代码(如get,set方法,构造函数等)
     10185 sun.tools.jps.Jps -lvm -Dapplication.home=/home/imotor/.sdkman/candidates/java/8.0.212-zulu -Xms8m
 
 
-大家都知道使用Eclipse倒入源码很慢，Android Studio导入源码时也慢，所以建议修改android.iml文件（将自己不用的代码去掉），然后再导入Studio。
+    如果电脑性能一般的话，我建议，可以在导入项目前，手动对"android.iml"文件进行一下修改，可以使我们导入的时间尽可能的缩短一些。
+    首先，要保证"android.iml"文件已经添加了"可写入"的属性(上文中已经介绍了如何修改文件属性)。
+    接下来，使用文本编辑器打开"android.iml"文件，并执行以下修改(仅代表我的个人习惯，也可以根据同学们的喜好自己调整)：
 
-就像下面摘取的android.iml文件1887行开始的这些一样：
+    1. 搜索关键字"orderEntry"，我一般会将所有带有这个关键字的标签项全部删除，仅保留以下三行，大概如下......
+        </content>
+            <orderEntry type="sourceFolder" forTests="false" />
+            <orderEntry type="inheritedJdk" />
+            <orderEntryProperties />
+        </component>
+        </module>
 
-<sourceFolder url="file://$MODULE_DIR$/./sdk/testapps/userLibTest/src" isTestSource="true"/>
-<sourceFolder url="file://$MODULE_DIR$/./tools/external/fat32lib/src/main/java" isTestSource="false"/>
-<excludeFolder url="file://$MODULE_DIR$/out/eclipse"/>
-<excludeFolder url="file://$MODULE_DIR$/.repo"/>
-<excludeFolder url="file://$MODULE_DIR$/external/bluetooth"/>
-<excludeFolder url="file://$MODULE_DIR$/external/chromium"/>
-<excludeFolder url="file://$MODULE_DIR$/external/icu4c"/>
-<excludeFolder url="file://$MODULE_DIR$/external/webkit"/>
-<excludeFolder url="file://$MODULE_DIR$/frameworks/base/docs"/>
-<excludeFolder url="file://$MODULE_DIR$/out/host"/>
-<excludeFolder url="file://$MODULE_DIR$/out/target/common/docs"/>
-<excludeFolder url="file://$MODULE_DIR$/out/target/common/obj/JAVA_LIBRARIES/android_stubs_current_intermediates"/>
-<excludeFolder url="file://$MODULE_DIR$/out/target/product"/>
-<excludeFolder url="file://$MODULE_DIR$/prebuilt"/>
+    2. 搜索”excludeFolder“关键字，对这里进行一些修改，将我们不需要看的代码Exclude掉。通过这个步骤，能极大地提升第一次加载项目的速度。
+    等项目加载完成后，我们还可以通过Android Studio对Exclude的Module进行调整，所以也不用害怕这里Exclude掉了有用的代码，或少Exclude了一部分代码，在项目加载完以后再进行调整就行了。
+    以下是我的配置，大家可以参考(由于我比较关注Framework以及Telephony相关的代码，所以重点保留了这两部分，而其他一些如kernel、bootloader的代码，我就Exclude掉了，同学们也可以根据自己的需求来进行修改)。
+
+         <excludeFolder url="file://$MODULE_DIR$/.repo" />
+         <excludeFolder url="file://$MODULE_DIR$/art" />
+         <excludeFolder url="file://$MODULE_DIR$/bionic" />
+         <excludeFolder url="file://$MODULE_DIR$/bootable" />
+         <excludeFolder url="file://$MODULE_DIR$/build" />
+         <excludeFolder url="file://$MODULE_DIR$/compatibility" />
+         <excludeFolder url="file://$MODULE_DIR$/dalvik" />
+         <excludeFolder url="file://$MODULE_DIR$/developers" />
+         <excludeFolder url="file://$MODULE_DIR$/developers/samples" />
+         <excludeFolder url="file://$MODULE_DIR$/development" />
+         <excludeFolder url="file://$MODULE_DIR$/device/google" />
+         <excludeFolder url="file://$MODULE_DIR$/device/sample" />
+         <excludeFolder url="file://$MODULE_DIR$/docs" />
+         <excludeFolder url="file://$MODULE_DIR$/external" />
+         <excludeFolder url="file://$MODULE_DIR$/flashing-files" />
+         <excludeFolder url="file://$MODULE_DIR$/frameworks/base/docs" />
+         <excludeFolder url="file://$MODULE_DIR$/kernel" />
+         <excludeFolder url="file://$MODULE_DIR$/libcore" />
+         <excludeFolder url="file://$MODULE_DIR$/libnativehelper" />
+         <excludeFolder url="file://$MODULE_DIR$/out" />
+         <excludeFolder url="file://$MODULE_DIR$/pdk" />
+         <excludeFolder url="file://$MODULE_DIR$/platform_testing" />
+         <excludeFolder url="file://$MODULE_DIR$/prebuilt" />
+         <excludeFolder url="file://$MODULE_DIR$/prebuilts" />
+         <excludeFolder url="file://$MODULE_DIR$/shortcut-fe" />
+         <excludeFolder url="file://$MODULE_DIR$/test" />
+         <excludeFolder url="file://$MODULE_DIR$/toolchain" />
+         <excludeFolder url="file://$MODULE_DIR$/tools" />
+
+    完成之后，按照上面说的步骤，使用Android Studio选中"android.ipr"打开项目即可。
 
 
-我们可以仿照上面这段代码的<excludeFolder url="file://$MODULE_DIR$/.repo"/>写法一样过滤掉不需要的内容，这样在导入时就会快很多。
-
-
-
-        打开Android Studio,选择打开一个现有的Android Studio项目,选择Android源码的根目录android.ipr,导入即可(起作用的是android.irp文件).
-            配置sdk版本之后就可以查看Android 源码了.
-
-        或者
-
-        打开Android Studio, File-Open->源码根目录android.ipr, Android Studio 会自动导入工程所有代码!
-        
-        过程:index中会弹出framework的config提示,点击config,然后确认,会继续indexingu一段时间.
-        结束:index结束之后,选择project视图,就可以看到清晰的目录结构.
-
-        注意:
-            Android Studio导入源码时也慢，所以建议修改android.iml文件（将自己不用的代码去掉），然后再导入Studio.
+     导入源码后可以对需要导入的目录进行删减(Exclude不需要的代码目录)
+     点击"File -> Project Structure..."，中间的窗口选择"android"(首字母小写的那一个)，在弹出的窗口中左边栏中选择"Modules"，而后在右边的窗口中选择"Sources"。在这里我们可以看到项目的所有代码目录，我们可以选中不需要的module，并点击上面的"Excluded"按钮，当被选中的目录变为橙色，即表示完成Exclude操作；如果想要取消对某代码目录的Exclude操作，选中该目录，再次点击"Excluded"按钮，等待目录变为蓝色即可。
 
 
 3 studio 安装uml插件
@@ -107,3 +135,18 @@ proxy
 字符串命名后面有空格,可以通过下面指令查找
 
 egrep 'name="[^"]* [^"]*"' -n file
+
+
+tip 1
+ Android Studio默认只能打开10个代码文件，且文件打开多了以后显示不开的文件还会被隐藏，需要点击最右边的箭头才能查看。而最致命的是，如果不小心修改了某个文件，在标签页上，不会有任何的提示
+
+ 其实，我们可以通过修改设置改变这种情况，从而使得我们更好的阅读代码。
+ 点击"File -> Settings..."，在弹出的窗口中左边栏中选择"Editor -> General -> Editor Tabs"，而后在右边的窗口中修改三个选项：
+
+         1. 取消勾选"Show tabs in single row"    ->   使得文件可以在多行进行显示，而不会被隐藏
+         2. 勾选"Mark modified tabs with asterisk"    ->    在标签栏中，对被修改但尚未保存的文件加上一个星号进行提示
+         3. 将"Tab limit"后面的数字修改为你希望最多同时打开文件的数量，比如"20"
+
+
+
+
