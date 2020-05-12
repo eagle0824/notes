@@ -398,3 +398,10 @@ adb 无线调试
 4.在电脑端dos命令下执行：adb connect ip:5555。其中ip表示手机的ip地址。
 5.断开连接时执行如下命令：adb disconnect ip:5555。
 
+
+so堆栈错误调试
+-sym 后面是so目录
+cat /tmp/log.txt | ./ndk-stack -sym /work/androidq/baseline/out/target/product/car_mt2712/symbols/system/lib64/
+
+定位准确错误信息
+addr2line -f -e /work/androidq/baseline/out/target/product/car_mt2712/symbols/system/lib64/libaudiowhitelist.so 0x0000000000002804
