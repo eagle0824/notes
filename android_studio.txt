@@ -148,5 +148,9 @@ tip 1
          3. 将"Tab limit"后面的数字修改为你希望最多同时打开文件的数量，比如"20"
 
 
+tip2 
+:app:compileDebugJavaWithJavac 问题解决
+查看具体错误信息
+gradlew compileDebugSources --stacktrace -info
 
 

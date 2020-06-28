@@ -673,4 +673,7 @@ export LANG=en_US
 执行
 xdg-user-dirs-gtk-update
 
+87 ffplay
+ffplay 播放pcm流 参数-ar采样率 -channels 单双通道， -f 文件格式16bits -i 指定文件
+ffplay -ar 44100 -channels 2 -f s16le -i audio_02_16_44100_11_20_666.pcm
 

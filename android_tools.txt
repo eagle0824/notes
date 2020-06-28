@@ -390,4 +390,22 @@ app会crash且log中会有如下log
 04-26 00:59:06.901  4253  4253 E AndroidRuntime:    at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:493)
 04-26 00:59:06.901  4253  4253 E AndroidRuntime:    at com.android.internal.os.ZygoteInit.main(ZygoteInit.java
 
+22 repo报错误
+
+repo init -u  https://aosp.tuna.tsinghua.edu.cn/accessories/manifest
+Get /work/android-accessoried/repo/.git
+remote: 对象计数中: 69, 完成.
+remote: 压缩对象中: 100% (58/58), 完成.
+remote: Total 69 (delta 7), reused 69 (delta 7)
+展开对象中: 100% (69/69), 完成.
+来自 /work/android-accessoried/repo/
+ * [新分支]          master     -> origin/master
+ warning: '/work/android-accessoried/repo/.git' does not look like a git-repo repository, is REPO_URL set correctly?
+
+ fatal: branch 'master' has not been signed
+ fatal: cloning the git-repo repository failed, will remove '.repo/repo
+
+
+如果repo init报上面错误可以 不要对repo的里程碑签名进行严格的验证(添加--no-repo-verify)
+repo init -u  https://aosp.tuna.tsinghua.edu.cn/accessories/manifest --no-repo-verify
 
