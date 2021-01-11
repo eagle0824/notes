@@ -187,6 +187,8 @@ droidcore、files和prebuilt是中间目标
     – userdata.img
     make ramdisk
     – ramdisk.img
+    4. make bootlogoimage
+    编译bootlogo.img
 
     2.1.6 分析config.mk文件
 
@@ -647,3 +649,5 @@ LOCAL_ASSET_FILES   编译apk时用来指定资源列表，通常写成：LOCAL_
 
    3) ADDITIONAL_BUILD_PROPERTIES或PRODUCT_PROPERTY_OVERRIDES。
 
+2 LOCAL_DEX_PREOPT := false
+ 关闭模块的odex/vdex

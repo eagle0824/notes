@@ -153,4 +153,8 @@ tip2
 查看具体错误信息
 gradlew compileDebugSources --stacktrace -info
 
+tip3
+Error:Execution failed for task ':app:transformClassesWithInstantRunForDebug'.
+设置里面关闭instantRun
+
 
