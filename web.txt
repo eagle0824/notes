@@ -22,6 +22,12 @@ android -> Tools -> Options
 and select others Force https://...sources to be fetched using http://...
 
 
+有时候studio中手动关闭代理无效
+可以尝试 到下面文件中删除之前的代理, 重启studio
+~/.gradle\gradle.properties
+
+
+
 清华大学开源镜像资源
 https://mirrors.tuna.tsinghua.edu.cn/help/AOSP/
 

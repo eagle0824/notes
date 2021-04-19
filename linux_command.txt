@@ -677,3 +677,8 @@ xdg-user-dirs-gtk-update
 ffplay 播放pcm流 参数-ar采样率 -channels 单双通道， -f 文件格式16bits -i 指定文件
 ffplay -ar 44100 -channels 2 -f s16le -i audio_02_16_44100_11_20_666.pcm
 
+
+88 暂停恢复进程
+kill -SIGSTOP 1456
+kill -SIGCONT 1456
+

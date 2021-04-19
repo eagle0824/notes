@@ -38,6 +38,8 @@
     include $(BUILD_PREBUILT)
 
 
+    keytool -list -printcert -jarfile *.apk
+    查看apk签名
 
 2.android create project
 

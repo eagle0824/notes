@@ -412,3 +412,27 @@ adb shell getprop | grep cpu
 [ro.product.cpu.eabilist32]: []
 [ro.product.cpu.eabilist64]: [arm64-v8a]
 
+
+抓取trace
+adb shell atrace -b 40960 -c -t 20 -z -o /sdcard/atrace.trace gfx input view webview wm am sm video hal res dalvik rs bionic pm ss sched freq idle disk workq load memreclaim
+
+/external/chromium-trace/systrace.py 将trace文件转成chrome能识别的html文件
+./systrace.py --from-file /work/airplay/log_trace_20210207/atrace_normal.trace
+
+或者
+android-sdk/platform-tools/systrace/
+python systrace.py -b 40960 -t 20 -o mynewtrace.html gfx input view webview wm am sm video hal res dalvik rs bionic pm ss sched freq idle disk workq load memreclaim
+
+
+Key含义
+w 放大
+s 缩小
+a 向左边时间线移动
+d 向右边时间线移动
+e 定位到中间
+g 切换是否显示60hz的网格线
+0 恢复trace到初始态，这里是数字0而非字母o
+h 切换是否显示详情
+m 高亮显示
+
+
