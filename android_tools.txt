@@ -1,3 +1,17 @@
+sdk 命令行更新
+
+1) https://developer.android.google.cn/studio/#command-tools
+下载对应版本的sdk命令行工具
+2) 解压到/work/tools/android-sdk目录。
+更新sdktools相关内容
+./bin/sdkmanager "platform-tools" "platforms;android-28"//下载platform以及platforms-tools(adb fastboot更新)
+
+只执行上面指令就足够，其它包更新方式详细内容参考 https://developer.android.google.cn/studio/command-line/sdkmanager
+
+3) 下载ndk
+./tools/bin/sdkmanager --sdk_root=/work/tools/android-sdk/ ndk-bundle
+
+
 1.keytool用法
 
 	keytool -genkey -alias archermind.keystore -keyalg RSA -validity 20000 -keystore archermind.keystore
