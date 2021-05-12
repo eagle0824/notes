@@ -436,3 +436,15 @@ h 切换是否显示详情
 m 高亮显示
 
 
+抓取android系统bugreport log
+adb bugreport
+
+抓取到的是.txt文件,比较大可以借助工具查看
+https://github.com/sonyxperiadev/ChkBugReport
+
+执行java -jar ./core/build/libs/ChkBugReport.jar bugreport_*****.txt
+执行之后生成html文件,在浏览器中可以打开
+
+
+
+
