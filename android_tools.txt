@@ -193,6 +193,18 @@ sdk 命令行更新
         adb tcpip 5555
         adb connect ip
 
+    或者串口输入
+
+    setprop service.adb.tcp.port 5555
+    setprop ctl.stop adbd
+    setprop ctl.start adbd
+
+    ifconfig查看ip
+
+    adb connect ip
+
+
+
 10. 更新ramdisk.gz
         ramdisk解压替换打包
 
