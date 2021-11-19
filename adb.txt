@@ -446,5 +446,38 @@ https://github.com/sonyxperiadev/ChkBugReport
 执行之后生成html文件,在浏览器中可以打开
 
 
+adb shell showmap pid
 
+显示pid使用库占用的meminfo
 
+console:/system/etc/init # showmap 1867                                        
+ virtual                     shared   shared  private  private
+ size      RSS      PSS    clean    dirty    clean    dirty     swap  swapPSS   #  object
+ -------- -------- -------- -------- -------- -------- -------- -------- -------- ---- ------------------------------
+ 660      556       24      536        0        0       20        0        0    4 /apex/com.android.runtime/bin/linker
+ 568      560       24      540        0        0       20        0        0    4 /apex/com.android.runtime/lib/bionic/libc.so
+ 12       12        4        8        0        0        4        0        0    3 /apex/com.android.runtime/lib/bionic/libdl.so
+ 128       44        8       36        0        0        8        0        0    4 /apex/com.android.runtime/lib/bionic/libm.so
+ 256        8        0        0        8        0        0        0        0    2 /dev/__properties__/properties_serial
+ 104      104        0        0      104        0        0        0        0    2 /dev/__properties__/property_info
+ 256       16        0        0       16        0        0        0        0    2 /dev/__properties__/u:object_r:debug_prop:s0
+ 256       16        0        0       16        0        0        0        0    2 /dev/__properties__/u:object_r:exported2_default_prop:s0
+ 128        4        0        0        4        0        0        0        0    1 /dev/__properties__/u:object_r:exported_system_prop:s0
+ 128        4        0        0        4        0        0        0        0    1 /dev/__properties__/u:object_r:heapprofd_prop:s0
+ 128        4        0        0        4        0        0        0        0    1 /dev/__properties__/u:object_r:log_tag_prop:s0
+ 128        4        0        0        4        0        0        0        0    1 /dev/__properties__/u:object_r:logd_prop:s0
+ 128        4        0        0        4        0        0        0        0    1 /dev/__properties__/u:object_r:vendor_socket_hook_prop:s0
+ 128        4        0        0        4        0        0        0        0    1 /dev/__properties__/u:object_r:vndk_prop:s0
+..........
+ 1020       12       12        0        0        0       12        0        0    1 [anon:stack_and_tls:9964]
+ 12        8        8        0        0        0        8        0        0    1 [anon:stack_and_tls:main]
+ 5552        0        0        0        0        0        0        0        0  347 [anon:thread signal stack]
+ 4596       12       12        0        0        0       12        0        0  914 [anon]
+ 4        0        0        0        0        0        0        0        0    1 [sigpage]
+ 132       32       32        0        0        0       32        0        0    1 [stack]
+ 4        4        0        4        0        0        0        0        0    1 [vectors]
+ -------- -------- -------- -------- -------- -------- -------- -------- -------- ---- ------------------------------
+ virtual                     shared   shared  private  private
+ size      RSS      PSS    clean    dirty    clean    dirty     swap  swapPSS   #  object
+ -------- -------- -------- -------- -------- -------- -------- -------- -------- ---- ------------------------------
+ 410280    19072    17302     1612      168      488    16804        0        0 1737 TOTAL

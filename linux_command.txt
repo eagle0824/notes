@@ -682,3 +682,6 @@ ffplay -ar 44100 -channels 2 -f s16le -i audio_02_16_44100_11_20_666.pcm
 kill -SIGSTOP 1456
 kill -SIGCONT 1456
 
+
+89  查看串口波特率配置
+stty -F /dev/ttyS7
