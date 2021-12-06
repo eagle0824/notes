@@ -28,3 +28,13 @@ bootanimation.zip文件一般包括以下文件
 
 详情参考网址:
     http://blog.csdn.net/luoshengyang/article/details/7691321/
+
+
+如果图片格式是.png格式, 可以通过zopflipng命令进行压缩, 此命令是无损压缩的.
+for fn in *.png ; do /work/eagle/code/zopfli-master/zopflipng -m ${fn} ${fn}.new && mv -f ${fn}.new ${fn}; done
+
+
+linux
+zopflipng 下载地址 https://github.com/google/zopfli
+
+执行make
