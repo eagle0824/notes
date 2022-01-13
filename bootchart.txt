@@ -1,61 +1,13 @@
 bootchart是一个对Linux启动流程进行分析得开源软件工具。Android中有集成bootchart源码，路径为system/core/init/bootchart.c。
 
+1 电脑安装bootchart
+sudo apt-get install bootchart
 
-具体使用流程如下：
+2 enable bootchart功能
+adb shell touch /data/bootchart/enabled
+adb shell reboot
 
+3 抓取bootchart数据, 生成bootchart.png
+source $ANDROID_BUILD_TOP/system/core/init/grab-bootchart.sh
 
-1.编译android中的bootchart.。
-
-在android源码system/core/init/目录执行： mm INIT_BOOTCHART=true -B 。
-
-生成　out/target/product/ac8317/root/init
-
-
-2.将新编译的android系统镜像烧录到android设备中。
-    替换ramdisk.gz中的init
-    替换系统的ramdisk.gz
-
-{
-    更新ramdisk.gz
-        ramdisk解压替换打包
-
-        1) gunzip ramdisk.gz
-
-        2) mkdir /tmp/rootfs
-
-        3) mount -t ext4 -o loop ramdisk /tmp/rootfs
-
-        4) cd /tmp/rootfs 替换修改内容
-
-        5) genext2fs -b 2048 -i 1024 -d /tmp/rootfs ramdisk
-        //genext2fs 在目录out/host/linux-x86/bin下面
-
-        6) gzip -9 -f ramdisk
-
-}
-
-
-3.重启设备，
-    adb shell mkdir /data/bootchart     创建目录bootchart
-    touch /data/bootchart-start         创建文件bootchar-start
-    echo 90 > /data/bootchart-start     写入bootchart监控时间90
-
-
-4.再测重启设备，在android设备的/data/bootchart/目录下会生成以下文件：
-
--rw-rw-rw- root     root          732 1970-01-01 08:00 header
--rw-r--r-- root     root            0 1970-01-01 08:00 kernel_pacct
--rwxr-xr-x root     root       517150 2014-04-09 12:06 proc_diskstats.log
--rwxr-xr-x root     root      2783967 2014-04-09 12:06 proc_ps.log
--rwxr-xr-x root     root       152090 2014-04-09 12:06 proc_stat.log
-
-在/data/bootchart/目录下执行命令：
-    busybox tar -czf bootchart.tgz header proc_stat.log proc_ps.log proc_diskstats.log kernel_pacct
-然后将生成bootchart.tgz用u盘拷贝到电脑（ubuntu系统）上。
-
-
-
-5.在电脑上安装bootchart。使用sudo apt-get install bootchart 命令安装的bootchart无法正常解析android中生成的bootchart.tgz文件。需要使用老版本的安装包bootchart_0.9-0ubuntu6_all.deb，可以在此下载http://download.csdn.net/detail/sckgenius/7166477。先sudo apt-get install librsvg2-bin，然后sudo dpkg -i bootchart_0.9-0ubuntu6_all.deb 。
-
-6.生成bootchart图片。在电脑上执行命令：
-bootchart bootchart.tgz
+自动抓取/data/bootchart/目录下面的数据, 并解析生成bootchart.png
