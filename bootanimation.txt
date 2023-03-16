@@ -38,3 +38,11 @@ linux
 zopflipng 下载地址 https://github.com/google/zopfli
 
 执行make
+
+
+压缩图片指令
+for png in *.png;
+do
+../pngcrush/pngcrush -reduce -brute "$png" ../workspace_out/"$png"
+done;
+
